@@ -1,5 +1,12 @@
 using Data;
+using Helpers;
+using Models;
+using Controllers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +17,81 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var configuration = builder.Configuration;
-builder.Services.AddDbContext<UserContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<Data.DatabaseContext>(options => 
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<Data.DatabaseContext>();
+builder.Services.AddScoped<AuthenticationService>();
+
+var jwtSettings = new JWTSettings();
+builder.Configuration.Bind("JWTSettings", jwtSettings);
+
+builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddTransient<JWTCreator>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudience = jwtSettings.Audience,
+        ValidIssuer = jwtSettings.Issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+    };
+    options.SaveToken = true;
+    options.Events = new JwtBearerEvents();
+    options.Events.OnMessageReceived = context =>
+    {
+        if(context.Request.Cookies.ContainsKey("X-Access-Token"))
+        {
+            context.Token = context.Request.Cookies["X-Access-Token"];
+        }
+        return Task.CompletedTask;
+    };
+})
+.AddCookie(options =>
+{
+    options.Cookie.Name = "X-Access-Token";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.IsEssential = true; 
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.User.RequireUniqueEmail = true;
+
+    //lockout settings
+    // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    // options.Lockout.MaxFailedAccessAttempts = 5;
+    // options.Lockout.AllowedForNewUsers = true;
+});
+
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("RequireAdminRole",
+//          policy => policy.RequireRole("Admin"));
+// });
+
 
 var app = builder.Build();
 
@@ -25,6 +104,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

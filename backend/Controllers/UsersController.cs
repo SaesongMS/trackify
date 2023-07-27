@@ -1,88 +1,107 @@
 using Data;
-using Microsoft.AspNetCore.Mvc;
+using Helpers;
 using Models;
-using Microsoft.EntityFrameworkCore;
+using DTOs;
 
-namespace csharp_crud_api.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-  private readonly UserContext _context;
+  private readonly JWTCreator _jwtCreator;
+  private readonly AuthenticationService _authenticationService;
 
-  public UsersController(UserContext context)
+  public UsersController(JWTCreator jwtCreator, AuthenticationService authenticationService)
   {
-    _context = context;
+    _jwtCreator = jwtCreator;
+    _authenticationService = authenticationService;
   }
 
-  // GET: api/users
-  [HttpGet]
-  public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+  [HttpPost("register")]
+  public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
   {
-    return await _context.Users.ToListAsync();
-  }
-
-  // GET: api/users/5
-  [HttpGet("{id}")]
-  public async Task<ActionResult<User>> GetUser(int id)
-  {
-    var user = await _context.Users.FindAsync(id);
-
-    if (user == null)
+    try
     {
-      return NotFound();
+      var result = await _authenticationService.Register(registerRequest);
+
+      if (result)
+      {
+        result = await _authenticationService.AddRole(registerRequest.Username, "User");
+        if(!result)
+          return BadRequest(new RegisterResponse { Success = false, Message = "Could not add role to user" });
+        return Ok(new RegisterResponse { Success = true, Message = "Registration successful" });
+      }
+
+      return BadRequest(new RegisterResponse { Success = false, Message = "Registration failed" });
     }
-
-    return user;
-  }
-
-  // POST api/users
-  [HttpPost]
-  public async Task<ActionResult<User>> PostUser(User user)
-  {
-    _context.Users.Add(user);
-    await _context.SaveChangesAsync();
-
-    return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-  }
-
-  // PUT api/users/5
-  [HttpPut("{id}")]
-  public async Task<IActionResult> PutUser(int id, User user)
-  {
-    if (id != user.Id)
+    catch (Exception ex)
     {
-      return BadRequest();
+      return BadRequest(new RegisterResponse { Success = false, Message = ex.Message });
     }
-
-    _context.Entry(user).State = EntityState.Modified;
-    await _context.SaveChangesAsync();
-
-    return NoContent();
   }
 
-  // DELETE api/users/5
-  [HttpDelete("{id}")]
-  public async Task<IActionResult> DeleteUser(int id)
+  [HttpPost("login")]
+  public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
   {
-    var user = await _context.Users.FindAsync(id);
-
-    if (user == null)
+    try
     {
-      return NotFound();
+      var result = await _authenticationService.Login(loginRequest);
+
+      if (result)
+      {
+        var user = await _authenticationService.GetUser(loginRequest.Username);
+        var roles = await _authenticationService.GetRoles(loginRequest.Username);
+        var token = _jwtCreator.Generate(user, roles);
+
+        Response.Cookies.Append("X-Access-Token", token, new CookieOptions
+        {
+          HttpOnly = true,
+          SameSite = SameSiteMode.Strict,
+          Expires = DateTimeOffset.UtcNow.AddDays(7)
+        });
+
+        return Ok(new LoginResponse { Success = true, Message = "Login successful" });
+      }
+
+      return BadRequest(new LoginResponse { Success = false, Message = "Login failed" });
     }
-
-    _context.Users.Remove(user);
-    await _context.SaveChangesAsync();
-
-    return NoContent();
+    catch (Exception ex)
+    {
+      return BadRequest(new LoginResponse { Success = false, Message = ex.Message });
+    }
   }
 
-  // dummy endpoint to test the database connection
-  [HttpGet("test")]
-  public string Test()
+  [HttpGet("ping")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public IActionResult Ping()
   {
-    return "Hello World!";
+    return Ok(new { Success = true, Message = "Pong" });
+  }
+
+  [HttpGet("admin")]
+  [Authorize(Roles = "Admin")]
+  public IActionResult Admin()
+  {
+    return Ok(new { Success = true, Message = "Admin" });
+  }
+
+  [HttpGet("user")]
+  [Authorize(Roles = "User")]
+  public IActionResult user()
+  {
+    return Ok(new { Success = true, Message = "User" });
   }
 }
