@@ -20,6 +20,13 @@ docker compose up backend
 ```
 docker compose up db
 ```
+#### Migracje
+```
+dotnet ef migrations add <nazwa migracji>
+(migracje sa juz gotowe)
+
+dotnet ef database update
+```
 
 ### Aplikacja
 ```
