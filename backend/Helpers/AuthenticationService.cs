@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using DTOs;
 using Models;
-using System.Drawing.Imaging;
 using System.Drawing;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Helpers
 {
@@ -69,6 +70,18 @@ namespace Helpers
             var user = await _userManager.FindByNameAsync(username);
             return user;
         }
+
+        // public async Task<User> GetUserFromTokenAsync(HttpContext context)
+        // {
+        //     var result = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+        //     // if (result.Succeeded)
+        //     // {
+        //     //     var nameIdentifier = result.Principal.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        //     //     var user = await _userManager.FindByIdAsync(nameIdentifier);
+        //     //     return user;
+        //     // }
+        //     return null;
+        // }
 
         public static byte[] getDeafultAvatar()
         {

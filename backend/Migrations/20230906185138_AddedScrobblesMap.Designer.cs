@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230906185138_AddedScrobblesMap")]
+    partial class AddedScrobblesMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,73 +160,63 @@ namespace backend.Migrations
             modelBuilder.Entity("Models.Album", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("ArtistId")
                         .HasColumnType("text");
 
                     b.Property<byte[]>("Cover")
                         .IsRequired()
-                        .HasColumnType("bytea")
-                        .HasColumnName("cover");
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Album_Spotify_API")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_album_spotify_api");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Artist_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_artist_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("albums", (string)null);
+                    b.ToTable("albums");
                 });
 
             modelBuilder.Entity("Models.AlbumComment", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("AlbumId")
                         .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("content");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Creation_Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Id_Album_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_album_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -232,33 +225,30 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("albumsComment", (string)null);
+                    b.ToTable("albumsComment");
                 });
 
             modelBuilder.Entity("Models.AlbumRating", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("AlbumId")
                         .HasColumnType("text");
 
                     b.Property<string>("Id_Album_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_album_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<int>("Rating")
-                        .HasColumnType("integer")
-                        .HasColumnName("rating");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -267,69 +257,60 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("albumsRating", (string)null);
+                    b.ToTable("albumsRating");
                 });
 
             modelBuilder.Entity("Models.Artist", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Artist_Spotify_API")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_artist_spotify_api");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("Photo")
                         .IsRequired()
-                        .HasColumnType("bytea")
-                        .HasColumnName("photo");
+                        .HasColumnType("bytea");
 
                     b.HasKey("Id");
 
-                    b.ToTable("artists", (string)null);
+                    b.ToTable("artists");
                 });
 
             modelBuilder.Entity("Models.ArtistComment", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("ArtistId")
                         .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("content");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Creation_Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Id_Artist_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_artist_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -338,33 +319,30 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("artistsComment", (string)null);
+                    b.ToTable("artistsComment");
                 });
 
             modelBuilder.Entity("Models.ArtistRating", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("ArtistId")
                         .HasColumnType("text");
 
                     b.Property<string>("Id_Artist_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_artist_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<int>("Rating")
-                        .HasColumnType("integer")
-                        .HasColumnName("rating");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -373,29 +351,28 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("artistsRating", (string)null);
+                    b.ToTable("artistsRating");
                 });
 
             modelBuilder.Entity("Models.FavouriteSong", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Song_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_song_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<string>("SongId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -404,59 +381,51 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("favouriteSongs", (string)null);
+                    b.ToTable("favouriteSongs");
                 });
 
             modelBuilder.Entity("Models.Follow", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("FollowerId")
                         .HasColumnType("text");
 
                     b.Property<string>("Id_Followed")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_followed");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Follower")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_follower");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FollowerId");
 
-                    b.ToTable("follows", (string)null);
+                    b.ToTable("follows");
                 });
 
             modelBuilder.Entity("Models.ProfileComment", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Comment")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("comment");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Creation_Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Id_Recipient")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_recipient");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Sender")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_sender");
+                        .HasColumnType("text");
 
                     b.Property<string>("SenderId")
                         .HasColumnType("text");
@@ -465,7 +434,7 @@ namespace backend.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("profileComments", (string)null);
+                    b.ToTable("profileComments");
                 });
 
             modelBuilder.Entity("Models.Scrobble", b =>
@@ -506,69 +475,60 @@ namespace backend.Migrations
             modelBuilder.Entity("Models.Song", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("AlbumId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Album_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_album_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Song_Spotify_API")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_song_spotify_api");
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
-                    b.ToTable("songs", (string)null);
+                    b.ToTable("songs");
                 });
 
             modelBuilder.Entity("Models.SongComment", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("content");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Creation_Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Id_Sender")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_sender");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Song_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_song_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("SenderId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SongId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -577,33 +537,31 @@ namespace backend.Migrations
 
                     b.HasIndex("SongId");
 
-                    b.ToTable("songsComments", (string)null);
+                    b.ToTable("songsComments");
                 });
 
             modelBuilder.Entity("Models.SongRating", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_Song_Internal")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_song_internal");
+                        .HasColumnType("text");
 
                     b.Property<string>("Id_User")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnType("text");
 
                     b.Property<int>("Rating")
-                        .HasColumnType("integer")
-                        .HasColumnName("rating");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SongId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -612,7 +570,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("songsRating", (string)null);
+                    b.ToTable("songsRating");
                 });
 
             modelBuilder.Entity("Models.User", b =>
@@ -763,7 +721,9 @@ namespace backend.Migrations
 
                     b.HasOne("Models.User", "User")
                         .WithMany("AlbumComments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Album");
 
@@ -778,7 +738,9 @@ namespace backend.Migrations
 
                     b.HasOne("Models.User", "User")
                         .WithMany("AlbumRatings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Album");
 
@@ -793,7 +755,9 @@ namespace backend.Migrations
 
                     b.HasOne("Models.User", "User")
                         .WithMany("ArtistComments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Artist");
 
@@ -808,7 +772,9 @@ namespace backend.Migrations
 
                     b.HasOne("Models.User", "User")
                         .WithMany("ArtistRatings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Artist");
 
@@ -819,11 +785,15 @@ namespace backend.Migrations
                 {
                     b.HasOne("Models.Song", "Song")
                         .WithMany("FavouriteSongs")
-                        .HasForeignKey("SongId");
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Models.User", "User")
                         .WithMany("FavouriteSongs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Song");
 
@@ -867,9 +837,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("Models.Album", "Album")
                         .WithMany("Songs")
-                        .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AlbumId");
 
                     b.Navigation("Album");
                 });
@@ -878,11 +846,15 @@ namespace backend.Migrations
                 {
                     b.HasOne("Models.User", "Sender")
                         .WithMany("SongComments")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Models.Song", "Song")
                         .WithMany("SongComments")
-                        .HasForeignKey("SongId");
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Sender");
 
@@ -893,11 +865,15 @@ namespace backend.Migrations
                 {
                     b.HasOne("Models.Song", "Song")
                         .WithMany("SongRatings")
-                        .HasForeignKey("SongId");
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Models.User", "User")
                         .WithMany("SongRatings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Song");
 

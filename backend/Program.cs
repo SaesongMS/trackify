@@ -25,6 +25,7 @@ builder.Services.AddDbContext<Data.DatabaseContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<Data.DatabaseContext>();
 builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<ScrobbleService>();
 
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);
@@ -52,14 +53,16 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
     };
     options.SaveToken = true;
-    options.Events = new JwtBearerEvents();
-    options.Events.OnMessageReceived = context =>
+    options.Events = new JwtBearerEvents
     {
-        if(context.Request.Cookies.ContainsKey("X-Access-Token"))
+        OnMessageReceived = context =>
+    {
+        if (context.Request.Cookies.ContainsKey("X-Access-Token"))
         {
             context.Token = context.Request.Cookies["X-Access-Token"];
         }
         return Task.CompletedTask;
+    }
     };
 })
 .AddCookie(options =>

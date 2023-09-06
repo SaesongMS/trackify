@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
   private readonly JWTCreator _jwtCreator;
