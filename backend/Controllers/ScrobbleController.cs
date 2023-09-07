@@ -3,6 +3,7 @@ using Models;
 using Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DTOs;
 
 
 namespace Controllers;
@@ -19,32 +20,51 @@ public class ScrobblesController: ControllerBase
         _scrobbleService = scrobbleService;
     }
 
-    
-    
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("recent")]
-    public async Task<IActionResult> GetRecentScrobbles()
+    public async Task<IActionResult> GetRecentScrobbles([FromBody] RecentScrobblesRequest request)
     {
-        //get id from token
-        //get scrobbles from db
-        //return scrobbles
         var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        Console.WriteLine(nameIdentifier);
+        Console.WriteLine(request.N);
+        Console.WriteLine(request.N.GetType());
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-
-            var scrobbles = await _scrobbleService.GetRecentScrobbles(user.Id);
-
-            return Ok();
+            var scrobbles = await _scrobbleService.GetRecent(user.Id, request.N);
+            return Ok(new RecentScrobblesResponse
+            {
+                Success = true,
+                Scrobbles = scrobbles
+            });
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            return BadRequest();
+            return BadRequest(new {message = e.Message});
         }
-        
     }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("interval")]
+    public async Task<IActionResult> GetScrobblesInInterval([FromBody] IntervalScrobblesRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            var scrobbles = await _scrobbleService.GetScrobblesInInterval(user.Id, request.Start, request.End);
+            return Ok(new IntervalScrobblesResponse
+            {
+                Success = true,
+                Scrobbles = scrobbles
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+    
+   
 
 
 }
