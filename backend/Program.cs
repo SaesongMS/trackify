@@ -31,8 +31,14 @@ builder.Services.AddScoped<ScrobbleService>();
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);
 
+var spotifySettings = new SpotifySettings();
+builder.Configuration.Bind("SpotifySettings", spotifySettings);
+
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddTransient<JWTCreator>();
+builder.Services.AddSingleton(spotifySettings);
+builder.Services.AddTransient<SpotifyService>();
+
 
 // builder.Services.AddControllers().AddNewtonsoftJson(options =>
 //     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
