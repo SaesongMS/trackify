@@ -108,5 +108,32 @@ public class ScrobblesController: ControllerBase
         }
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteScrobble([FromBody] DeleteScrobbleRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _scrobbleService.DeleteScrobble(request.Id, user.Id, roles))
+                return Ok(new DeleteScrobbleResponse
+                {
+                    Success = true,
+                    Message = "Scrobble deleted successfully"
+                });
+            return BadRequest(new DeleteScrobbleResponse
+            {
+                Success = false,
+                Message = "Scrobble deletion failed"
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
 
 }

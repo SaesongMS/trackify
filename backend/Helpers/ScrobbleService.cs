@@ -49,8 +49,6 @@ public class ScrobbleService
     {
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id_Song_Spotify_API == spotify_songId) 
             ?? await CreateSong(spotify_songId, spotify_albumId, spotify_artistId);
-        Console.WriteLine("create scrobble");
-        Console.WriteLine("Song title: "+song.Title);
         if (song != null)
         {
             var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
@@ -77,12 +75,10 @@ public class ScrobbleService
     {
         var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id_Album_Spotify_API == spotify_albumId) 
             ?? await CreateAlbum(spotify_albumId, spotify_artistId);
-        Console.WriteLine("!create song!");
         if (album != null)
         {
             // await _spotifyService.GetAccesToken();
             var song = await _spotifyService.GetSong(spotify_songId, album);
-            Console.WriteLine("Song title: "+song.Title);
             if (song != null)
             {
                 await _context.Songs.AddAsync(song);
@@ -98,12 +94,10 @@ public class ScrobbleService
     {
         var artist = await _context.Artists.FirstOrDefaultAsync(a => a.Id_Artist_Spotify_API == spotify_artistId) 
             ?? await CreateArtist(spotify_artistId);
-        Console.WriteLine("!create album!");
         if (artist != null)
         {
             // await _spotifyService.GetAccesToken();
             var album = await _spotifyService.GetAlbum(spotify_albumId, artist);
-            Console.WriteLine("Album name: "+album.Name);
             if (album != null)
             {
                 await _context.Albums.AddAsync(album);
@@ -119,8 +113,6 @@ public class ScrobbleService
     {
         // await _spotifyService.GetAccesToken();
         var artist = await _spotifyService.GetArtist(spotify_artistId);
-        Console.WriteLine("!create artist!");
-        Console.WriteLine("Artist name: "+artist.Name);
         if (artist != null)
         {
             await _context.Artists.AddAsync(artist);
@@ -129,5 +121,24 @@ public class ScrobbleService
         }
         
         return null;
+    }
+
+    public async Task<bool> DeleteScrobble(string id, string userId, List<string> roles)
+    {
+        var scrobble = await _context.Scrobbles.FirstOrDefaultAsync(s => s.Id == id);
+        if (scrobble != null)
+        {
+            Console.WriteLine(roles.Contains("Admin") || scrobble.Id_User == userId);
+            Console.WriteLine("scrobble.Id_User: " + scrobble.Id_User);
+            Console.WriteLine("userId: " + userId);
+            if(roles.Contains("Admin") || scrobble.Id_User == userId)
+            {
+                _context.Scrobbles.Remove(scrobble);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        return false;
     }
 }

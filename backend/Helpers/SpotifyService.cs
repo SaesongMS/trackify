@@ -18,7 +18,6 @@ public class SpotifyService
 
     public async Task<string> GetAccesToken()
     {
-        Console.WriteLine("GetAccesToken");
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
         var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_spotifySettings.ClientId}:{_spotifySettings.ClientSecret}"));
@@ -52,7 +51,6 @@ public class SpotifyService
 
     public async Task<Artist> GetArtist(string id)
     {
-        Console.WriteLine("GetArtist");
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/artists/{id}");
         request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
@@ -76,20 +74,14 @@ public class SpotifyService
 
     public async Task<Album> GetAlbum(string id, Artist artist)
     {
-        Console.WriteLine("GetAlbum");
-        Console.WriteLine("album id: "+id);
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/albums/{id}");
         request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
         var response = await client.SendAsync(request);
-        Console.WriteLine(response.StatusCode);
-        Console.WriteLine(response.ReasonPhrase);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("GetAlbum success");
             var responseContent = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(responseContent);
-            Console.WriteLine("Json Album name: "+json["name"].ToString());
             var album = new Album
             {
                 Id = Guid.NewGuid().ToString(),
@@ -100,7 +92,6 @@ public class SpotifyService
                 Id_Artist_Internal = artist.Id,
                 Artist = artist
             };
-            Console.WriteLine("Object Album name: "+album.Name);
             return album;
         }
         
@@ -109,7 +100,6 @@ public class SpotifyService
 
     public async Task<Song> GetSong(string id, Album album)
     {
-        Console.WriteLine("GetSong");
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/tracks/{id}");
         request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");

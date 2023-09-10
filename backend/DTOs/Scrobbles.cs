@@ -66,3 +66,15 @@ public class CreateScrobbleResponse
     public string Message { get; set; } = string.Empty;
 }
 
+public class DeleteScrobbleRequest
+{
+    [Required]
+    public string Id { get; set; } = string.Empty;
+}
+
+public class DeleteScrobbleResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+

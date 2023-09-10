@@ -15,6 +15,7 @@ dotnet run
 lub
 docker compose up backend
 ```
+Treść pliku appsettings.json potrzebnego do poprawnego działania backendu znajduje się na discordzie(żeby github guard sie nie pruł o secrety)
 
 ### Baza danych
 ```
