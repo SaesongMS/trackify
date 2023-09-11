@@ -23,13 +23,15 @@ public class UsersController : ControllerBase
 {
   private readonly JWTCreator _jwtCreator;
   private readonly AuthenticationService _authenticationService;
+  private readonly UserService _userService;
 
-  public UsersController(JWTCreator jwtCreator, AuthenticationService authenticationService)
+  public UsersController(JWTCreator jwtCreator, AuthenticationService authenticationService, UserService userService)
   {
     _jwtCreator = jwtCreator;
     _authenticationService = authenticationService;
+    _userService = userService;
   }
-
+  
   [HttpPost("register")]
   public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
   {
@@ -104,4 +106,24 @@ public class UsersController : ControllerBase
   {
     return Ok(new { Success = true, Message = "User" });
   }
+
+  [HttpGet("{username}")]
+  public async Task<IActionResult> UserProfileData(string username)
+  {
+    try
+    {
+        var data = await _userService.FetchProfileData(username);
+
+        if (data != null)
+            return Ok(data);
+        else
+            return NotFound(); // Return a 404 response if no data is found.
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Error fetching profile data: {e}");
+        return BadRequest();
+    }
+  }
+
 }

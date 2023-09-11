@@ -53,12 +53,13 @@ public class ScrobbleService
         {
             var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
                 DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             var scrobble = new Scrobble
             {
                 Id = Guid.NewGuid().ToString(),
                 Scrobble_Date = date,
                 Id_User = userId,
-                User = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId),
+                User = user!,
                 Id_Song_Internal = song.Id,
                 Song = song
             };
