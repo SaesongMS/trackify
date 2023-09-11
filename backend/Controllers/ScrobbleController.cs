@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using Helpers;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DTOs;
@@ -75,6 +75,27 @@ public class ScrobblesController: ControllerBase
             {
                 Success = true,
                 Scrobbles = scrobbles.Take(request.N).ToList()
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("top")]
+    public async Task<IActionResult> GetTop([FromBody] NIntervalScrobblesRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            var scrobbles = await _scrobbleService.GetTopSongScrobble(user.Id, request.N, request.Start, request.End);
+            return Ok(new NIntervalScrobblesResponse
+            {
+                Success = true,
+                Scrobbles = scrobbles
             });
         }
         catch (Exception e)
