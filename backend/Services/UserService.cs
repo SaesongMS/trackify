@@ -1,4 +1,5 @@
 using Data;
+using System;
 using DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -35,5 +36,29 @@ public class UserService
             return userData;
         }
         return null;
+    }
+
+
+    public async Task<int> EditProfileData(string username, string Bio, string Avatar, string userId, List<string> roles )
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        
+        if(user == null) return 404;
+        
+        else if(roles.Contains("Admin") || user.Id == userId)
+        {
+            user.Bio = Bio;
+            user.Avatar = Convert.FromBase64String(Avatar);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return 200;
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"Error updating database: {ex}");
+                return 400;
+            }
+        }else return 403;
     }
 }

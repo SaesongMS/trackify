@@ -1,4 +1,5 @@
 using Models;
+using Services;
 
 namespace DTOs;
 
@@ -12,4 +13,11 @@ public class ProfileResponse
     public List<Follow> Following { get; set; } = new List<Follow>();
     public List<ProfileComment> ProfileComments { get; set; } = new List<ProfileComment>();
 
+}
+
+public class EditUsersProfileRequest
+{
+    public string Bio {get; set;} = string.Empty;
+
+    public string Avatar { get; set; } = string.Empty;
 }
