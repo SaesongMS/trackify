@@ -2,7 +2,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
-
+using DTOs;
 
 namespace Services;
 
@@ -45,61 +45,12 @@ public class ScrobbleService
         return scrobbles;
     }
 
-    public async Task<List<Scrobble>> GetTopArtistsScrobble(string userId, int n, DateTime start, DateTime end)
+    public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, int n, DateTime start, DateTime end)
     {
-        //count the number of scrobbles per artist and order them descending, then take the first n
-        var scrobbles = await _context.Scrobbles
-            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
-            .GroupBy(s => s.Song.Album.Artist)
-            .Select(s => new
-            {
-                Artist = s.Key,
-                Count = s.Count()
-            })
-            .OrderByDescending(s => s.Count)
-            .Take(n)
-            .ToListAsync();
-        Console.WriteLine("scrobbles.Count: " + scrobbles.Count);
-        foreach (var scrobble in scrobbles)
-        {
-            Console.WriteLine(scrobble.Artist.Name);
-        }
-
-
-        return null;
-    }
-
-    public async Task<List<Scrobble>> GetTopAlbumScrobble(string userId, int n, DateTime start, DateTime end)
-    {
-        //count the number of scrobbles per artist and order them descending, then take the first n
-        var scrobbles = await _context.Scrobbles
-            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
-            .GroupBy(s => s.Song.Album)
-            .Select(s => new
-            {
-                Album = s.Key,
-                Count = s.Count()
-            })
-            .OrderByDescending(s => s.Count)
-            .Take(n)
-            .ToListAsync();
-        Console.WriteLine("scrobbles.Count: " + scrobbles.Count);
-        foreach (var scrobble in scrobbles)
-        {
-            Console.WriteLine(scrobble.Album.Name);
-        }
-
-
-        return null;
-    }
-
-    public async Task<List<Scrobble>> GetTopSongScrobble(string userId, int n, DateTime start, DateTime end)
-    {
-        //count the number of scrobbles per artist and order them descending, then take the first n
-        var scrobbles = await _context.Scrobbles
+        var data = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
             .GroupBy(s => s.Song)
-            .Select(s => new
+            .Select(s => new SongScrobbleCount
             {
                 Song = s.Key,
                 Count = s.Count()
@@ -107,15 +58,41 @@ public class ScrobbleService
             .OrderByDescending(s => s.Count)
             .Take(n)
             .ToListAsync();
-        Console.WriteLine("scrobbles.Count: " + scrobbles.Count);
-        foreach (var scrobble in scrobbles)
-        {
-            Console.WriteLine(scrobble.Song.Title);
-        }
-
-
-        return null;
+        return data;
     }
+
+    public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, int n, DateTime start, DateTime end)
+    {
+        var data = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .GroupBy(s => s.Song.Album)
+            .Select(s => new AlbumScrobbleCount
+            {
+                Album = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<ArtistScrobbleCount>> FetchTopNArtistsScrobbles(string userId, int n, DateTime start, DateTime end)
+    {
+        var data = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .GroupBy(s => s.Song.Album.Artist)
+            .Select(s => new ArtistScrobbleCount
+            {
+                Artist = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
 
     public async Task<bool> CreateScrobble(string userId, string spotify_songId, string spotify_albumId, string spotify_artistId)
     {

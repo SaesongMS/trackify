@@ -78,3 +78,33 @@ public class DeleteScrobbleResponse
     public string Message { get; set; } = string.Empty;
 }
 
+public class TopNSongsScrobblesResponse
+{
+    public List<SongScrobbleCount> TopSongs {get; set;}
+    public bool Success { get; set; }
+}
+public class SongScrobbleCount
+{
+    public Song Song { get; set; }
+    public int Count { get; set; }
+}
+public class TopNAlbumsScrobblesResponse
+{
+    public List<AlbumScrobbleCount> TopAlbums {get; set;}
+    public bool Success { get; set; }
+}
+public class AlbumScrobbleCount
+{
+    public Album Album { get; set; }
+    public int Count { get; set; }
+}
+public class TopNArtistsScrobblesResponse
+{
+    public List<ArtistScrobbleCount> TopArtists {get; set;}
+    public bool Success { get; set; }
+}
+public class ArtistScrobbleCount
+{
+    public Artist Artist { get; set; }
+    public int Count { get; set; }
+}

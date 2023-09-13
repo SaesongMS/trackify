@@ -82,27 +82,6 @@ public class ScrobblesController: ControllerBase
             return BadRequest(new {message = e.Message});
         }
     }
-
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("top")]
-    public async Task<IActionResult> GetTop([FromBody] NIntervalScrobblesRequest request)
-    {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        try
-        {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            var scrobbles = await _scrobbleService.GetTopSongScrobble(user.Id, request.N, request.Start, request.End);
-            return Ok(new NIntervalScrobblesResponse
-            {
-                Success = true,
-                Scrobbles = scrobbles
-            });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new {message = e.Message});
-        }
-    }
     
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     // [Authorize(Roles = "Admin")]
@@ -156,5 +135,66 @@ public class ScrobblesController: ControllerBase
         }
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("top-songs")]
+    public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalScrobblesRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(user.Id, request.N, request.Start, request.End);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                TopSongs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("top-albums")]
+    public async Task<IActionResult> GetTopUsersAlbums([FromBody] NIntervalScrobblesRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(user.Id, request.N, request.Start, request.End);
+            return Ok(new TopNAlbumsScrobblesResponse
+            {
+                Success = true,
+                TopAlbums = topAlbums
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("top-artists")]
+    public async Task<IActionResult> GetTopUsersArtists([FromBody] NIntervalScrobblesRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(user.Id, request.N, request.Start, request.End);
+            return Ok(new TopNArtistsScrobblesResponse
+            {
+                Success = true,
+                TopArtists = topArtists
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
 }

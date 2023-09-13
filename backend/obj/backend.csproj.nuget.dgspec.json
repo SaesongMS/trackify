@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj": {}
+    "C:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj": {
+    "C:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "c:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj",
+        "projectPath": "C:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\Bodzia\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\obj\\",
+        "outputPath": "C:\\Users\\Bodzia\\Desktop\\inzynierka\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Bodzia\\AppData\\Roaming\\NuGet\\NuGet.Config",
