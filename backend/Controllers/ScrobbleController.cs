@@ -135,6 +135,8 @@ public class ScrobblesController: ControllerBase
         }
     }
 
+    //top for one user
+    //uses N and interval
     [HttpGet("top-songs")]
     public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalTopUserScrobblesRequest request)
     {
@@ -189,6 +191,64 @@ public class ScrobblesController: ControllerBase
         }
     }
 
+    //top for one user
+    //uses only N
+    [HttpGet("top-n-songs")]
+    public async Task<IActionResult> GetTopNUsersSongs([FromBody] NTopUserScrobblesRequest request)
+    {
+        try
+        {
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.N);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                TopSongs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-n-albums")]
+    public async Task<IActionResult> GetTopNUsersAlbums([FromBody] NTopUserScrobblesRequest request)
+    {
+        try
+        {
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.N);
+            return Ok(new TopNAlbumsScrobblesResponse
+            {
+                Success = true,
+                TopAlbums = topAlbums
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+   
+   [HttpGet("top-n-artists")]
+    public async Task<IActionResult> GetTopNUsersArtists([FromBody] NTopUserScrobblesRequest request)
+    {
+        try
+        {
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.N);
+            return Ok(new TopNArtistsScrobblesResponse
+            {
+                Success = true,
+                TopArtists = topArtists
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    //top for all users
+    //uses N and interval
     [HttpGet("top-songs-all")]
     public async Task<IActionResult> GetTopSongs([FromBody] NIntervalTopScrobblesRequest request)
     {
@@ -231,6 +291,62 @@ public class ScrobblesController: ControllerBase
         try
         {
             List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.N, request.Start, request.End);
+            return Ok(new TopNArtistsScrobblesResponse
+            {
+                Success = true,
+                TopArtists = topArtists
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    //top for all users
+    //uses only N
+    [HttpGet("top-songs-all-n")]
+    public async Task<IActionResult> GetTopNSongs([FromBody] NTopScrobblesRequest request)
+    {
+        try
+        {
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.N);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                TopSongs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-albums-all-n")]
+    public async Task<IActionResult> GetTopNAlbums([FromBody] NTopScrobblesRequest request)
+    {
+        try
+        {
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.N);
+            return Ok(new TopNAlbumsScrobblesResponse
+            {
+                Success = true,
+                TopAlbums = topAlbums
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-artists-all-n")]
+    public async Task<IActionResult> GetTopNArtists([FromBody] NTopScrobblesRequest request)
+    {
+        try
+        {
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.N);
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,

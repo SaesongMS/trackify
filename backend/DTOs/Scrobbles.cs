@@ -52,11 +52,25 @@ public class NIntervalTopUserScrobblesRequest
     public string Id { get; set; }
 }
 
+public class NTopUserScrobblesRequest
+{
+    [Required]
+    public int N { get; set; } = 1;
+    [Required]
+    public string Id { get; set; }
+}
+
 public class NIntervalTopScrobblesRequest
 {
     [Required]
     public DateTime Start { get; set; } = DateTime.Now;
     public DateTime End { get; set; } = DateTime.Now;
+    [Required]
+    public int N { get; set; } = 1;
+}
+
+public class NTopScrobblesRequest
+{
     [Required]
     public int N { get; set; } = 1;
 }

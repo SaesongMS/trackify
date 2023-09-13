@@ -101,4 +101,31 @@ public class RatingService
             .ToListAsync();
         return data;
     }
+
+    public async Task<bool> CreateRatingForSong(string songId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
+        var checkIfExists = await _context.SongRatings.FirstOrDefaultAsync(s => s.User == user && s.Song == song);
+        
+        if(song != null && checkIfExists == null)
+        {
+            var songRating = new SongRating{
+                Id = Guid.NewGuid().ToString(),
+                Rating = rating,
+                Id_User = userId,
+                Id_Song_Internal = songId,
+                Song = song,
+                User = user!
+            };
+
+            await _context.SongRatings.AddAsync(songRating);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
 }

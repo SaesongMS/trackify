@@ -85,6 +85,20 @@ public class AverageRatedArtist
 
 public class NRatedArtistsResponse
 {
-        public List<AverageRatedArtist> AverageRatedArtists {get; set;}
-        public bool Success { get; set; }
+    public List<AverageRatedArtist> AverageRatedArtists { get; set; } = new List<AverageRatedArtist>();
+    public bool Success { get; set; }
+}
+
+public class CreateRateSongRequest
+{
+    [Required]
+    public string SongId { get; set; } = string.Empty;
+    [Required]
+    public int Rating { get; set; } = 0;
+}
+
+public class CreateRateSongResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

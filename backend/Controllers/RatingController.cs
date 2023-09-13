@@ -12,12 +12,44 @@ namespace Controllers;
 public class RatingController: ControllerBase
 {
     private readonly RatingService _ratingService;
+    private readonly AuthenticationService _authenticationService;
 
-    public RatingController(RatingService ratingService)
+    public RatingController(RatingService ratingService, AuthenticationService authenticationService)
     {
-    _ratingService = ratingService;
+        _ratingService = ratingService;
+        _authenticationService = authenticationService;
     }
 
+    [HttpPost("create-song")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> RateSong([FromBody] CreateRateSongRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.CreateRatingForSong(request.SongId, request.Rating, user.Id))
+                return Ok(new CreateRateSongResponse
+                {
+                    Success = true,
+                    Message = "Rating for this song was created successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating creation failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+    //todo:
+    //add patch for everything and add create to artist rating and album
+
+
+    //for one user
     [HttpGet("rated-songs")]
     public async Task<IActionResult> GetRatedUsersSongs([FromBody] NRatedItemsForUserRequest request)
     {
@@ -72,6 +104,8 @@ public class RatingController: ControllerBase
         }
     }
 
+
+    //for all users
     [HttpGet("rated-songs-all")]
     public async Task<IActionResult> GetRatedSongs([FromBody] NRatedItemsRequest request)
     {
