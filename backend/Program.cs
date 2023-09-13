@@ -29,6 +29,7 @@ builder.Services.AddIdentity<User, IdentityRole>()
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<ScrobbleService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RatingService>();
 
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);

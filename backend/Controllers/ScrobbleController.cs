@@ -135,15 +135,12 @@ public class ScrobblesController: ControllerBase
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("top-songs")]
-    public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalScrobblesRequest request)
+    public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalTopUserScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(user.Id, request.N, request.Start, request.End);
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.N, request.Start, request.End);
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
@@ -156,15 +153,12 @@ public class ScrobblesController: ControllerBase
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("top-albums")]
-    public async Task<IActionResult> GetTopUsersAlbums([FromBody] NIntervalScrobblesRequest request)
+    public async Task<IActionResult> GetTopUsersAlbums([FromBody] NIntervalTopUserScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(user.Id, request.N, request.Start, request.End);
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.N, request.Start, request.End);
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
@@ -177,15 +171,66 @@ public class ScrobblesController: ControllerBase
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("top-artists")]
-    public async Task<IActionResult> GetTopUsersArtists([FromBody] NIntervalScrobblesRequest request)
+    public async Task<IActionResult> GetTopUsersArtists([FromBody] NIntervalTopUserScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(user.Id, request.N, request.Start, request.End);
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.N, request.Start, request.End);
+            return Ok(new TopNArtistsScrobblesResponse
+            {
+                Success = true,
+                TopArtists = topArtists
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-songs-all")]
+    public async Task<IActionResult> GetTopSongs([FromBody] NIntervalTopScrobblesRequest request)
+    {
+        try
+        {
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.N, request.Start, request.End);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                TopSongs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-albums-all")]
+    public async Task<IActionResult> GetTopAlbums([FromBody] NIntervalTopScrobblesRequest request)
+    {
+        try
+        {
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.N, request.Start, request.End);
+            return Ok(new TopNAlbumsScrobblesResponse
+            {
+                Success = true,
+                TopAlbums = topAlbums
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpGet("top-artists-all")]
+    public async Task<IActionResult> GetTopArtists([FromBody] NIntervalTopScrobblesRequest request)
+    {
+        try
+        {
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.N, request.Start, request.End);
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,

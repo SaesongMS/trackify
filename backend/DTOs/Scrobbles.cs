@@ -41,6 +41,25 @@ public class NIntervalScrobblesRequest
     
 }
 
+public class NIntervalTopUserScrobblesRequest
+{
+    [Required]
+    public DateTime Start { get; set; } = DateTime.Now;
+    public DateTime End { get; set; } = DateTime.Now;
+    [Required]
+    public int N { get; set; } = 1;
+    [Required]
+    public string Id { get; set; }
+}
+
+public class NIntervalTopScrobblesRequest
+{
+    [Required]
+    public DateTime Start { get; set; } = DateTime.Now;
+    public DateTime End { get; set; } = DateTime.Now;
+    [Required]
+    public int N { get; set; } = 1;
+}
 public class NIntervalScrobblesResponse
 {
     public bool Success { get; set; }

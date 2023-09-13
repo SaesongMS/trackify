@@ -93,6 +93,53 @@ public class ScrobbleService
         return data;
     }
 
+    public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(int n, DateTime start, DateTime end)
+    {
+        var data = await _context.Scrobbles
+            .Where(s => s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .GroupBy(s => s.Song)
+            .Select(s => new SongScrobbleCount
+            {
+                Song = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(int n, DateTime start, DateTime end)
+    {
+        var data = await _context.Scrobbles
+            .Where(s => s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .GroupBy(s => s.Song.Album)
+            .Select(s => new AlbumScrobbleCount
+            {
+                Album = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<ArtistScrobbleCount>> FetchTopNArtistsScrobbles(int n, DateTime start, DateTime end)
+    {
+        var data = await _context.Scrobbles
+            .Where(s => s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .GroupBy(s => s.Song.Album.Artist)
+            .Select(s => new ArtistScrobbleCount
+            {
+                Artist = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
 
     public async Task<bool> CreateScrobble(string userId, string spotify_songId, string spotify_albumId, string spotify_artistId)
     {
