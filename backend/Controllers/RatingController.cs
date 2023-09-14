@@ -20,16 +20,16 @@ public class RatingController: ControllerBase
         _authenticationService = authenticationService;
     }
 
-    [HttpPost("create-song")]
+    [HttpPost("rate-song")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<IActionResult> RateSong([FromBody] CreateRateSongRequest request)
+    public async Task<IActionResult> RateSong([FromBody] CreateRateItemRequest request)
     {
         var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.CreateRatingForSong(request.SongId, request.Rating, user.Id))
-                return Ok(new CreateRateSongResponse
+            if(await _ratingService.CreateRatingForSong(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
                 {
                     Success = true,
                     Message = "Rating for this song was created successfully"
@@ -45,9 +45,137 @@ public class RatingController: ControllerBase
             return BadRequest(new {message = e.Message});
         }
     }
-    //todo:
-    //add patch for everything and add create to artist rating and album
 
+    [HttpPost("rate-album")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> RateAlbum([FromBody] CreateRateItemRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.CreateRatingForAlbum(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
+                {
+                    Success = true,
+                    Message = "Rating for this album was created successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating creation failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpPost("rate-artist")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> RateArtist([FromBody] CreateRateItemRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.CreateRatingForArtist(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
+                {
+                    Success = true,
+                    Message = "Rating for this artist was created successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating creation failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+
+    [HttpPatch("rerate-song")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+     public async Task<IActionResult> RerateSong([FromBody] CreateRateItemRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.ModifyRatingForSong(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
+                {
+                    Success = true,
+                    Message = "Rating for this song was edited successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating edition failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpPatch("rerate-album")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+     public async Task<IActionResult> RerateAlbum([FromBody] CreateRateItemRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.ModifyRatingForAlbum(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
+                {
+                    Success = true,
+                    Message = "Rating for this album was edited successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating edition failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
+
+    [HttpPatch("rerate-artist")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+     public async Task<IActionResult> RerateArtist([FromBody] CreateRateItemRequest request)
+    {
+        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            if(await _ratingService.ModifyRatingForArtist(request.ItemId, request.Rating, user.Id))
+                return Ok(new CreateRateItemResponse
+                {
+                    Success = true,
+                    Message = "Rating for this artist was edited successfully"
+                });
+            return BadRequest(new CreateScrobbleResponse
+                {
+                    Success = false,
+                    Message = "Rating edition failed"
+                });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {message = e.Message});
+        }
+    }
 
     //for one user
     [HttpGet("rated-songs")]

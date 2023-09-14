@@ -89,16 +89,17 @@ public class NRatedArtistsResponse
     public bool Success { get; set; }
 }
 
-public class CreateRateSongRequest
+public class CreateRateItemRequest
 {
     [Required]
-    public string SongId { get; set; } = string.Empty;
+    public string ItemId { get; set; } = string.Empty;
     [Required]
     public int Rating { get; set; } = 0;
 }
 
-public class CreateRateSongResponse
+public class CreateRateItemResponse
 {
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
 }
+

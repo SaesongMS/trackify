@@ -109,7 +109,7 @@ public class RatingService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
         var checkIfExists = await _context.SongRatings.FirstOrDefaultAsync(s => s.User == user && s.Song == song);
-        
+
         if(song != null && checkIfExists == null)
         {
             var songRating = new SongRating{
@@ -122,6 +122,114 @@ public class RatingService
             };
 
             await _context.SongRatings.AddAsync(songRating);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> CreateRatingForAlbum(string albumId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var album = await _context.Albums.FirstOrDefaultAsync(s => s.Id == albumId);
+        var checkIfExists = await _context.AlbumRatings.FirstOrDefaultAsync(s => s.User == user && s.Album == album);
+        
+        if(album != null && checkIfExists == null)
+        {
+            var albumRating = new AlbumRating{
+                Id = Guid.NewGuid().ToString(),
+                Rating = rating,
+                Id_User = userId,
+                Id_Album_Internal = albumId,
+                Album = album,
+                User = user!
+            };
+
+            await _context.AlbumRatings.AddAsync(albumRating);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> CreateRatingForArtist(string artistId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var artist = await _context.Artists.FirstOrDefaultAsync(s => s.Id == artistId);
+        var checkIfExists = await _context.ArtistRatings.FirstOrDefaultAsync(s => s.User == user && s.Artist == artist);
+        
+        if(artist != null && checkIfExists == null)
+        {
+            var artistRating = new ArtistRating{
+                Id = Guid.NewGuid().ToString(),
+                Rating = rating,
+                Id_User = userId,
+                Id_Artist_Internal = artistId,
+                Artist = artist,
+                User = user!
+            };
+
+            await _context.ArtistRatings.AddAsync(artistRating);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> ModifyRatingForSong(string songId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
+        
+        if(song != null)
+        {
+            var songRating = await _context.SongRatings.FirstOrDefaultAsync(s => s.User == user && s.Song == song);
+            songRating.Rating = rating;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> ModifyRatingForAlbum(string albumId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var album = await _context.Albums.FirstOrDefaultAsync(s => s.Id == albumId);
+        
+        if(album != null)
+        {
+            var AlbumRating = await _context.AlbumRatings.FirstOrDefaultAsync(s => s.User == user && s.Album == album);
+            AlbumRating.Rating = rating;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> ModifyRatingForArtist(string artistId, int rating, string userId)
+    {
+        if(rating <= 0) return false;
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var artist = await _context.Artists.FirstOrDefaultAsync(s => s.Id == artistId);
+        
+        if(artist != null)
+        {
+            var ArtistRating = await _context.ArtistRatings.FirstOrDefaultAsync(s => s.User == user && s.Artist == artist);
+            ArtistRating.Rating = rating;
             await _context.SaveChangesAsync();
             return true;
         }
