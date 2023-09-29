@@ -31,6 +31,7 @@ builder.Services.AddScoped<ScrobbleService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RatingService>();
 builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<FollowService>();
 
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);
