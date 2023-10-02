@@ -8,36 +8,36 @@ using DTOs;
 
 namespace Controllers;
 [ApiController]
-[Route("api/follows")]
-public class FollowController : ControllerBase
+[Route("api/favourite-song")]
+public class FavouriteSongController : ControllerBase
 {
-    private readonly FollowService _followService;
+    private readonly FavouriteSongService _favouriteSongService;
     private readonly AuthenticationService _authenticationService;
 
-    public FollowController(FollowService followService, AuthenticationService authenticationService)
+    public FavouriteSongController(FavouriteSongService favouriteSongService, AuthenticationService authenticationService)
     {
-        _followService = followService;
+        _favouriteSongService = favouriteSongService;
         _authenticationService = authenticationService;
     }
 
     [HttpPost("create")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<ActionResult> FollowUser([FromBody] FollowRequest request)
+    public async Task<ActionResult> AddSongToFavourites([FromBody] FavouriteSongRequest request)
     {
         var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _followService.FollowUser(request.UserId, user))
-                return Ok(new FollowResponse
+            if (await _favouriteSongService.AddFavouriteSong(request.SongId, user))
+                return Ok(new FavouriteSongResponse
                 {
                     Success = true,
-                    Message = "Followed successfully"
+                    Message = "Song added to favourites successfully"
                 });
-            return BadRequest(new FollowResponse
+            return BadRequest(new FavouriteSongResponse
             {
                 Success = false,
-                Message = "Failed to follow user"
+                Message = "Failed to add song to favourites"
             });
         }
         catch (Exception e)
@@ -48,22 +48,22 @@ public class FollowController : ControllerBase
 
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<ActionResult> UnfollowUser([FromBody] FollowRequest request)
+    public async Task<ActionResult> DeleteSongFromFavourites([FromBody] FavouriteSongRequest request)
     {
         var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _followService.UnfollowUser(request.UserId, user))
-                return Ok(new FollowResponse
+            if (await _favouriteSongService.DeleteFavouriteSong(request.SongId, user))
+                return Ok(new FavouriteSongResponse
                 {
                     Success = true,
-                    Message = "Unfollowed successfully"
+                    Message = "Song deleted from favourites successfully"
                 });
-            return BadRequest(new CreateCommentResponse
+            return BadRequest(new FavouriteSongResponse
             {
                 Success = false,
-                Message = "Failed to unfollow user"
+                Message = "Failed to delete song from favourites"
             });
         }
         catch (Exception e)

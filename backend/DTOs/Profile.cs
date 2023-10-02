@@ -13,12 +13,14 @@ public class ProfileResponse
     public List<Follow> Followers { get; set; } = new List<Follow>();
     public List<Follow> Following { get; set; } = new List<Follow>();
     public List<ProfileComment> ProfileComments { get; set; } = new List<ProfileComment>();
+    public List<Scrobble> Scrobbles { get; set; } = new List<Scrobble>();
+
 
 }
 
 public class EditUsersProfileRequest
 {
-    public string Bio {get; set;} = string.Empty;
+    public string Bio { get; set; } = string.Empty;
 
     public string Avatar { get; set; } = string.Empty;
 }

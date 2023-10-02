@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<Data.DatabaseContext>(options => 
+builder.Services.AddDbContext<Data.DatabaseContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -32,6 +32,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RatingService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<FollowService>();
+builder.Services.AddScoped<FavouriteSongService>();
 
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);
@@ -90,7 +91,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.IsEssential = true; 
+    options.Cookie.IsEssential = true;
 });
 
 builder.Services.Configure<IdentityOptions>(options =>
