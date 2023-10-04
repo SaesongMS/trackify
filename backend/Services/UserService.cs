@@ -23,17 +23,75 @@ public class UserService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
         if (user != null)
         {
+            var followers = await _context.Follows.Where(f => f.Id_Followed == user.Id).Select(f => new Follows
+            {
+                Id = f.Id,
+                Id_Follower = f.Id_Follower,
+                Id_Followed = f.Id_Followed
+            }).ToListAsync();
+            var following = await _context.Follows.Where(f => f.Id_Follower == user.Id).Select(f => new Follows
+            {
+                Id = f.Id,
+                Id_Follower = f.Id_Follower,
+                Id_Followed = f.Id_Followed
+            }).ToListAsync();
+            var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).Select(pc => new ProfileComments
+            {
+                Id = pc.Id,
+                Comment = pc.Comment,
+                Creation_Date = pc.Creation_Date,
+                Id_Sender = pc.Id_Sender,
+                Id_Recipient = pc.Id_Recipient
+            }).ToListAsync();
+            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).Select(s => new Scrobbles
+            {
+                Id = s.Id,
+                Scrobble_Date = s.Scrobble_Date,
+                Id_User = s.Id_User,
+                Id_Song_Internal = s.Id_Song_Internal,
+                Song = s.Song
+            }).ToListAsync();
+            var ratedSongs = await _context.SongRatings.Where(sr => sr.Id_User == user.Id).Select(sr => new RatedSongs
+            {
+                Id_Song = sr.Song.Id,
+                Rating = sr.Rating,
+                Id_Song_Internal = sr.Id_Song_Internal,
+                Song = sr.Song
+            }).ToListAsync();
+            var ratedAlbums = await _context.AlbumRatings.Where(ar => ar.Id_User == user.Id).Select(ar => new RatedAlbums
+            {
+                Id_Album = ar.Album.Id,
+                Rating = ar.Rating,
+                Id_Album_Internal = ar.Id_Album_Internal,
+                Album = ar.Album
+            }).ToListAsync();
+            var ratedArtist = await _context.ArtistRatings.Where(ar => ar.Id_User == user.Id).Select(ar => new RatedArtists
+            {
+                Id_Artist = ar.Artist.Id,
+                Rating = ar.Rating,
+                Id_Artist_Internal = ar.Id_Artist_Internal,
+                Artist = ar.Artist
+            }).ToListAsync();
+            var favouriteSongs = await _context.FavouriteSongs.Where(fs => fs.Id_User == user.Id).Select(fs => new FavouriteSongs
+            {
+                Id_Song = fs.Song.Id,
+                Id_Song_Internal = fs.Id_Song_Internal,
+                Song = fs.Song
+            }).ToListAsync();
             var userData = new ProfileResponse
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 ProfilePicture = user.Avatar,
                 Description = user.Bio,
-                Followers = await _context.Follows.Where(f => f.Id_Followed == user.Id).ToListAsync(),
-                Following = await _context.Follows.Where(f => f.Id_Follower == user.Id).ToListAsync(),
-                ProfileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).ToListAsync(),
-                Scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).ToListAsync(),
-
+                Followers = followers,
+                Following = following,
+                ProfileComments = profileComments,
+                Scrobbles = scrobbles,
+                RatedSongs = ratedSongs,
+                RatedAlbums = ratedAlbums,
+                RatedArtists = ratedArtist,
+                FavouriteSongs = favouriteSongs
             };
             return userData;
         }

@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
     _authenticationService = authenticationService;
     _userService = userService;
   }
-  
+
   [HttpPost("register")]
   public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
   {
@@ -43,7 +43,7 @@ public class UsersController : ControllerBase
       if (result)
       {
         result = await _authenticationService.AddRole(registerRequest.Username, "User");
-        if(!result)
+        if (!result)
           return BadRequest(new RegisterResponse { Success = false, Message = "Could not add role to user" });
         return Ok(new RegisterResponse { Success = true, Message = "Registration successful" });
       }
@@ -113,51 +113,52 @@ public class UsersController : ControllerBase
   {
     try
     {
-        var data = await _userService.FetchProfileData(username);
+      var data = await _userService.FetchProfileData(username);
 
-        if (data != null)
-            return Ok(data);
-        else
-            return BadRequest(new {Success = false, Message = "User was not found"}); // Return a 404 response if no data is found.
+      if (data != null)
+        return Ok(data);
+      else
+        return BadRequest(new { Success = false, Message = "User was not found" });
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Error fetching profile data: {e}");
-        return BadRequest(new { Success = false, Message = e});
+      Console.WriteLine($"Error fetching profile data: {e}");
+      return BadRequest(new { Success = false, Message = e });
     }
   }
 
   [HttpPatch("{username}")]
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-  public async Task<IActionResult> UserBioAvatarEdit(string username, [FromBody] EditUsersProfileRequest request){
+  public async Task<IActionResult> UserBioAvatarEdit(string username, [FromBody] EditUsersProfileRequest request)
+  {
     var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
     var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
 
     try
     {
-        var user = await _authenticationService.GetUser(nameIdentifier);
-        var response = await _userService.EditProfileData(username, request.Bio, request.Avatar, user.Id, roles);
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.EditProfileData(username, request.Bio, request.Avatar, user.Id, roles);
 
-        switch (response)
-        {
-          case 200:
-            return Ok(new { Success = true, Message = "User was successfully edited" });
-          case 404:
-            return NotFound(new {Success = false, Message = "User was not found in database" });
-          case 403:
-            return Unauthorized(new { Success = false, Message = "Unauthorized attempt to edit users profile data" });
-          case 400:
-            return BadRequest(new { Success = false, Message = "Error updating database"});
-          default:
-            return StatusCode(500, new { Success = false, Message = "An unexpected error occurred" });
-        }
-              
+      switch (response)
+      {
+        case 200:
+          return Ok(new { Success = true, Message = "User was successfully edited" });
+        case 404:
+          return NotFound(new { Success = false, Message = "User was not found in database" });
+        case 403:
+          return Unauthorized(new { Success = false, Message = "Unauthorized attempt to edit users profile data" });
+        case 400:
+          return BadRequest(new { Success = false, Message = "Error updating database" });
+        default:
+          return StatusCode(500, new { Success = false, Message = "An unexpected error occurred" });
+      }
+
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Error editing profile data: {e}");
-        return BadRequest(new { Success = false, Message = e});
+      Console.WriteLine($"Error editing profile data: {e}");
+      return BadRequest(new { Success = false, Message = e });
     }
   }
-  
+
 }

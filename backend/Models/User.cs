@@ -6,13 +6,13 @@ using Services;
 namespace Models
 {
   [Table("users")]
-  public class User: IdentityUser
+  public class User : IdentityUser
   {
     public string RefreshToken { get; internal set; } = string.Empty;
     public byte[] Avatar { get; internal set; } = AuthenticationService.getDeafultAvatar();
     public string Bio { get; internal set; } = string.Empty;
     public string Id_User_Spotify_API { get; internal set; } = string.Empty;
-    
+
     public ICollection<Follow> Follows { get; set; } = new List<Follow>();
     public ICollection<ProfileComment> ProfileComments { get; set; } = new List<ProfileComment>();
     public ICollection<FavouriteSong> FavouriteSongs { get; set; } = new List<FavouriteSong>();
@@ -30,7 +30,7 @@ namespace Models
   public class Follow
   {
     public string Id { get; set; } = string.Empty;
-    
+
     public string Id_Follower { get; set; } = string.Empty;
     public User Follower { get; set; } = null!;
 
@@ -43,11 +43,11 @@ namespace Models
     public string Id { get; set; } = string.Empty;
     public string Comment { get; set; } = string.Empty;
     public DateTime Creation_Date { get; set; } = DateTime.Now;
-    
+
     public string Id_Sender { get; set; } = string.Empty;
     public User Sender { get; set; } = null!;
-    
+
     public string Id_Recipient { get; set; } = string.Empty;
-    
+
   }
 }
