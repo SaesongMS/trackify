@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@rturnq/solid-router": "^0.3.0"
+  }
+}

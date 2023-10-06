@@ -35,15 +35,16 @@ public class UserService
                 Id_Follower = f.Id_Follower,
                 Id_Followed = f.Id_Followed
             }).ToListAsync();
-            var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).Select(pc => new ProfileComments
+            var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).OrderByDescending(pc => pc.Creation_Date).Select(pc => new ProfileComments
             {
                 Id = pc.Id,
                 Comment = pc.Comment,
                 Creation_Date = pc.Creation_Date,
                 Id_Sender = pc.Id_Sender,
+                Sender = pc.Sender,
                 Id_Recipient = pc.Id_Recipient
             }).ToListAsync();
-            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).Select(s => new Scrobbles
+            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Select(s => new Scrobbles
             {
                 Id = s.Id,
                 Scrobble_Date = s.Scrobble_Date,
@@ -51,21 +52,21 @@ public class UserService
                 Id_Song_Internal = s.Id_Song_Internal,
                 Song = s.Song
             }).ToListAsync();
-            var ratedSongs = await _context.SongRatings.Where(sr => sr.Id_User == user.Id).Select(sr => new RatedSongs
+            var ratedSongs = await _context.SongRatings.Where(sr => sr.Id_User == user.Id).OrderByDescending(sr => sr.Rating).Select(sr => new RatedSongs
             {
                 Id_Song = sr.Song.Id,
                 Rating = sr.Rating,
                 Id_Song_Internal = sr.Id_Song_Internal,
                 Song = sr.Song
             }).ToListAsync();
-            var ratedAlbums = await _context.AlbumRatings.Where(ar => ar.Id_User == user.Id).Select(ar => new RatedAlbums
+            var ratedAlbums = await _context.AlbumRatings.Where(ar => ar.Id_User == user.Id).OrderByDescending(ar => ar.Rating).Select(ar => new RatedAlbums
             {
                 Id_Album = ar.Album.Id,
                 Rating = ar.Rating,
                 Id_Album_Internal = ar.Id_Album_Internal,
                 Album = ar.Album
             }).ToListAsync();
-            var ratedArtist = await _context.ArtistRatings.Where(ar => ar.Id_User == user.Id).Select(ar => new RatedArtists
+            var ratedArtist = await _context.ArtistRatings.Where(ar => ar.Id_User == user.Id).OrderByDescending(ar => ar.Rating).Select(ar => new RatedArtists
             {
                 Id_Artist = ar.Artist.Id,
                 Rating = ar.Rating,

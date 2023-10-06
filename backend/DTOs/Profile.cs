@@ -38,6 +38,7 @@ public class ProfileComments
     public string Id_Sender { get; set; } = string.Empty;
 
     public string Id_Recipient { get; set; } = string.Empty;
+    public User Sender { get; set; } = null!;
 }
 
 public class Scrobbles
