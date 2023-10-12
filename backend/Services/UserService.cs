@@ -41,7 +41,12 @@ public class UserService
                 Comment = pc.Comment,
                 Creation_Date = pc.Creation_Date,
                 Id_Sender = pc.Id_Sender,
-                Sender = pc.Sender,
+                Sender = new Sender
+                {
+                    Id = pc.Sender.Id,
+                    UserName = pc.Sender.UserName,
+                    ProfilePicture = pc.Sender.Avatar
+                },
                 Id_Recipient = pc.Id_Recipient
             }).ToListAsync();
             var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Select(s => new Scrobbles

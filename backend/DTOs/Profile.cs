@@ -38,7 +38,7 @@ public class ProfileComments
     public string Id_Sender { get; set; } = string.Empty;
 
     public string Id_Recipient { get; set; } = string.Empty;
-    public User Sender { get; set; } = null!;
+    public Sender Sender { get; set; } = null!;
 }
 
 public class Scrobbles
@@ -86,4 +86,11 @@ public class EditUsersProfileRequest
     public string Bio { get; set; } = string.Empty;
 
     public string Avatar { get; set; } = string.Empty;
+}
+
+public class Sender
+{
+    public string Id { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public byte[] ProfilePicture { get; set; } = new byte[0];
 }
