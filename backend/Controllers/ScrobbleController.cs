@@ -4,6 +4,7 @@ using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DTOs;
+using System.Security.Claims;
 
 
 namespace Controllers;
@@ -24,7 +25,8 @@ public class ScrobblesController: ControllerBase
     [HttpGet("recent")]
     public async Task<IActionResult> GetRecentScrobbles([FromBody] RecentScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -45,7 +47,7 @@ public class ScrobblesController: ControllerBase
     [HttpGet("interval")]
     public async Task<IActionResult> GetScrobblesInInterval([FromBody] IntervalScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -66,7 +68,7 @@ public class ScrobblesController: ControllerBase
     [HttpGet("n_interval")]
     public async Task<IActionResult> GetNScrobblesInInterval([FromBody] NIntervalScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -112,8 +114,8 @@ public class ScrobblesController: ControllerBase
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteScrobble([FromBody] DeleteScrobbleRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);

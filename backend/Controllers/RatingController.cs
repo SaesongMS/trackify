@@ -4,6 +4,7 @@ using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DTOs;
+using System.Security.Claims;
 
 
 namespace Controllers;
@@ -24,7 +25,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> RateSong([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -50,7 +51,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> RateAlbum([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -76,7 +77,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> RateArtist([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -103,7 +104,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
      public async Task<IActionResult> RerateSong([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -129,7 +130,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
      public async Task<IActionResult> RerateAlbum([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -155,7 +156,7 @@ public class RatingController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
      public async Task<IActionResult> RerateArtist([FromBody] CreateRateItemRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);

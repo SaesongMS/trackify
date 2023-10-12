@@ -4,6 +4,7 @@ using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DTOs;
+using System.Security.Claims;
 
 
 namespace Controllers;
@@ -24,7 +25,7 @@ public class FollowController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> FollowUser([FromBody] FollowRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -50,7 +51,7 @@ public class FollowController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> UnfollowUser([FromBody] FollowRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);

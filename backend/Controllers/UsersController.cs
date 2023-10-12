@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Controllers;
 
@@ -131,8 +132,8 @@ public class UsersController : ControllerBase
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
   public async Task<IActionResult> UserBioAvatarEdit(string username, [FromBody] EditUsersProfileRequest request)
   {
-    var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-    var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
     try
     {

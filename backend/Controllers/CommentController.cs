@@ -4,6 +4,7 @@ using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DTOs;
+using System.Security.Claims;
 
 
 namespace Controllers;
@@ -40,7 +41,7 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> CreateProfileComment([FromBody] CreateProfileCommentRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var sender = await _authenticationService.GetUser(nameIdentifier);
@@ -66,8 +67,8 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteProfileComment(string id)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
@@ -100,7 +101,7 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> CreateSongComment([FromBody] CreateSongCommentRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -126,8 +127,8 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteSongComment(string id)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
@@ -160,7 +161,7 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> CreateAlbumComment([FromBody] CreateAlbumCommentRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -186,8 +187,8 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteAlbumComment(string id)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
@@ -220,7 +221,7 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> CreateArtistComment([FromBody] CreateArtistCommentRequest request)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
@@ -246,8 +247,8 @@ public class CommentController: ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteArtistComment(string id)
     {
-        var nameIdentifier = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-        var roles = User.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(r => r.Value).ToList();
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
