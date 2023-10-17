@@ -8,12 +8,15 @@ import ChartsIcon from "../assets/icons/charts.png";
 function Navbar(){
     return (
         <div class="flex flex-col w-20 sticky top-0 bg-slate-600 shadow-lg">
-            
+            <div class="flex flex-grow flex-col">
+
                 <NavbarButton destination="/" image={AppLogo} />
                 <NavbarButton destination="/search" image={SearchIcon} />
                 <NavbarButton destination="/charts" image={ChartsIcon} />
-                <NavbarButton destination="/user/" image={UserIcon} />
-            
+            </div>
+            <div class="flex flex-col">
+                <NavbarButton destination="/user/main" image={UserIcon} />
+            </div>
             
 
 
