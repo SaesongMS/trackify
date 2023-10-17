@@ -3,7 +3,7 @@ import { getUser } from "../../getUserData";
 import { createEffect, createSignal } from "solid-js";
 function UserPage() {
   const params = useParams();
-
+// 
   const [user, setUser] = createSignal(null);
 
   createEffect(async () => {
