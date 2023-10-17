@@ -83,11 +83,17 @@ namespace Services
         //     return null;
         // }
 
+        // public static byte[] getDeafultAvatar()
+        // {
+        //     Image image = Image.FromFile("avatar.jpg");
+        //     ImageConverter imageConverter = new ImageConverter();
+        //     byte[] imageByte = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
+        //     return imageByte;
+        // }
+
         public static byte[] getDeafultAvatar()
         {
-            Image image = Image.FromFile("avatar.jpg");
-            ImageConverter imageConverter = new ImageConverter();
-            byte[] imageByte = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
+            byte[] imageByte = System.IO.File.ReadAllBytes("avatar.jpg");
             return imageByte;
         }
     }
