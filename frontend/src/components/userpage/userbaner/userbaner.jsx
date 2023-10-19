@@ -8,7 +8,7 @@ function UserBaner(){
     return(
         <div class="flex w-[100%]">
             <Avatar image={AppLogo} />
-            <div class="flex flex-col w-[100%] h-[100%]">
+            <div class="flex flex-col h-[100%] flex-grow">
                 <InfoBar username="JanPawlakTheSecond" date="02.04.2005"/>
                 <ProfileNav />
             </div>

@@ -2,6 +2,7 @@ import { useParams } from "@solidjs/router";
 import { getUser } from "../../getUserData";
 import { createEffect, createSignal } from "solid-js";
 import UserBaner from "../../components/userpage/userbaner/userbaner";
+import MainPage from "../../components/userpage/main/mainpage";
 function UserPageMain() {
   const params = useParams();
 // 
@@ -38,7 +39,8 @@ function UserPageMain() {
     <div class="w-[100%] flex flex-col">
       
       <UserBaner />
-      <h1>User Page</h1>
+      
+      <MainPage />
       
       {/* {user() && (
         <div>
