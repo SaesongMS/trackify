@@ -2,7 +2,7 @@ function ScrobbleRow(props){
     const { albumCover, heart, title, artist, rating, date, ...others } = props;
 
     return(
-        <div class="flex w-[100%] border border-slate-800 pl-3 items-center rounded-sm hover:border-slate-500 transition-all duration-200">
+        <div class="flex w-[100%] pl-3 border border-slate-400  items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
                     <span class="mr-4 cursor-pointer">{albumCover}</span>
                     <span class="mr-4 cursor-pointer">Heart</span>
                     <span class="mr-4 cursor-pointer">{title}</span>

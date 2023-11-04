@@ -7,7 +7,7 @@ import ChartsIcon from "../assets/icons/charts.png";
 
 function Navbar(){
     return (
-        <div class="flex flex-col w-20 sticky top-0 bg-slate-600 shadow-lg">
+        <div class="flex flex-col w-20 sticky top-0 bg-slate-700 shadow-lg">
             <div class="flex flex-grow flex-col">
 
                 <NavbarButton destination="/" image={AppLogo} />

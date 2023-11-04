@@ -3,6 +3,8 @@ import { getUser } from "../../getUserData";
 import { createEffect, createSignal } from "solid-js";
 import UserBaner from "../../components/userpage/userbaner/userbaner";
 import MainPage from "../../components/userpage/main/mainpage";
+import AppLogo from "../../assets/icons/logo.png";
+import Belmondo from "../../assets/icons/belmondo.png";
 function UserPageMain() {
   const params = useParams();
 // 
@@ -38,7 +40,7 @@ function UserPageMain() {
   return (
     <div class="w-[100%] h-[100%] flex flex-col">
       
-      <UserBaner />
+      <UserBaner avatar={Belmondo} topArtistImage={Belmondo}/>
       
       <MainPage />
       
