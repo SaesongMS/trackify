@@ -3,7 +3,7 @@ import Card from "./card";
 import Comment from "./comment";
 import AppLogo from "../../../assets/icons/logo.png";
 import Belmondo from "../../../assets/icons/belmondo.png";
-function MainPage(){
+function MainPage(props){
     return(
         <div class="flex h-[80%] text-slate-200">
             <div class="w-[63%] p-6 overflow-scroll h-[100%]">
@@ -49,17 +49,9 @@ function MainPage(){
             <div class="border-l-2 w-[37%] p-6 h-[100%]">
                 Scrobbles
                 <div class="flex flex-col space-y-2 mt-2">
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
-                <ScrobbleRow albumCover="cover" heart="heart" title="Chaczapuri" artist="Kaz Bałagane" rating="5/5" date="5 sec ago"/>
+                    {props.scrobbles.map((scrobble) => (
+                        <ScrobbleRow albumCover={scrobble.song.album.cover} heart="heart" title={scrobble.song.title} artist={scrobble.song.album.artist.name} rating="5/5" date={scrobble.scrobble_Date}/>
+                    ))}
                 </div>
             </div>
         </div>

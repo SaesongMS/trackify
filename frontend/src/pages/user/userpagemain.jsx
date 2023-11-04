@@ -6,14 +6,17 @@ import MainPage from "../../components/userpage/main/mainpage";
 import AppLogo from "../../assets/icons/logo.png";
 import Belmondo from "../../assets/icons/belmondo.png";
 function UserPageMain() {
-  const params = useParams();
-// 
+  const params = useParams(); 
   const [user, setUser] = createSignal(null);
-
+  
   createEffect(async () => {
     const userData = await getUser(params.username);
+    console.log(userData);
     setUser(userData);
+
   });
+
+
 
   function formatTimeDifference(scrobbleDate) {
     const currentDate = new Date();
@@ -40,9 +43,13 @@ function UserPageMain() {
   return (
     <div class="w-[100%] h-[100%] flex flex-col">
       
-      <UserBaner avatar={Belmondo} topArtistImage={Belmondo}/>
-      
-      <MainPage />
+      {user() && (
+        <>
+          <UserBaner avatar={user().profilePicture} username={user().userName} topArtistImage={Belmondo} scrobbleCount={user().scrobbles.length} favourites={user().favouriteSongs.length}/>
+          <MainPage scrobbles={user().scrobbles} />
+        </>
+      )}
+
       
       {/* {user() && (
         <div>

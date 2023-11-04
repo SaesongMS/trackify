@@ -4,12 +4,12 @@ import ProfileNav from "./profilenav";
 import InfoBar from "./infobar";
 
 function UserBaner(props){
-    const { avatar, topArtistImage, ...others } = props;
+    const { topArtistImage, ...others } = props;
     return(
         <div class="flex w-[100%] h-[20%]">
-            <Avatar image={avatar} />
+            <Avatar image={props.avatar} />
             <div class="flex flex-col h-[100%] flex-grow">
-                <InfoBar topArtistImage={topArtistImage} username="JanPawlakTheSecond" date="02.04.2005" trackCount="2137" artistCount="1337" songsCount="1234"/>
+                <InfoBar topArtistImage={topArtistImage} username={props.username} date="02.04.2005" trackCount={props.scrobbleCount} artistCount="1337" songsCount={props.favourites}/>
                 <ProfileNav />
             </div>
         </div>

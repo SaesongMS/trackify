@@ -49,13 +49,13 @@ public class UserService
                 },
                 Id_Recipient = pc.Id_Recipient
             }).ToListAsync();
-            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Select(s => new Scrobbles
+            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Include(a => a.Song).ThenInclude(a => a.Album).ThenInclude(a => a.Artist).Select(s => new Scrobbles
             {
                 Id = s.Id,
                 Scrobble_Date = s.Scrobble_Date,
                 Id_User = s.Id_User,
                 Id_Song_Internal = s.Id_Song_Internal,
-                Song = s.Song
+                Song = s.Song,
             }).ToListAsync();
             var ratedSongs = await _context.SongRatings.Where(sr => sr.Id_User == user.Id).OrderByDescending(sr => sr.Rating).Select(sr => new RatedSongs
             {
