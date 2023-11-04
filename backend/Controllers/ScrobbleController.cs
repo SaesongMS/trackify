@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace Controllers;
 [ApiController]
 [Route("api/scrobbles")]
-public class ScrobblesController: ControllerBase
+public class ScrobblesController : ControllerBase
 {
     private readonly AuthenticationService _authenticationService;
     private readonly ScrobbleService _scrobbleService;
@@ -39,7 +39,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -60,7 +60,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -81,10 +81,10 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     // [Authorize(Roles = "Admin")]
     [HttpPost("create")]
@@ -92,21 +92,21 @@ public class ScrobblesController: ControllerBase
     {
         try
         {
-            if(await _scrobbleService.CreateScrobble(request.User_Id, request.Id_Song_Spotify_Api, request.Id_Album_Spotify_Api, request.Id_Artist_Spotify_Api))
+            if (await _scrobbleService.CreateScrobble(request.User_Id, request.Id_Song_Spotify_Api, request.Id_Album_Spotify_Api, request.Id_Artist_Spotify_Api))
                 return Ok(new CreateScrobbleResponse
                 {
                     Success = true,
                     Message = "Scrobble created successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Scrobble creation failed"
-                });
+            {
+                Success = false,
+                Message = "Scrobble creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -119,7 +119,7 @@ public class ScrobblesController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _scrobbleService.DeleteScrobble(request.Id, user.Id, roles))
+            if (await _scrobbleService.DeleteScrobble(request.Id, user.Id, roles))
                 return Ok(new DeleteScrobbleResponse
                 {
                     Success = true,
@@ -133,7 +133,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -153,7 +153,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -171,7 +171,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -189,7 +189,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -209,7 +209,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -227,11 +227,11 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
-   
-   [HttpGet("top-n-artists")]
+
+    [HttpGet("top-n-artists")]
     public async Task<IActionResult> GetTopNUsersArtists([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -245,7 +245,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -265,7 +265,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -283,7 +283,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -301,7 +301,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -321,7 +321,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -339,7 +339,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -357,7 +357,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 }

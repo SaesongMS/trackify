@@ -35,7 +35,7 @@ public class UserService
                 Id_Follower = f.Id_Follower,
                 Id_Followed = f.Id_Followed
             }).ToListAsync();
-            var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).OrderByDescending(pc => pc.Creation_Date).Select(pc => new ProfileComments
+            var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).OrderByDescending(pc => pc.Creation_Date).Include(s => s.Sender).Select(pc => new ProfileComments
             {
                 Id = pc.Id,
                 Comment = pc.Comment,
