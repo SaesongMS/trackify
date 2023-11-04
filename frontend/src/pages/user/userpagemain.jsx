@@ -36,7 +36,7 @@ function UserPageMain() {
   }
 
   return (
-    <div class="w-[100%] flex flex-col">
+    <div class="w-[100%] h-[100%] flex flex-col">
       
       <UserBaner />
       
