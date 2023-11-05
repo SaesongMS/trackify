@@ -3,12 +3,12 @@ import styles from "./App.module.css";
 import UserSettings from "./pages/user/user-settings";
 import UserPageMain from "./pages/user/userpagemain";
 import Navbar from "./components/navbar";
+import Login from "./pages/user/login";
 
 import { Router, Route, Routes } from "@solidjs/router";
 
 function App() {
   return (
-    <Router>
       <div class="flex w-screen h-screen bg-slate-400">
         <Navbar />
         <Routes>
@@ -21,10 +21,10 @@ function App() {
           <Route path="/user/:username/following" element={<UserPage />} />
           <Route path="/user/:username/followers" element={<UserPage />} />
           <Route path="/user/:username/favourites" element={<UserPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<div>Not Found</div>} />
         </Routes>
       </div>
-    </Router>
   );
 }
 

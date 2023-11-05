@@ -195,7 +195,7 @@ public class ScrobblesController : ControllerBase
 
     //top for one user
     //uses only N
-    [HttpGet("top-n-songs")]
+    [HttpPost("top-n-songs")]
     public async Task<IActionResult> GetTopNUsersSongs([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -213,7 +213,7 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [HttpGet("top-n-albums")]
+    [HttpPost("top-n-albums")]
     public async Task<IActionResult> GetTopNUsersAlbums([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -231,7 +231,7 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [HttpGet("top-n-artists")]
+    [HttpPost("top-n-artists")]
     public async Task<IActionResult> GetTopNUsersArtists([FromBody] NTopUserScrobblesRequest request)
     {
         try

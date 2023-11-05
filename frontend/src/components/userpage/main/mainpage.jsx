@@ -10,11 +10,11 @@ function MainPage(props) {
         Artist
         <br />
         <div class="flex w-[100%] space-x-4 mt-4 mb-4">
-          {props.ratedArtists.map((ratedArtist) => (
+          {props.topArtists.map((topArtist) => (
             <Card
-              cover={`data:image/png;base64,${ratedArtist.artist.photo}`}
-              mainText={ratedArtist.artist.name}
-              rating={ratedArtist.rating}
+              cover={`data:image/png;base64,${topArtist.artist.photo}`}
+              mainText={topArtist.artist.name}
+              rating={topArtist.rating}
               heart="heart"
             />
           ))}
@@ -22,12 +22,12 @@ function MainPage(props) {
         Album
         <br />
         <div class="flex w-[100%] space-x-4 mt-4 mb-4">
-          {props.ratedAlbums.map((ratedAlbum) => (
+          {props.topAlbums.map((topAlbum) => (
             <Card
-              cover={`data:image/png;base64,${ratedAlbum.album.cover}`}
-              mainText={ratedAlbum.album.name}
-              secText={ratedAlbum.album.artist.name}
-              rating={ratedAlbum.rating}
+              cover={`data:image/png;base64,${topAlbum.album.cover}`}
+              mainText={topAlbum.album.name}
+              secText={topAlbum.album.artist.name}
+              rating={topAlbum.rating}
               heart="heart"
             />
           ))}
@@ -35,12 +35,12 @@ function MainPage(props) {
         Song
         <br />
         <div class="flex w-[100%] space-x-4 mt-4 mb-4">
-          {props.ratedSongs.map((ratedSong) => (
+          {props.topSongs.map((topSong) => (
             <Card
-              cover={`data:image/png;base64,${ratedSong.song.album.cover}`}
-              mainText={ratedSong.song.title}
-              secText={ratedSong.song.album.artist.name}
-              rating={ratedSong.rating}
+              cover={`data:image/png;base64,${topSong.song.album.cover}`}
+              mainText={topSong.song.title}
+              secText={topSong.song.album.artist.name}
+              rating={topSong.rating}
               heart="heart"
             />
           ))}

@@ -95,9 +95,13 @@ public class ScrobbleService
 
     public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, int n)
     {
-        var data = await _context.Scrobbles
+        var groupings = await _context.Scrobbles
+            .Include(s => s.Song.Album.Artist)
             .Where(s => s.Id_User == userId)
             .GroupBy(s => s.Song)
+            .ToListAsync();
+
+        var data = groupings
             .Select(s => new SongScrobbleCount
             {
                 Song = s.Key,
@@ -105,15 +109,20 @@ public class ScrobbleService
             })
             .OrderByDescending(s => s.Count)
             .Take(n)
-            .ToListAsync();
+            .ToList();
+            
         return data;
     }
 
     public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, int n)
     {
-        var data = await _context.Scrobbles
+        var groupings = await _context.Scrobbles
+            .Include(s => s.Song.Album.Artist)
             .Where(s => s.Id_User == userId)
             .GroupBy(s => s.Song.Album)
+            .ToListAsync();
+
+        var data = groupings
             .Select(s => new AlbumScrobbleCount
             {
                 Album = s.Key,
@@ -121,7 +130,8 @@ public class ScrobbleService
             })
             .OrderByDescending(s => s.Count)
             .Take(n)
-            .ToListAsync();
+            .ToList();
+
         return data;
     }
 

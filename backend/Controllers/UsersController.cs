@@ -106,7 +106,7 @@ public class UsersController : ControllerBase
   [Authorize(Roles = "User")]
   public IActionResult user()
   {
-    return Ok(new { Success = true, Message = "User" });
+    return Ok(new { Success = true, Message = "User", User =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value});
   }
 
   [HttpGet("{username}")]

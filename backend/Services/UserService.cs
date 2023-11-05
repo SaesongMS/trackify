@@ -84,12 +84,14 @@ public class UserService
                 Id_Song_Internal = fs.Id_Song_Internal,
                 Song = fs.Song
             }).ToListAsync();
+            var artistCount = await _context.Scrobbles.Where(s => s.Id_User == user.Id).Select(s => s.Song.Album.Artist).Distinct().CountAsync();
             var userData = new ProfileResponse
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 ProfilePicture = user.Avatar,
                 Description = user.Bio,
+                ArtistCount = artistCount,
                 Followers = followers,
                 Following = following,
                 ProfileComments = profileComments,
@@ -97,7 +99,8 @@ public class UserService
                 RatedSongs = ratedSongs,
                 RatedAlbums = ratedAlbums,
                 RatedArtists = ratedArtist,
-                FavouriteSongs = favouriteSongs
+                FavouriteSongs = favouriteSongs,
+                Creation_Date = user.Creation_Date
             };
             return userData;
         }

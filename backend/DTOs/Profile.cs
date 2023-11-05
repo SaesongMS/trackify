@@ -11,6 +11,8 @@ public class ProfileResponse
     public string UserName { get; set; } = string.Empty;
     public byte[] ProfilePicture { get; set; } = new byte[0];
     public string Description { get; set; } = string.Empty;
+    public int ArtistCount { get; set; } = 0;
+    public DateTime Creation_Date { get; set; } = DateTime.Now;
     public List<Follows> Followers { get; set; } = new List<Follows>();
     public List<Follows> Following { get; set; } = new List<Follows>();
     public List<ProfileComments> ProfileComments { get; set; } = new List<ProfileComments>();

@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
-import { getUser } from "../../getUserData";
-import { createEffect, createSignal } from "solid-js";
+import { getData, postData} from "../../getUserData";
+import { createEffect, createResource, createSignal, onCleanup } from "solid-js";
 import UserBaner from "../../components/userpage/userbaner/userbaner";
 import MainPage from "../../components/userpage/main/mainpage";
 import AppLogo from "../../assets/icons/logo.png";
@@ -8,9 +8,33 @@ import Belmondo from "../../assets/icons/belmondo.png";
 function UserPageMain() {
   const params = useParams();
   const [user, setUser] = createSignal(null);
+  const [songs, setSongs] = createSignal(null);
+  const [artists, setArtists] = createSignal(null);
+  const [albums, setAlbums] = createSignal(null);
+
+  // let user = null, songs;
+
+  // [user] = createResource(`users/${params.username}`, getData);
 
   createEffect(async () => {
-    const userData = await getUser(params.username);
+    if(user()!==null){
+      const albumsData = await postData("scrobbles/top-n-albums", {n:8, id: user().id});
+      setAlbums(albumsData.topAlbums);
+      console.log(albumsData);
+
+      const songsData = await postData("scrobbles/top-n-songs", {n:8, id: user().id});
+      setSongs(songsData.topSongs);
+      console.log(songsData);
+
+      const artistsData = await postData("scrobbles/top-n-artists", {n:8, id: user().id});
+      setArtists(artistsData.topArtists);
+      console.log(artistsData);
+
+    }
+  },[user()]);
+
+  createEffect(async () => {
+    const userData = await getData(`users/${params.username}`);
     console.log(userData);
     setUser(userData);
   });
@@ -39,7 +63,7 @@ function UserPageMain() {
 
   return (
     <div class="w-[100%] h-[100%] flex flex-col">
-      {user() && (
+      {user() && songs() && artists() && albums() && (
         <>
           <UserBaner
             avatar={user().profilePicture}
@@ -47,13 +71,15 @@ function UserPageMain() {
             topArtistImage={Belmondo}
             scrobbleCount={user().scrobbles.length}
             favourites={user().favouriteSongs.length}
+            date={new Date(user().creation_Date).toLocaleDateString()}
+            artistCount={user().artistCount}
           />
           <MainPage
             scrobbles={user().scrobbles}
             comments={user().profileComments}
-            ratedArtists={user().ratedArtists}
-            ratedAlbums={user().ratedAlbums}
-            ratedSongs={user().ratedSongs}
+            topArtists={artists()}
+            topAlbums={albums()}
+            topSongs={songs()}
           />
         </>
       )}
