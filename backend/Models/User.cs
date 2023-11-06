@@ -12,7 +12,7 @@ namespace Models
     public byte[] Avatar { get; internal set; } = AuthenticationService.getDeafultAvatar();
     public string Bio { get; internal set; } = string.Empty;
     public string Id_User_Spotify_API { get; internal set; } = string.Empty;
-    public DateTime Creation_Date { get; internal set; } = DateTime.Now;
+    public DateTime Creation_Date { get; internal set; } = DateTime.Now.ToUniversalTime();
 
     public ICollection<Follow> Follows { get; set; } = new List<Follow>();
     public ICollection<ProfileComment> ProfileComments { get; set; } = new List<ProfileComment>();
