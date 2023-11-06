@@ -3,13 +3,15 @@ import AppLogo from "../assets/icons/logo.png";
 import SearchIcon from "../assets/icons/search.svg";
 import UserIcon from "../assets/icons/user.png";
 import ChartsIcon from "../assets/icons/charts.png";
-import { getData } from "../getUserData";
+import { getData, postData } from "../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
 import { UserContext } from "../contexts/UserContext";
+import { useNavigate } from "@solidjs/router";
 
 function Navbar(){
 
     const {user, setUser} = useContext(UserContext);
+    const navigate = useNavigate();
 
     const authorize = async () => {
         const response = await getData("users/user");
@@ -21,8 +23,11 @@ function Navbar(){
         localStorage.removeItem("user");
     }
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem("user");
+        const response = await postData("users/logout");
+        console.log(response);
+        navigate("/");
         setUser(null);
     }
 

@@ -88,6 +88,22 @@ public class UsersController : ControllerBase
     }
   }
 
+  [HttpPost("logout")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> Logout()
+  {
+    try
+    {
+      Response.Cookies.Delete("X-Access-Token");
+      Response.Cookies.Delete(".AspNetCore.Identity.Application");
+      return Ok(new { Success = true, Message = "Logout successful" });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Success = false, Message = ex.Message });
+    }
+  }
+
   [HttpGet("ping")]
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
   public IActionResult Ping()
