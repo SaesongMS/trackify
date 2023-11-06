@@ -7,7 +7,7 @@ import { getData, postData } from "../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
 import { UserContext } from "../contexts/UserContext";
 import { useNavigate } from "@solidjs/router";
-
+import { LogoutLogo } from "../assets/icons/logout.svg";
 function Navbar(){
 
     const {user, setUser} = useContext(UserContext);
@@ -47,7 +47,7 @@ function Navbar(){
             <div class="flex flex-col">
                 {user() && (
                     <>
-                        <button onclick={handleLogout} class="relative flex items-center justify-center h-16 w-16 mt-2 mb-2 mx-auto shadow-lg bg-slate-500 rounded-[30px] hover:rounded-xl transition-all duration-200 ease-linear cursor-pointer">Logout</button>
+                        <button onclick={handleLogout} class="relative flex items-center justify-center h-16 w-16 mt-2 mb-2 mx-auto shadow-lg bg-slate-500 rounded-[30px] hover:rounded-xl transition-all duration-200 ease-linear cursor-pointer"><img src={LogoutLogo}/></button>
                         <NavbarButton destination={`/user/${user()}/main`} image={UserIcon} />
                     </>
                 )}
