@@ -3,7 +3,29 @@ import Card from "./card";
 import Comment from "./comment";
 import AppLogo from "../../../assets/icons/logo.png";
 import Belmondo from "../../../assets/icons/belmondo.png";
+import { createSignal } from "solid-js";
+import { postData } from "../../../getUserData";
 function MainPage(props) {
+  const { loggedUser } = props;
+  const [comments, setComments] = createSignal(props.comments);
+  const [comment, setComment] = createSignal("");
+  const handleDeleteComment = (commentId) => {
+    setComments(comments().filter((comment) => comment.id !== commentId));
+  };
+
+  const handleSendComment = async (e) => {
+    e.preventDefault();
+
+    const res = await postData(`comments/profile/create`, {
+      comment: comment(),
+      recipientId: props.profileId,
+    });
+    if (res.success) {
+      setComments([...comments(), res.profileComment]);
+      setComment("");
+    }
+  };
+
   return (
     <div class="flex h-[80%] text-slate-200">
       <div class="w-[63%] p-6 overflow-scroll h-[100%]">
@@ -47,16 +69,36 @@ function MainPage(props) {
         </div>
         Comments
         <br />
-        <div class="flex h-[10%] pb-4 mt-4 mb-4">
-          <input type="text" class="border border-slate-700 w-[100%]" />
-          <button class="border border-slate-700 ml-4 p-4">Send</button>
-        </div>
-        {props.comments.map((comment) => (
+        {loggedUser && (
+          <div class="flex h-[10%] pb-4 mt-4 mb-4">
+            <input
+              type="text"
+              class="border border-slate-700 w-[100%] bg-slate-700"
+              value={comment()}
+              onInput={(e) => setComment(e.target.value)}
+            />
+            <button
+              class="border border-slate-700 ml-4 p-4"
+              onClick={handleSendComment}
+            >
+              Send
+            </button>
+          </div>
+        )}
+        {comments().map((comment) => (
           <Comment
-            avatar={comment.sender.profilePicture}
+            avatar={
+              comment.sender.profilePicture
+                ? comment.sender.profilePicture
+                : comment.sender.avatar
+            }
             username={comment.sender.userName}
             comment={comment.comment}
+            commentId={comment.id}
             date={new Date(comment.creation_Date).toLocaleDateString()}
+            loggedUser={loggedUser}
+            recipientId={comment.id_Recipient}
+            onDelete={handleDeleteComment}
           />
         ))}
       </div>

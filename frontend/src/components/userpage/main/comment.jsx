@@ -1,5 +1,30 @@
+import { createSignal } from "solid-js";
+import { deleteData } from "../../../getUserData";
+
 function Comment(props) {
-  const { avatar, username, comment, date, ...others } = props;
+  const {
+    avatar,
+    username,
+    comment,
+    date,
+    loggedUser,
+    recipientId,
+    commentId,
+    onDelete,
+    ...others
+  } = props;
+
+  const [isDeleted, setIsDeleted] = createSignal(false);
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    await deleteData(`comments/profile/${commentId}`);
+    // window.location.reload();
+    onDelete(commentId);
+  };
+
+  if (isDeleted()) return null;
+
   return (
     <div class="flex w-[100%] h-[10%] border border-slate-800 rounded-sm hover:border-slate-500 transition-all duration-200">
       <img
@@ -15,6 +40,13 @@ function Comment(props) {
       <div class="flex items-center">
         <span class="mr-4 cursor-pointer">options</span>
         <span class="mr-4 cursor-default">{date}</span>
+        {loggedUser &&
+          (loggedUser.userName == username ||
+            loggedUser.id === recipientId) && (
+            <button class="mr-4 cursor-pointer" onClick={handleDelete}>
+              X
+            </button>
+          )}
       </div>
     </div>
   );

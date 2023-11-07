@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace Controllers;
 [ApiController]
 [Route("api/comments")]
-public class CommentController: ControllerBase
+public class CommentController : ControllerBase
 {
     private readonly CommentService _commentService;
     private readonly AuthenticationService _authenticationService;
@@ -21,7 +21,7 @@ public class CommentController: ControllerBase
         _authenticationService = authenticationService;
     }
 
-    
+
     [HttpGet("profile/{id}")]
     public async Task<IActionResult> ProfileCommentById(string id)
     {
@@ -32,9 +32,9 @@ public class CommentController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
-        
+
     }
 
     [HttpPost("profile/create")]
@@ -45,21 +45,24 @@ public class CommentController: ControllerBase
         try
         {
             var sender = await _authenticationService.GetUser(nameIdentifier);
-            if(await _commentService.CreateProfileComment(request.Comment, request.RecipientId, sender))
+            var profileComment = await _commentService.CreateProfileComment(request.Comment, request.RecipientId, sender);
+            if (profileComment != null)
                 return Ok(new CreateCommentResponse
                 {
                     Success = true,
-                    Message = "Comment created successfully"
+                    Message = "Comment created successfully",
+                    ProfileComment = profileComment
+
                 });
             return BadRequest(new CreateCommentResponse
-                {
-                    Success = false,
-                    Message = "Comment creation failed"
-                });
+            {
+                Success = false,
+                Message = "Comment creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -72,14 +75,14 @@ public class CommentController: ControllerBase
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
-            if(await _commentService.DeleteProfileComment(id, roles, user.Id))    
-                return Ok(new {message = "Comment deleted successfully"});
-            
-            return BadRequest(new {message = "You don't have permission to delete this comment"});
+            if (await _commentService.DeleteProfileComment(id, roles, user.Id))
+                return Ok(new { message = "Comment deleted successfully" });
+
+            return BadRequest(new { message = "You don't have permission to delete this comment" });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -93,7 +96,7 @@ public class CommentController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -105,21 +108,21 @@ public class CommentController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _commentService.CreateSongComment(request.Comment, request.SongId, user))
+            if (await _commentService.CreateSongComment(request.Comment, request.SongId, user))
                 return Ok(new CreateCommentResponse
                 {
                     Success = true,
                     Message = "Comment created successfully"
                 });
             return BadRequest(new CreateCommentResponse
-                {
-                    Success = false,
-                    Message = "Comment creation failed"
-                });
+            {
+                Success = false,
+                Message = "Comment creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -132,14 +135,14 @@ public class CommentController: ControllerBase
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
-            if(await _commentService.DeleteSongComment(id, roles, user.Id))    
-                return Ok(new {message = "Comment deleted successfully"});
-            
-            return BadRequest(new {message = "You don't have permission to delete this comment"});
+            if (await _commentService.DeleteSongComment(id, roles, user.Id))
+                return Ok(new { message = "Comment deleted successfully" });
+
+            return BadRequest(new { message = "You don't have permission to delete this comment" });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -153,7 +156,7 @@ public class CommentController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -165,21 +168,21 @@ public class CommentController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _commentService.CreateAlbumComment(request.Comment, request.AlbumId, user))
+            if (await _commentService.CreateAlbumComment(request.Comment, request.AlbumId, user))
                 return Ok(new CreateCommentResponse
                 {
                     Success = true,
                     Message = "Comment created successfully"
                 });
             return BadRequest(new CreateCommentResponse
-                {
-                    Success = false,
-                    Message = "Comment creation failed"
-                });
+            {
+                Success = false,
+                Message = "Comment creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -192,17 +195,17 @@ public class CommentController: ControllerBase
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
-            if(await _commentService.DeleteAlbumComment(id, roles, user.Id))    
-                return Ok(new {message = "Comment deleted successfully"});
-            
-            return BadRequest(new {message = "You don't have permission to delete this comment"});
+            if (await _commentService.DeleteAlbumComment(id, roles, user.Id))
+                return Ok(new { message = "Comment deleted successfully" });
+
+            return BadRequest(new { message = "You don't have permission to delete this comment" });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [HttpGet("artist/{id}")]
     public async Task<IActionResult> ArtistCommentById(string id)
     {
@@ -213,7 +216,7 @@ public class CommentController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -225,21 +228,21 @@ public class CommentController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _commentService.CreateArtistComment(request.Comment, request.ArtistId, user))
+            if (await _commentService.CreateArtistComment(request.Comment, request.ArtistId, user))
                 return Ok(new CreateCommentResponse
                 {
                     Success = true,
                     Message = "Comment created successfully"
                 });
             return BadRequest(new CreateCommentResponse
-                {
-                    Success = false,
-                    Message = "Comment creation failed"
-                });
+            {
+                Success = false,
+                Message = "Comment creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -252,14 +255,14 @@ public class CommentController: ControllerBase
         var user = await _authenticationService.GetUser(nameIdentifier);
         try
         {
-            if(await _commentService.DeleteArtistComment(id, roles, user.Id))    
-                return Ok(new {message = "Comment deleted successfully"});
-            
-            return BadRequest(new {message = "You don't have permission to delete this comment"});
+            if (await _commentService.DeleteArtistComment(id, roles, user.Id))
+                return Ok(new { message = "Comment deleted successfully" });
+
+            return BadRequest(new { message = "You don't have permission to delete this comment" });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 }

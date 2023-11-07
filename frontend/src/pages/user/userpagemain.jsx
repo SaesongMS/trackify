@@ -1,6 +1,11 @@
 import { useParams } from "@solidjs/router";
-import { getData, postData} from "../../getUserData";
-import { createEffect, createResource, createSignal, onCleanup } from "solid-js";
+import { getData, postData } from "../../getUserData";
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  onCleanup,
+} from "solid-js";
 import UserBaner from "../../components/userpage/userbaner/userbaner";
 import MainPage from "../../components/userpage/main/mainpage";
 import AppLogo from "../../assets/icons/logo.png";
@@ -11,32 +16,44 @@ function UserPageMain() {
   const [songs, setSongs] = createSignal(null);
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
+  const [loggedUser, setLoggedUser] = createSignal(null);
 
   // let user = null, songs;
 
   // [user] = createResource(`users/${params.username}`, getData);
 
   createEffect(async () => {
-    if(user()!==null){
-      const albumsData = await postData("scrobbles/top-n-albums", {n:8, id: user().id});
+    if (user() !== null) {
+      const albumsData = await postData("scrobbles/top-n-albums", {
+        n: 8,
+        id: user().id,
+      });
       setAlbums(albumsData.topAlbums);
-      console.log(albumsData);
 
-      const songsData = await postData("scrobbles/top-n-songs", {n:8, id: user().id});
+      const songsData = await postData("scrobbles/top-n-songs", {
+        n: 8,
+        id: user().id,
+      });
       setSongs(songsData.topSongs);
-      console.log(songsData);
 
-      const artistsData = await postData("scrobbles/top-n-artists", {n:8, id: user().id});
+      const artistsData = await postData("scrobbles/top-n-artists", {
+        n: 8,
+        id: user().id,
+      });
       setArtists(artistsData.topArtists);
-      console.log(artistsData);
-
     }
-  },[user()]);
+  }, [user()]);
 
   createEffect(async () => {
     const userData = await getData(`users/${params.username}`);
-    console.log(userData);
     setUser(userData);
+
+    if (localStorage.getItem("user") !== null) {
+      setLoggedUser({
+        id: localStorage.getItem("userId"),
+        userName: localStorage.getItem("user"),
+      });
+    }
   });
 
   function formatTimeDifference(scrobbleDate) {
@@ -80,6 +97,8 @@ function UserPageMain() {
             topArtists={artists()}
             topAlbums={albums()}
             topSongs={songs()}
+            loggedUser={loggedUser()}
+            profileId={user().id}
           />
         </>
       )}

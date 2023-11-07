@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace DTOs;
@@ -39,4 +40,6 @@ public class CreateCommentResponse
 {
     public string Message { get; set; } = string.Empty;
     public bool Success { get; set; }
+
+    public ProfileComment? ProfileComment { get; set; }
 }

@@ -47,7 +47,7 @@ public class UserService
                     UserName = pc.Sender.UserName,
                     ProfilePicture = pc.Sender.Avatar
                 },
-                Id_Recipient = pc.Id_Recipient
+                Id_Recipient = pc.Id_Recipient,
             }).ToListAsync();
             var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Include(a => a.Song).ThenInclude(a => a.Album).ThenInclude(a => a.Artist).Select(s => new Scrobbles
             {
@@ -130,5 +130,15 @@ public class UserService
             }
         }
         else return 403;
+    }
+
+    public async Task<string> GetIdByUserName(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        if (user != null)
+        {
+            return user.Id;
+        }
+        return null!;
     }
 }

@@ -76,8 +76,8 @@ public class UsersController : ControllerBase
           SameSite = SameSiteMode.Strict,
           Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
-
-        return Ok(new LoginResponse { Success = true, Message = "Login successful" });
+        var id = _userService.GetIdByUserName(loginRequest.Username).Result;
+        return Ok(new LoginResponse { Success = true, Message = "Login successful", Id = id });
       }
 
       return BadRequest(new LoginResponse { Success = false, Message = "Login failed" });
@@ -122,7 +122,9 @@ public class UsersController : ControllerBase
   [Authorize(Roles = "User")]
   public IActionResult user()
   {
-    return Ok(new { Success = true, Message = "User", User =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value});
+    var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var id = _userService.GetIdByUserName(username!).Result;
+    return Ok(new { Success = true, Message = "User", User = username, Id = id });
   }
 
   [HttpGet("{username}")]

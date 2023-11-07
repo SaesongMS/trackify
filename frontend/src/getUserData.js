@@ -5,7 +5,7 @@ export const getData = async (uri) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: 'include',
+    credentials: "include",
   });
   const data = await response.json();
   return data;
@@ -17,7 +17,7 @@ export const postData = async (uri, body) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: 'include',
+    credentials: "include",
     body: JSON.stringify(body),
   });
   const data = await response.json();
@@ -30,8 +30,8 @@ export const deleteData = async (uri, body) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: 'include',
-    body: JSON.stringify(data),
+    credentials: "include",
+    body: JSON.stringify(body),
   });
   const res = await response.json();
   return res;

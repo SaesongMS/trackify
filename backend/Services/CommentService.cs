@@ -11,7 +11,7 @@ public class CommentService
     public CommentService(DatabaseContext context)
     {
         _context = context;
-     
+
     }
 
     public async Task<ProfileComment> GetProfileCommentById(string id)
@@ -20,7 +20,7 @@ public class CommentService
         return comment;
     }
 
-    public async Task<bool> CreateProfileComment(string comment, string recipientId, User sender)
+    public async Task<ProfileComment> CreateProfileComment(string comment, string recipientId, User sender)
     {
         var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Id == recipientId) ?? throw new Exception("Recipient not found");
         var profileComment = new ProfileComment
@@ -35,7 +35,7 @@ public class CommentService
         };
         await _context.ProfileComments.AddAsync(profileComment);
         await _context.SaveChangesAsync();
-        return true;
+        return profileComment;
     }
 
     public async Task<bool> DeleteProfileComment(string id, List<string> roles, string userId)
@@ -48,7 +48,7 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<SongComment> GetSongCommentById(string id)
@@ -86,7 +86,7 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<AlbumComment> GetAlbumCommentById(string id)
@@ -124,7 +124,7 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<ArtistComment> GetArtistCommentById(string id)
@@ -162,6 +162,6 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 }
