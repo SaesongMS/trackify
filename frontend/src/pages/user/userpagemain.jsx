@@ -5,55 +5,50 @@ import {
   createResource,
   createSignal,
   onCleanup,
+  useContext,
 } from "solid-js";
 import UserBaner from "../../components/userpage/userbaner/userbaner";
 import MainPage from "../../components/userpage/main/mainpage";
 import AppLogo from "../../assets/icons/logo.png";
 import Belmondo from "../../assets/icons/belmondo.png";
+import { UserContext } from "../../contexts/UserContext";
 function UserPageMain() {
   const params = useParams();
-  const [user, setUser] = createSignal(null);
+  const [profile, setProfile] = createSignal(null);
   const [songs, setSongs] = createSignal(null);
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
-  const [loggedUser, setLoggedUser] = createSignal(null);
+  const {user, setUser} = useContext(UserContext);
 
   // let user = null, songs;
 
   // [user] = createResource(`users/${params.username}`, getData);
 
   createEffect(async () => {
-    if (user() !== null) {
+    if (profile() !== null) {
       const albumsData = await postData("scrobbles/top-n-albums", {
         n: 8,
-        id: user().id,
+        id: profile().id,
       });
       setAlbums(albumsData.topAlbums);
 
       const songsData = await postData("scrobbles/top-n-songs", {
         n: 8,
-        id: user().id,
+        id: profile().id,
       });
       setSongs(songsData.topSongs);
 
       const artistsData = await postData("scrobbles/top-n-artists", {
         n: 8,
-        id: user().id,
+        id: profile().id,
       });
       setArtists(artistsData.topArtists);
     }
-  }, [user()]);
+  }, [profile()]);
 
   createEffect(async () => {
     const userData = await getData(`users/${params.username}`);
-    setUser(userData);
-
-    if (localStorage.getItem("user") !== null) {
-      setLoggedUser({
-        id: localStorage.getItem("userId"),
-        userName: localStorage.getItem("user"),
-      });
-    }
+    setProfile(userData);
   });
 
   function formatTimeDifference(scrobbleDate) {
@@ -80,25 +75,25 @@ function UserPageMain() {
 
   return (
     <div class="w-[100%] h-[100%] flex flex-col">
-      {user() && songs() && artists() && albums() && (
+      {profile() && songs() && artists() && albums() && (
         <>
           <UserBaner
-            avatar={user().profilePicture}
-            username={user().userName}
+            avatar={profile().profilePicture}
+            username={profile().userName}
             topArtistImage={Belmondo}
-            scrobbleCount={user().scrobbles.length}
-            favourites={user().favouriteSongs.length}
-            date={new Date(user().creation_Date).toLocaleDateString()}
-            artistCount={user().artistCount}
+            scrobbleCount={profile().scrobbles.length}
+            favourites={profile().favouriteSongs.length}
+            date={new Date(profile().creation_Date).toLocaleDateString()}
+            artistCount={profile().artistCount}
           />
           <MainPage
-            scrobbles={user().scrobbles}
-            comments={user().profileComments}
+            scrobbles={profile().scrobbles}
+            comments={profile().profileComments}
             topArtists={artists()}
             topAlbums={albums()}
             topSongs={songs()}
-            loggedUser={loggedUser()}
-            profileId={user().id}
+            loggedUser={user()}
+            profileId={profile().id}
           />
         </>
       )}

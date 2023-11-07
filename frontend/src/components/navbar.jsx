@@ -18,11 +18,11 @@ function Navbar() {
     if (response.success) {
       setUser({
         userName: localStorage.getItem("user"),
-        id: localStorage.getItem("userId"),
+        id: response.id,
       });
       return true;
     }
-
+    window.location.reload();
     localStorage.removeItem("user");
   };
 

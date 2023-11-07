@@ -17,7 +17,6 @@ function Login() {
     });
     if (res.success) {
       localStorage.setItem("user", username());
-      localStorage.setItem("userId", res.id);
       setUser({ userName: username(), id: res.id });
       navigate(`/user/${username()}/main`);
     }
