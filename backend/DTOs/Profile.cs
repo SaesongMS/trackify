@@ -28,7 +28,7 @@ public class Follows
     public string Id { get; set; } = string.Empty;
     public string Id_Follower { get; set; } = string.Empty;
     public string Id_Followed { get; set; } = string.Empty;
-
+    public Sender Follower { get; set; } = null!;
 }
 
 public class ProfileComments
