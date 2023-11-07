@@ -6,6 +6,7 @@ import UserPageFollowers from "./pages/user/userPageFollowers";
 import UserPageFollowing from "./pages/user/userPageFollowing";
 import UserPageFavourites from "./pages/user/userPageFavourites";
 import Navbar from "./components/navbar";
+import Search from "./pages/search";
 import Login from "./pages/user/login";
 
 import { Router, Route, Routes } from "@solidjs/router";
@@ -16,7 +17,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<div></div>} />
-        <Route path="/search/:query" element={<div></div>} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/search/:query" element={<Search />} />
         <Route path="/charts" element={<div></div>} />
         <Route path="/user/settings" element={<UserSettings />} />
         <Route path="/user/:username/main" element={<UserPageMain />} />

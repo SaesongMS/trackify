@@ -153,4 +153,20 @@ public class UserService
         }
         return null!;
     }
+
+    public async Task<List<UserProfile>> SearchUsers(string query)
+    {
+        //contains query ignores case
+        var users = await _context.Users.Where(u => u.UserName.ToLower().Contains(query)).Select(u => new UserProfile
+        {
+            Id = u.Id,
+            UserName = u.UserName,
+            ProfilePicture = u.Avatar
+
+        }).ToListAsync();
+
+        if (users != null)
+            return users;
+        return null!;
+    }
 }

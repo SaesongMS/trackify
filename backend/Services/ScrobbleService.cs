@@ -24,7 +24,7 @@ public class ScrobbleService
             .OrderByDescending(s => s.Scrobble_Date)
             .Take(n)
             .ToListAsync();
-        
+
         return scrobbles;
     }
 
@@ -36,12 +36,12 @@ public class ScrobbleService
         // end = new DateTime(end.Year, end.Month, end.Day, end.Hour, end.Minute, end.Second, DateTimeKind.Utc);
 
         //u can either use above code or set the timezone in the request, for example: 1999-01-08T04:05:06Z
-        
+
         var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
             .OrderByDescending(s => s.Scrobble_Date)
             .ToListAsync();
-        
+
         return scrobbles;
     }
 
@@ -110,7 +110,7 @@ public class ScrobbleService
             .OrderByDescending(s => s.Count)
             .Take(n)
             .ToList();
-            
+
         return data;
     }
 
@@ -244,7 +244,7 @@ public class ScrobbleService
     }
     public async Task<bool> CreateScrobble(string userId, string spotify_songId, string spotify_albumId, string spotify_artistId)
     {
-        var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id_Song_Spotify_API == spotify_songId) 
+        var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id_Song_Spotify_API == spotify_songId)
             ?? await CreateSong(spotify_songId, spotify_albumId, spotify_artistId);
         if (song != null)
         {
@@ -271,7 +271,7 @@ public class ScrobbleService
 
     public async Task<Song> CreateSong(string spotify_songId, string spotify_albumId, string spotify_artistId)
     {
-        var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id_Album_Spotify_API == spotify_albumId) 
+        var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id_Album_Spotify_API == spotify_albumId)
             ?? await CreateAlbum(spotify_albumId, spotify_artistId);
         if (album != null)
         {
@@ -290,7 +290,7 @@ public class ScrobbleService
 
     public async Task<Album> CreateAlbum(string spotify_albumId, string spotify_artistId)
     {
-        var artist = await _context.Artists.FirstOrDefaultAsync(a => a.Id_Artist_Spotify_API == spotify_artistId) 
+        var artist = await _context.Artists.FirstOrDefaultAsync(a => a.Id_Artist_Spotify_API == spotify_artistId)
             ?? await CreateArtist(spotify_artistId);
         if (artist != null)
         {
@@ -317,7 +317,7 @@ public class ScrobbleService
             await _context.SaveChangesAsync();
             return artist;
         }
-        
+
         return null;
     }
 
@@ -329,7 +329,7 @@ public class ScrobbleService
             Console.WriteLine(roles.Contains("Admin") || scrobble.Id_User == userId);
             Console.WriteLine("scrobble.Id_User: " + scrobble.Id_User);
             Console.WriteLine("userId: " + userId);
-            if(roles.Contains("Admin") || scrobble.Id_User == userId)
+            if (roles.Contains("Admin") || scrobble.Id_User == userId)
             {
                 _context.Scrobbles.Remove(scrobble);
                 await _context.SaveChangesAsync();
@@ -338,5 +338,37 @@ public class ScrobbleService
         }
 
         return false;
+    }
+
+    public async Task<List<Song>> SearchSongs(string query)
+    {
+        var songs = await _context.Songs
+            .Include(s => s.Album)
+            .ThenInclude(a => a.Artist)
+            .Where(s => s.Title.ToLower().Contains(query) || s.Album.Name.ToLower().Contains(query) ||
+                        s.Album.Artist.Name.ToLower().Contains(query))
+            .ToListAsync();
+        return songs;
+    }
+
+    public async Task<List<Album>> SearchAlbums(string query)
+    {
+        var albums = await _context.Albums
+            .Include(a => a.Artist)
+            .Include(a => a.Songs)
+            .Where(a => a.Name.ToLower().Contains(query) || a.Songs.Any(s => s.Title.ToLower().Contains(query)))
+            .ToListAsync();
+        return albums;
+    }
+
+    public async Task<List<Artist>> SearchArtists(string query)
+    {
+        var artists = await _context.Artists
+            .Include(a => a.Albums)
+            .ThenInclude(a => a.Songs)
+            .Where(a => a.Name.ToLower().Contains(query) || a.Albums.Any(a => a.Name.ToLower().Contains(query)) ||
+                        a.Albums.Any(a => a.Songs.Any(s => s.Title.ToLower().Contains(query))))
+            .ToListAsync();
+        return artists;
     }
 }
