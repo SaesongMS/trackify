@@ -3,11 +3,13 @@ import { deleteData } from "../../../getUserData";
 
 function Card(props) {
   const { cover, mainText, secText, rating, heart, ...others } = props;
+
   const handleDelete = async (e) => {
     e.preventDefault();
     await deleteData(`favourite-song/delete`, { songId: props.songId });
     props.handleDelete(props.songId);
   };
+
   return (
     <div
       class="flex-col border border-slate-700 w-[15%] aspect-square bg-no-repeat bg-cover"

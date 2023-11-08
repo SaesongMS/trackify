@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
-import { deleteData, getData } from "../../getUserData";
+import { getData } from "../../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
-import UserBaner from "../../components/userpage/userbaner/userbaner";
+import UserBanner from "../../components/userpage/userbanner/userbanner";
 import { UserContext } from "../../contexts/UserContext";
 import Follow from "../../components/userpage/main/follower";
 import Belmondo from "../../assets/icons/belmondo.png";
@@ -11,18 +11,6 @@ function UserPageFollowers() {
   const [profile, setProfile] = createSignal(null);
   const { user, setUser } = useContext(UserContext);
   const [followers, setFollowers] = createSignal(null);
-  // const handleUnfollow = async (followedId) => {
-  //   setFollowers(
-  //     profile().followers.filter(
-  //       (follower) => follower.follower.Id !== followedId
-  //     )
-  //   );
-  // };
-
-  // createEffect(async () => {
-  //   if (profile() !== null) {
-  //   }
-  // }, [profile()]);
 
   createEffect(async () => {
     const userData = await getData(`users/${params.username}`);
@@ -34,7 +22,7 @@ function UserPageFollowers() {
     <div class="w-[100%] h-[100%] flex flex-col">
       {profile() && (
         <>
-          <UserBaner
+          <UserBanner
             avatar={profile().profilePicture}
             username={profile().userName}
             topArtistImage={Belmondo}
@@ -47,10 +35,7 @@ function UserPageFollowers() {
             followers().map((follower) => (
               <Follow
                 userName={follower.follower.userName}
-                profilePicture={follower.follower.profilePicture}
-                loggedUsername={user() ? user().userName : null}
-                // handleUnfollow={handleUnfollow}
-                // followedId={follower.id_Follower}
+                avatar={follower.follower.profilePicture}
               />
             ))}
         </>

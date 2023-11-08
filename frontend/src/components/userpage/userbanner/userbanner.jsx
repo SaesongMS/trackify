@@ -3,8 +3,9 @@ import Avatar from "./avatar";
 import ProfileNav from "./profilenav";
 import InfoBar from "./infobar";
 
-function UserBaner(props) {
+function UserBanner(props) {
   const { topArtistImage, ...others } = props;
+  console.log(props);
   return (
     <div class="flex w-[100%] h-[20%]">
       <Avatar image={props.avatar} />
@@ -23,4 +24,4 @@ function UserBaner(props) {
   );
 }
 
-export default UserBaner;
+export default UserBanner;

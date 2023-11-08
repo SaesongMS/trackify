@@ -35,16 +35,16 @@ public class UserService
                     ProfilePicture = f.Follower.Avatar
                 }
             }).ToListAsync();
-            var following = await _context.Follows.Where(f => f.Id_Follower == user.Id).Include(f => f.Follower).Select(f => new Follows
+            var following = await _context.Follows.Where(f => f.Id_Follower == user.Id).Include(f => f.Followed).Select(f => new Follows
             {
                 Id = f.Id,
                 Id_Follower = f.Id_Follower,
                 Id_Followed = f.Id_Followed,
-                Follower = new Sender
+                Followed = new Sender
                 {
-                    Id = f.Follower.Id,
-                    UserName = f.Follower.UserName!,
-                    ProfilePicture = f.Follower.Avatar
+                    Id = f.Followed.Id,
+                    UserName = f.Followed.UserName!,
+                    ProfilePicture = f.Followed.Avatar
                 }
             }).ToListAsync();
             var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).OrderByDescending(pc => pc.Creation_Date).Include(s => s.Sender).Select(pc => new ProfileComments

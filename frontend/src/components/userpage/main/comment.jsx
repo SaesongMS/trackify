@@ -1,5 +1,5 @@
-import { createSignal } from "solid-js";
 import { deleteData } from "../../../getUserData";
+import { A } from "@solidjs/router";
 
 function Comment(props) {
   const {
@@ -17,19 +17,22 @@ function Comment(props) {
   const handleDelete = async (e) => {
     e.preventDefault();
     await deleteData(`comments/profile/${commentId}`);
-    // window.location.reload();
     onDelete(commentId);
   };
 
   return (
     <div class="flex w-[100%] h-[10%] border border-slate-800 rounded-sm hover:border-slate-500 transition-all duration-200">
-      <img
-        class="h-[100%] aspect-square mr-2"
-        src={`data:image/png;base64,${avatar}`}
-      />
+      <A href={`/user/${username}/main`}>
+        <img
+          class="h-[100%] aspect-square mr-2"
+          src={`data:image/png;base64,${avatar}`}
+        />
+      </A>
       <div class="flex flex-grow">
         <div class="flex flex-col">
-          <span class="mr-4 cursor-pointer">{username}</span>
+          <span class="mr-4 cursor-pointer">
+            <A href={`/user/${username}/main`}>{username}</A>
+          </span>
           <span class="mr-4 cursor-pointer">{comment}</span>
         </div>
       </div>

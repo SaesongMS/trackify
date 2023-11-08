@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
 import { getData, postData } from "../../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
-import UserBaner from "../../components/userpage/userbaner/userbaner";
+import UserBanner from "../../components/userpage/userbanner/userbanner";
 import { UserContext } from "../../contexts/UserContext";
 import Belmondo from "../../assets/icons/belmondo.png";
 import Card from "../../components/userpage/main/card";
@@ -11,6 +11,7 @@ function UserPageFollowers() {
   const [profile, setProfile] = createSignal(null);
   const { user, setUser } = useContext(UserContext);
   const [favouriteSongs, setFavouriteSongs] = createSignal(null);
+
   const handleDeleteFavouriteSong = (songId) => {
     setFavouriteSongs(
       favouriteSongs().filter(
@@ -18,11 +19,6 @@ function UserPageFollowers() {
       )
     );
   };
-
-  // createEffect(async () => {
-  //   if (profile() !== null) {
-  //   }
-  // }, [profile()]);
 
   createEffect(async () => {
     const userData = await getData(`users/${params.username}`);
@@ -34,7 +30,7 @@ function UserPageFollowers() {
     <div class="w-[100%] h-[100%] flex flex-col">
       {profile() && (
         <>
-          <UserBaner
+          <UserBanner
             avatar={profile().profilePicture}
             username={profile().userName}
             topArtistImage={Belmondo}

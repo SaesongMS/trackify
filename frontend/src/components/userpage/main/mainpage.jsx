@@ -1,10 +1,9 @@
 import ScrobbleRow from "./scrobbleRow";
 import Card from "./card";
 import Comment from "./comment";
-import AppLogo from "../../../assets/icons/logo.png";
-import Belmondo from "../../../assets/icons/belmondo.png";
 import { createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
+
 function MainPage(props) {
   const { loggedUser } = props;
   const [comments, setComments] = createSignal(props.comments);
@@ -21,6 +20,7 @@ function MainPage(props) {
       comment: comment(),
       recipientId: props.profileId,
     });
+
     if (res.success) {
       setComments([...comments(), res.profileComment]);
       setComment("");
