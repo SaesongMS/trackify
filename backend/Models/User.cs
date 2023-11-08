@@ -15,6 +15,7 @@ namespace Models
     public DateTime Creation_Date { get; internal set; } = DateTime.Now.ToUniversalTime();
 
     public ICollection<Follow> Follows { get; set; } = new List<Follow>();
+    public ICollection<Follow> Followers { get; set; } = new List<Follow>();
     public ICollection<ProfileComment> ProfileComments { get; set; } = new List<ProfileComment>();
     public ICollection<FavouriteSong> FavouriteSongs { get; set; } = new List<FavouriteSong>();
     public ICollection<SongComment> SongComments { get; set; } = new List<SongComment>();
@@ -36,6 +37,7 @@ namespace Models
     public User Follower { get; set; } = null!;
 
     public string Id_Followed { get; set; } = string.Empty;
+    public User Followed { get; set; } = null!;
   }
 
   [Table("profileComments")]

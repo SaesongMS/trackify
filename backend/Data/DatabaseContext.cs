@@ -38,6 +38,11 @@ namespace Data
     {
       base.OnModelCreating(modelBuilder);
 
+      modelBuilder.Entity<Follow>()
+        .HasOne(f => f.Followed)
+        .WithMany(u => u.Followers)
+        .HasForeignKey(f => f.Id_Followed);
+
       new ScrobbleMap(modelBuilder.Entity<Scrobble>());
 
       new FollowMap(modelBuilder.Entity<Follow>());

@@ -24,7 +24,8 @@ public class FollowService
             Id = Guid.NewGuid().ToString(),
             Follower = user,
             Id_Follower = user.Id,
-            Id_Followed = userToFollow.Id
+            Id_Followed = userToFollow.Id,
+            Followed = userToFollow
         };
         await _context.Follows.AddAsync(follow);
         await _context.SaveChangesAsync();
