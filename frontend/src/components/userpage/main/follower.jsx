@@ -1,7 +1,9 @@
 import { A } from "@solidjs/router";
+import { deleteData } from "../../../getUserData";
 
 function Follower(props) {
   const { userName, profilePicture } = props;
+
   return (
     <>
       <A

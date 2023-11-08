@@ -18,7 +18,7 @@ function UserPageMain() {
   const [songs, setSongs] = createSignal(null);
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
-  const {user, setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   // let user = null, songs;
 
@@ -92,7 +92,7 @@ function UserPageMain() {
             topArtists={artists()}
             topAlbums={albums()}
             topSongs={songs()}
-            loggedUser={user()}
+            loggedUser={user() ? user() : null}
             profileId={profile().id}
           />
         </>

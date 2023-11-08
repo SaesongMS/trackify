@@ -9,6 +9,7 @@ function MainPage(props) {
   const { loggedUser } = props;
   const [comments, setComments] = createSignal(props.comments);
   const [comment, setComment] = createSignal("");
+
   const handleDeleteComment = (commentId) => {
     setComments(comments().filter((comment) => comment.id !== commentId));
   };

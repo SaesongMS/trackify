@@ -14,16 +14,12 @@ function Comment(props) {
     ...others
   } = props;
 
-  const [isDeleted, setIsDeleted] = createSignal(false);
-
   const handleDelete = async (e) => {
     e.preventDefault();
     await deleteData(`comments/profile/${commentId}`);
     // window.location.reload();
     onDelete(commentId);
   };
-
-  if (isDeleted()) return null;
 
   return (
     <div class="flex w-[100%] h-[10%] border border-slate-800 rounded-sm hover:border-slate-500 transition-all duration-200">

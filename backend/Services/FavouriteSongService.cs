@@ -16,8 +16,12 @@ public class FavouriteSongService
 
     public async Task<bool> AddFavouriteSong(string songId, User user)
     {
+        //song doesn't exist -> return false
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
         if (song == null) return false;
+        //song already in favourites for this user -> return false
+        if (await _context.FavouriteSongs.FirstOrDefaultAsync(fs => fs.Id_Song_Internal == songId && fs.Id_User == user.Id) != null) return false;
+        //else add song to favourites:
         var favouriteSong = new FavouriteSong
         {
             Id = Guid.NewGuid().ToString(),
