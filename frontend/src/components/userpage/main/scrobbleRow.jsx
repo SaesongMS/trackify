@@ -32,9 +32,11 @@ function ScrobbleRow(props) {
       <span class="mr-4 cursor-pointer">Heart</span>
       <span class="mr-4 cursor-pointer">{title}</span>
       <span class="mr-4 cursor-pointer">{artist}</span>
-      <span class="mr-4 cursor-pointer">{rating}</span>
+      <span class="mr-4 cursor-pointer">{rating ? rating : ""}</span>
       <span class="mr-4 cursor-pointer">options</span>
-      <span class="mr-4 cursor-default">{formatTimeDifference(date)}</span>
+      <span class="mr-4 cursor-default">
+        {date ? formatTimeDifference(date) : ""}
+      </span>
     </div>
   );
 }

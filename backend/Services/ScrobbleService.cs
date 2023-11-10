@@ -36,10 +36,7 @@ public class ScrobbleService
         // end = new DateTime(end.Year, end.Month, end.Day, end.Hour, end.Minute, end.Second, DateTimeKind.Utc);
 
         //u can either use above code or set the timezone in the request, for example: 1999-01-08T04:05:06Z
-        Console.WriteLine("start: " + start);
-        Console.WriteLine("end: " + end);
         var new_end = end.ToUniversalTime();
-        Console.WriteLine("new_end: " + new_end);
 
         var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
@@ -56,7 +53,7 @@ public class ScrobbleService
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
-        
+
         var groupings = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .Include(s => s.Song.Album.Artist)
@@ -78,7 +75,7 @@ public class ScrobbleService
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
-        
+
         var groupings = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .Include(s => s.Song.Album.Artist)
@@ -100,7 +97,7 @@ public class ScrobbleService
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
-        
+
         var data = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .GroupBy(s => s.Song.Album.Artist)

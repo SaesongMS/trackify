@@ -1,7 +1,7 @@
-import { createSignal, useContext } from "solid-js";
-import { getData, postData } from "../../getUserData";
-import { useNavigate } from "@solidjs/router";
-import { UserContext } from "../../contexts/UserContext";
+import { createEffect, createSignal, useContext } from "solid-js";
+import { postData } from "../../../getUserData";
+import { A, useNavigate } from "@solidjs/router";
+import { UserContext } from "../../../contexts/UserContext";
 
 function Login() {
   const [username, setUsername] = createSignal("");
@@ -21,6 +21,13 @@ function Login() {
       navigate(`/user/${username()}/main`);
     }
   };
+
+  createEffect(() => {
+    if (user() !== null) {
+      alert("You are already logged in!");
+      navigate(`/user/${user().userName}/main`);
+    }
+  });
 
   return (
     <div class="flex h-[100%] w-[100%] items-center justify-center text-slate-100">
@@ -45,6 +52,9 @@ function Login() {
             value={password()}
             onInput={(e) => setPassword(e.target.value)}
           />
+          <A class="text-slate-700" href="/register">
+            Don't have an account? Register here!
+          </A>
           <button
             class="border border-slate-700 w-fit pt-1 pb-1 pl-4 pr-4 rounded bg-slate-500"
             type="submit"

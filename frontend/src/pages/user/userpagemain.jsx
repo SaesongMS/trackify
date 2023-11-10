@@ -26,7 +26,6 @@ function UserPageMain() {
         n: 8,
         id: profile().id,
       });
-      console.log(songsData);
       setSongs(songsData.songs);
 
       const artistsData = await postData("scrobbles/top-n-artists", {
@@ -38,7 +37,6 @@ function UserPageMain() {
   }, [profile()]);
 
   createEffect(async () => {
-    console.log(params.username);
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
   });

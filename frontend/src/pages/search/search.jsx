@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
-import { getData } from "../getUserData";
+import { getData } from "../../getUserData";
 import { A } from "@solidjs/router";
-import Card from "../components/userpage/main/card";
+import Card from "../../components/userpage/main/card";
 
 function Search() {
   const [query, setQuery] = createSignal("");

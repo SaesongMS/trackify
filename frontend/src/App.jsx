@@ -6,8 +6,9 @@ import UserPageFollowers from "./pages/user/userPageFollowers";
 import UserPageFollowing from "./pages/user/userPageFollowing";
 import UserPageFavourites from "./pages/user/userPageFavourites";
 import Navbar from "./components/navbar";
-import Search from "./pages/search";
-import Login from "./pages/user/login";
+import Search from "./pages/search/search";
+import Login from "./pages/user/auth/login";
+import Register from "./pages/user/auth/register";
 
 import { Router, Route, Routes } from "@solidjs/router";
 import ScrobbleLibrary from "./pages/user/library/scrobbleLibrary";
@@ -25,7 +26,10 @@ function App() {
         <Route path="/user/settings" element={<UserSettings />} />
         <Route path="/user/:username/main" element={<UserPageMain />} />
         <Route path="/user/:username/library" element={<ScrobbleLibrary />} />
-        <Route path="/user/:username/library/:subject" element={<SubjectLibrary />} />
+        <Route
+          path="/user/:username/library/:subject"
+          element={<SubjectLibrary />}
+        />
         <Route
           path="/user/:username/following"
           element={<UserPageFollowing />}
@@ -39,6 +43,7 @@ function App() {
           element={<UserPageFavourites />}
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>
