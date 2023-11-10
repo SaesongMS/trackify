@@ -5,13 +5,12 @@ import InfoBar from "./infobar";
 
 function UserBanner(props) {
   const { topArtistImage, ...others } = props;
-  console.log(props);
   return (
     <div class="flex w-[100%] h-[20%]">
       <Avatar image={props.avatar} />
       <div class="flex flex-col h-[100%] flex-grow">
         <InfoBar
-          topArtistImage={topArtistImage}
+          topArtistImage={props.topArtistImage}
           username={props.username}
           date={props.date}
           trackCount={props.scrobbleCount}

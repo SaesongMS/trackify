@@ -36,51 +36,73 @@ public class ScrobbleService
         // end = new DateTime(end.Year, end.Month, end.Day, end.Hour, end.Minute, end.Second, DateTimeKind.Utc);
 
         //u can either use above code or set the timezone in the request, for example: 1999-01-08T04:05:06Z
+        Console.WriteLine("start: " + start);
+        Console.WriteLine("end: " + end);
+        var new_end = end.ToUniversalTime();
+        Console.WriteLine("new_end: " + new_end);
 
         var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
             .OrderByDescending(s => s.Scrobble_Date)
+            .Include(s => s.Song)
+            .ThenInclude(s => s.Album)
+            .ThenInclude(a => a.Artist)
             .ToListAsync();
 
         return scrobbles;
     }
 
-    public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, int n, DateTime start, DateTime end)
+    public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, DateTime start, DateTime end)
     {
-        var data = await _context.Scrobbles
-            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+        var start_date = start.ToUniversalTime();
+        var end_date = end.ToUniversalTime();
+        
+        var groupings = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
+            .Include(s => s.Song.Album.Artist)
             .GroupBy(s => s.Song)
+            .ToListAsync();
+
+        var data = groupings
             .Select(s => new SongScrobbleCount
             {
                 Song = s.Key,
                 Count = s.Count()
             })
             .OrderByDescending(s => s.Count)
-            .Take(n)
-            .ToListAsync();
+            .ToList();
         return data;
     }
 
-    public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, int n, DateTime start, DateTime end)
+    public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, DateTime start, DateTime end)
     {
-        var data = await _context.Scrobbles
-            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+        var start_date = start.ToUniversalTime();
+        var end_date = end.ToUniversalTime();
+        
+        var groupings = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
+            .Include(s => s.Song.Album.Artist)
             .GroupBy(s => s.Song.Album)
+            .ToListAsync();
+
+        var data = groupings
             .Select(s => new AlbumScrobbleCount
             {
                 Album = s.Key,
                 Count = s.Count()
             })
             .OrderByDescending(s => s.Count)
-            .Take(n)
-            .ToListAsync();
+            .ToList();
         return data;
     }
 
-    public async Task<List<ArtistScrobbleCount>> FetchTopNArtistsScrobbles(string userId, int n, DateTime start, DateTime end)
+    public async Task<List<ArtistScrobbleCount>> FetchTopNArtistsScrobbles(string userId, DateTime start, DateTime end)
     {
+        var start_date = start.ToUniversalTime();
+        var end_date = end.ToUniversalTime();
+        
         var data = await _context.Scrobbles
-            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .GroupBy(s => s.Song.Album.Artist)
             .Select(s => new ArtistScrobbleCount
             {
@@ -88,7 +110,6 @@ public class ScrobbleService
                 Count = s.Count()
             })
             .OrderByDescending(s => s.Count)
-            .Take(n)
             .ToListAsync();
         return data;
     }
@@ -248,8 +269,7 @@ public class ScrobbleService
             ?? await CreateSong(spotify_songId, spotify_albumId, spotify_artistId);
         if (song != null)
         {
-            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
-                DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc);
+            var date = DateTime.Now.ToUniversalTime();
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             var scrobble = new Scrobble
             {

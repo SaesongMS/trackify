@@ -19,8 +19,10 @@ public class RecentScrobblesResponse
 public class IntervalScrobblesRequest
 {
     [Required]
-    public DateTime Start { get; set; } = DateTime.Now;
-    public DateTime End { get; set; } = DateTime.Now;
+    public string Id { get; set; } = string.Empty;
+    [Required]
+    public DateTime Start { get; set; } = DateTime.Now.ToUniversalTime();
+    public DateTime End { get; set; } = DateTime.Now.ToUniversalTime();
     
 }
 
@@ -46,8 +48,6 @@ public class NIntervalTopUserScrobblesRequest
     [Required]
     public DateTime Start { get; set; } = DateTime.Now;
     public DateTime End { get; set; } = DateTime.Now;
-    [Required]
-    public int N { get; set; } = 1;
     [Required]
     public string Id { get; set; }
 }
@@ -113,7 +113,7 @@ public class DeleteScrobbleResponse
 
 public class TopNSongsScrobblesResponse
 {
-    public List<SongScrobbleCount> TopSongs {get; set;}
+    public List<SongScrobbleCount> Songs {get; set;}
     public bool Success { get; set; }
 }
 public class SongScrobbleCount
@@ -123,7 +123,7 @@ public class SongScrobbleCount
 }
 public class TopNAlbumsScrobblesResponse
 {
-    public List<AlbumScrobbleCount> TopAlbums {get; set;}
+    public List<AlbumScrobbleCount> Albums {get; set;}
     public bool Success { get; set; }
 }
 public class AlbumScrobbleCount
@@ -133,7 +133,7 @@ public class AlbumScrobbleCount
 }
 public class TopNArtistsScrobblesResponse
 {
-    public List<ArtistScrobbleCount> TopArtists {get; set;}
+    public List<ArtistScrobbleCount> Artists {get; set;}
     public bool Success { get; set; }
 }
 public class ArtistScrobbleCount

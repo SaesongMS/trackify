@@ -5,9 +5,7 @@ function ScrobbleRow(props) {
     const currentDate = new Date();
     const scrobbleDateObject = new Date(scrobbleDate);
 
-    const timeZoneOffset = currentDate.getTimezoneOffset() * 60000;
-
-    const timeDifference = currentDate - scrobbleDateObject - timeZoneOffset;
+    const timeDifference = currentDate - scrobbleDateObject;
 
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);

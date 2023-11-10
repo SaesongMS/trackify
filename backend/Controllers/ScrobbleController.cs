@@ -43,15 +43,13 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("interval")]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("interval")]
     public async Task<IActionResult> GetScrobblesInInterval([FromBody] IntervalScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            var scrobbles = await _scrobbleService.GetScrobblesInInterval(user.Id, request.Start, request.End);
+            var scrobbles = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End);
             return Ok(new IntervalScrobblesResponse
             {
                 Success = true,
@@ -138,17 +136,17 @@ public class ScrobblesController : ControllerBase
     }
 
     //top for one user
-    //uses N and interval
-    [HttpGet("top-songs")]
+    //uses interval
+    [HttpPost("top-songs")]
     public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
@@ -157,16 +155,16 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [HttpGet("top-albums")]
+    [HttpPost("top-albums")]
     public async Task<IActionResult> GetTopUsersAlbums([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
@@ -175,16 +173,16 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [HttpGet("top-artists")]
+    [HttpPost("top-artists")]
     public async Task<IActionResult> GetTopUsersArtists([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
@@ -204,7 +202,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
@@ -222,7 +220,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
@@ -240,7 +238,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
@@ -260,7 +258,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
@@ -278,7 +276,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
@@ -296,7 +294,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
@@ -316,7 +314,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
@@ -334,7 +332,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
@@ -352,7 +350,7 @@ public class ScrobblesController : ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)

@@ -20,23 +20,25 @@ function UserPageMain() {
         n: 8,
         id: profile().id,
       });
-      setAlbums(albumsData.topAlbums);
+      setAlbums(albumsData.albums);
 
       const songsData = await postData("scrobbles/top-n-songs", {
         n: 8,
         id: profile().id,
       });
-      setSongs(songsData.topSongs);
+      console.log(songsData);
+      setSongs(songsData.songs);
 
       const artistsData = await postData("scrobbles/top-n-artists", {
         n: 8,
         id: profile().id,
       });
-      setArtists(artistsData.topArtists);
+      setArtists(artistsData.artists);
     }
   }, [profile()]);
 
   createEffect(async () => {
+    console.log(params.username);
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
   });

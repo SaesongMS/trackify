@@ -1,6 +1,22 @@
 import Counter from "./counter";
+import { createEffect, createSignal } from "solid-js";
 function InfoBar(props){
-    const { username, date, trackCount, artistCount, songsCount, topArtistImage, ...others } = props;
+    const {topArtistImage, ...others} = props;
+    const [username, setUsername] = createSignal(null);
+    const [date, setDate] = createSignal(null);
+    const [trackCount, setTrackCount] = createSignal(null);
+    const [artistCount, setArtistCount] = createSignal(null);
+    const [songsCount, setSongsCount] = createSignal(null);
+    // const [topArtistImage, setTopArtistImage] = createSignal(null);
+
+    createEffect(() => {
+        setUsername(props.username);
+        setDate(props.date);
+        setTrackCount(props.trackCount);
+        setArtistCount(props.artistCount);
+        setSongsCount(props.songsCount);
+    }, [props]);
+    
     return(
       <div class="h-[80%] bg-no-repeat bg-cover" style={`background-image: url(${topArtistImage})`}>
 

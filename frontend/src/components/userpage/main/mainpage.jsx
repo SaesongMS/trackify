@@ -1,13 +1,17 @@
 import ScrobbleRow from "./scrobbleRow";
 import Card from "./card";
 import Comment from "./comment";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
 
 function MainPage(props) {
   const { loggedUser } = props;
   const [comments, setComments] = createSignal(props.comments);
   const [comment, setComment] = createSignal("");
+
+  createEffect(() => {
+    setComments(props.comments);
+  }, [props.comments]);
 
   const handleDeleteComment = (commentId) => {
     setComments(comments().filter((comment) => comment.id !== commentId));
