@@ -84,7 +84,7 @@ function ScrobbleLibrary() {
             <a href={`/user/${params.username}/library/albums`}>Albums</a>
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
-          <div class="border-l-2 w-[37%] p-6 h-[100%]">
+          <div class="w-[37%] p-6 h-[100%]">
             <div class="flex flex-col space-y-2 mt-2">
               {slicedScrobbles() != null &&
                 slicedScrobbles().map((scrobble) => (

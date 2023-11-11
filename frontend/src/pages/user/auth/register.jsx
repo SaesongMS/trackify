@@ -37,7 +37,6 @@ function Register() {
 
   createEffect(() => {
     if (user() !== null) {
-      alert("You are already logged in!");
       navigate(`/user/${user().userName}/main`);
     }
   });

@@ -8,6 +8,7 @@ function Search() {
   const [results, setResults] = createSignal([]);
   const handleClick = async (e) => {
     e.preventDefault();
+    if (query() === "") return alert("Please enter a search query");
     const response = await getData(`search/${query()}`);
     setResults(response);
   };
@@ -20,7 +21,7 @@ function Search() {
           onInput={(e) => setQuery(e.target.value)}
         />
         <button class="h-10 mt-3 ml-3" onClick={handleClick}>
-          Sent query
+          Search
         </button>
       </div>
       <div>

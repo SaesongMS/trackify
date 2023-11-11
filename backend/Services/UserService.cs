@@ -125,11 +125,16 @@ public class UserService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
         if (user == null) return 404;
-
         else if (roles.Contains("Admin") || user.Id == userId)
         {
             user.Bio = Bio;
-            user.Avatar = Convert.FromBase64String(Avatar);
+
+            if (!string.IsNullOrEmpty(Avatar))
+            {
+                Avatar = CleanBase64String(Avatar);
+                user.Avatar = Convert.FromBase64String(Avatar);
+            }
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -168,5 +173,10 @@ public class UserService
         if (users != null)
             return users;
         return null!;
+    }
+
+    private string CleanBase64String(string base64String)
+    {
+        return base64String[(base64String.IndexOf(',') + 1)..];
     }
 }
