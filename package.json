@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@rturnq/solid-router": "^0.3.0"
+    "@rturnq/solid-router": "^0.3.0",
+    "expo": "^49.0.18"
   }
 }
