@@ -358,4 +358,76 @@ public class ScrobblesController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpGet("song/{name}")]
+    public async Task<IActionResult> GetSongByName(string name)
+    {
+        try
+        {
+            var song = await _scrobbleService.GetSongByName(name);
+            return Ok(new SongResponse
+            {
+                Success = true,
+                Song = song
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("album/{name}")]
+    public async Task<IActionResult> GetAlbumByName(string name)
+    {
+        try
+        {
+            var album = await _scrobbleService.GetAlbumByName(name);
+            return Ok(new AlbumResponse
+            {
+                Success = true,
+                Album = album
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("artist/{name}")]
+    public async Task<IActionResult> GetArtistByName(string name)
+    {
+        try
+        {
+            var artist = await _scrobbleService.GetArtistByName(name);
+            return Ok(new ArtistResponse
+            {
+                Success = true,
+                Artist = artist
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("top-n-songs-by-artist")]
+    public async Task<IActionResult> GetTopSongsByArtistName([FromBody] NIntervalTopSongsByArtistRequest request)
+    {
+        try
+        {
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobblesForArtist(request.N, request.Start, request.End, request.ArtistId);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                Songs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

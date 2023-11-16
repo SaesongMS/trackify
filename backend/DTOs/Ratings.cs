@@ -25,8 +25,8 @@ public class RatedSong
 
 public class NRatedUsersSongsResponse
 {
-        public List<RatedSong> RatedSongs {get; set;}
-        public bool Success { get; set; }
+    public List<RatedSong> RatedSongs { get; set; }
+    public bool Success { get; set; }
 }
 
 public class RatedAlbum
@@ -37,8 +37,8 @@ public class RatedAlbum
 
 public class RatedNUsersAlbumsResponse
 {
-        public List<RatedAlbum> RatedAlbums {get; set;}
-        public bool Success { get; set; }
+    public List<RatedAlbum> RatedAlbums { get; set; }
+    public bool Success { get; set; }
 }
 
 public class RatedArtist
@@ -49,8 +49,8 @@ public class RatedArtist
 
 public class RatedNUsersArtistsResponse
 {
-        public List<RatedArtist> RatedArtists {get; set;}
-        public bool Success { get; set; }
+    public List<RatedArtist> RatedArtists { get; set; }
+    public bool Success { get; set; }
 }
 
 public class AverageRatedSong
@@ -61,8 +61,8 @@ public class AverageRatedSong
 
 public class NRatedSongsResponse
 {
-        public List<AverageRatedSong> AverageRatedSongs {get; set;}
-        public bool Success { get; set; }
+    public List<AverageRatedSong> AverageRatedSongs { get; set; }
+    public bool Success { get; set; }
 }
 
 public class AverageRatedAlbum
@@ -73,8 +73,8 @@ public class AverageRatedAlbum
 
 public class NRatedAlbumsResponse
 {
-        public List<AverageRatedAlbum> AverageRatedAlbums {get; set;}
-        public bool Success { get; set; }
+    public List<AverageRatedAlbum> AverageRatedAlbums { get; set; }
+    public bool Success { get; set; }
 }
 
 public class AverageRatedArtist
@@ -101,5 +101,12 @@ public class CreateRateItemResponse
 {
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
+}
+
+public class CreateRateSongResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public SongRating SongRating { get; set; } = new SongRating();
 }
 

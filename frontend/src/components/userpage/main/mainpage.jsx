@@ -26,7 +26,7 @@ function MainPage(props) {
     });
 
     if (res.success) {
-      setComments([...comments(), res.profileComment]);
+      setComments([res.profileComment, ...comments()]);
       setComment("");
     }
   };
@@ -43,6 +43,7 @@ function MainPage(props) {
               mainText={topArtist.artist.name}
               rating={topArtist.rating}
               heart="heart"
+              subject="artist"
             />
           ))}
         </div>
@@ -56,6 +57,7 @@ function MainPage(props) {
               secText={topAlbum.album.artist.name}
               rating={topAlbum.rating}
               heart="heart"
+              subject="album"
             />
           ))}
         </div>
@@ -69,25 +71,23 @@ function MainPage(props) {
               secText={topSong.song.album.artist.name}
               rating={topSong.rating}
               heart="heart"
+              subject="song"
             />
           ))}
         </div>
         Comments
         <br />
         {loggedUser && (
-          <div class="flex h-[10%] pb-4 mt-4 mb-4">
-            <input
-              type="text"
-              class="border border-slate-700 w-[100%] bg-slate-700"
-              value={comment()}
-              onInput={(e) => setComment(e.target.value)}
-            />
-            <button
-              class="border border-slate-700 ml-4 p-4"
-              onClick={handleSendComment}
-            >
-              Send
-            </button>
+          <div class="h-[10%] pb-4 mt-4 mb-4">
+            <form onsubmit={handleSendComment} class="flex">
+              <input
+                type="text"
+                class="border border-slate-700 w-[100%] bg-slate-700"
+                value={comment()}
+                onInput={(e) => setComment(e.target.value)}
+              />
+              <button class="border border-slate-700 ml-4 p-4">Send</button>
+            </form>
           </div>
         )}
         {comments().map((comment) => (
@@ -104,6 +104,7 @@ function MainPage(props) {
             loggedUser={loggedUser}
             recipientId={comment.id_Recipient}
             onDelete={handleDeleteComment}
+            subject="profile"
           />
         ))}
       </div>
@@ -116,6 +117,7 @@ function MainPage(props) {
               heart="heart"
               title={scrobble.song.title}
               artist={scrobble.song.album.artist.name}
+              album={scrobble.song.album.name}
               rating="5/5"
               date={scrobble.scrobble_Date}
             />

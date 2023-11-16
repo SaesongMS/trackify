@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace Controllers;
 [ApiController]
 [Route("api/ratings")]
-public class RatingController: ControllerBase
+public class RatingController : ControllerBase
 {
     private readonly RatingService _ratingService;
     private readonly AuthenticationService _authenticationService;
@@ -26,24 +26,27 @@ public class RatingController: ControllerBase
     public async Task<IActionResult> RateSong([FromBody] CreateRateItemRequest request)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.CreateRatingForSong(request.ItemId, request.Rating, user.Id))
-                return Ok(new CreateRateItemResponse
+            var songRating = await _ratingService.CreateRatingForSong(request.ItemId, request.Rating, user.Id);
+            if (songRating != null)
+                return Ok(new CreateRateSongResponse
                 {
                     Success = true,
-                    Message = "Rating for this song was created successfully"
+                    Message = "Rating for this song was created successfully",
+                    SongRating = songRating
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating creation failed"
-                });
+            {
+                Success = false,
+                Message = "Rating creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -55,21 +58,21 @@ public class RatingController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.CreateRatingForAlbum(request.ItemId, request.Rating, user.Id))
+            if (await _ratingService.CreateRatingForAlbum(request.ItemId, request.Rating, user.Id))
                 return Ok(new CreateRateItemResponse
                 {
                     Success = true,
                     Message = "Rating for this album was created successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating creation failed"
-                });
+            {
+                Success = false,
+                Message = "Rating creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -81,100 +84,102 @@ public class RatingController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.CreateRatingForArtist(request.ItemId, request.Rating, user.Id))
+            if (await _ratingService.CreateRatingForArtist(request.ItemId, request.Rating, user.Id))
                 return Ok(new CreateRateItemResponse
                 {
                     Success = true,
                     Message = "Rating for this artist was created successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating creation failed"
-                });
+            {
+                Success = false,
+                Message = "Rating creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
 
     [HttpPatch("rerate-song")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-     public async Task<IActionResult> RerateSong([FromBody] CreateRateItemRequest request)
+    public async Task<IActionResult> RerateSong([FromBody] CreateRateItemRequest request)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.ModifyRatingForSong(request.ItemId, request.Rating, user.Id))
-                return Ok(new CreateRateItemResponse
+            var songRating = await _ratingService.ModifyRatingForSong(request.ItemId, request.Rating, user.Id);
+            if (songRating != null)
+                return Ok(new CreateRateSongResponse
                 {
                     Success = true,
-                    Message = "Rating for this song was edited successfully"
+                    Message = "Rating for this song was edited successfully",
+                    SongRating = songRating
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating edition failed"
-                });
+            {
+                Success = false,
+                Message = "Rating edition failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
     [HttpPatch("rerate-album")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-     public async Task<IActionResult> RerateAlbum([FromBody] CreateRateItemRequest request)
+    public async Task<IActionResult> RerateAlbum([FromBody] CreateRateItemRequest request)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.ModifyRatingForAlbum(request.ItemId, request.Rating, user.Id))
+            if (await _ratingService.ModifyRatingForAlbum(request.ItemId, request.Rating, user.Id))
                 return Ok(new CreateRateItemResponse
                 {
                     Success = true,
                     Message = "Rating for this album was edited successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating edition failed"
-                });
+            {
+                Success = false,
+                Message = "Rating edition failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
     [HttpPatch("rerate-artist")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-     public async Task<IActionResult> RerateArtist([FromBody] CreateRateItemRequest request)
+    public async Task<IActionResult> RerateArtist([FromBody] CreateRateItemRequest request)
     {
         var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _ratingService.ModifyRatingForArtist(request.ItemId, request.Rating, user.Id))
+            if (await _ratingService.ModifyRatingForArtist(request.ItemId, request.Rating, user.Id))
                 return Ok(new CreateRateItemResponse
                 {
                     Success = true,
                     Message = "Rating for this artist was edited successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Rating edition failed"
-                });
+            {
+                Success = false,
+                Message = "Rating edition failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -193,7 +198,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -211,7 +216,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -229,7 +234,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -249,7 +254,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -267,7 +272,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -285,7 +290,7 @@ public class RatingController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 }

@@ -1,5 +1,3 @@
-import logo from "./logo.svg";
-import styles from "./App.module.css";
 import UserSettings from "./pages/user/user-settings";
 import UserPageMain from "./pages/user/userpagemain";
 import UserPageFollowers from "./pages/user/userPageFollowers";
@@ -9,10 +7,10 @@ import Navbar from "./components/navbar";
 import Search from "./pages/search/search";
 import Login from "./pages/user/auth/login";
 import Register from "./pages/user/auth/register";
-
 import { Router, Route, Routes } from "@solidjs/router";
 import ScrobbleLibrary from "./pages/user/library/scrobbleLibrary";
 import SubjectLibrary from "./pages/user/library/subjectLibrary";
+import SubjectPage from "./pages/subject/subject";
 
 function App() {
   return (
@@ -44,6 +42,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/:subject/:name" element={<SubjectPage />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>

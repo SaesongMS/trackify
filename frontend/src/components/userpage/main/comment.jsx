@@ -12,12 +12,13 @@ function Comment(props) {
     recipientId,
     commentId,
     onDelete,
+    subject,
     ...others
   } = props;
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    await deleteData(`comments/profile/${commentId}`);
+    await deleteData(`comments/${subject}/${commentId}`);
     onDelete(commentId);
   };
 
@@ -26,7 +27,7 @@ function Comment(props) {
   const handleUserClick = (e) => {
     e.preventDefault();
     navigate(`/user/${username}/main`);
-  }
+  };
 
   return (
     <div class="flex w-[100%] h-[10%] border border-slate-800 rounded-sm hover:border-slate-500 transition-all duration-200">

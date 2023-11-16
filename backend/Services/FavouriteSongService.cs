@@ -14,13 +14,13 @@ public class FavouriteSongService
 
     }
 
-    public async Task<bool> AddFavouriteSong(string songId, User user)
+    public async Task<FavouriteSong?> AddFavouriteSong(string songId, User user)
     {
         //song doesn't exist -> return false
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
-        if (song == null) return false;
+        if (song == null) return null;
         //song already in favourites for this user -> return false
-        if (await _context.FavouriteSongs.FirstOrDefaultAsync(fs => fs.Id_Song_Internal == songId && fs.Id_User == user.Id) != null) return false;
+        if (await _context.FavouriteSongs.FirstOrDefaultAsync(fs => fs.Id_Song_Internal == songId && fs.Id_User == user.Id) != null) return null;
         //else add song to favourites:
         var favouriteSong = new FavouriteSong
         {
@@ -32,17 +32,17 @@ public class FavouriteSongService
         };
         await _context.FavouriteSongs.AddAsync(favouriteSong);
         await _context.SaveChangesAsync();
-        return true;
+        return favouriteSong;
     }
 
-    public async Task<bool> DeleteFavouriteSong(string songId, User user)
+    public async Task<FavouriteSong?> DeleteFavouriteSong(string songId, User user)
     {
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
-        if (song == null) return false;
+        if (song == null) return null;
         var favouriteSong = await _context.FavouriteSongs.FirstOrDefaultAsync(fs => fs.Id_Song_Internal == songId && fs.Id_User == user.Id);
-        if (favouriteSong == null) return false;
+        if (favouriteSong == null) return null;
         _context.FavouriteSongs.Remove(favouriteSong);
         await _context.SaveChangesAsync();
-        return true;
+        return favouriteSong;
     }
 }

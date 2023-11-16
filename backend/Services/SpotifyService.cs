@@ -69,7 +69,7 @@ public class SpotifyService
                 Description = ""
             };
         }
-        
+
         return null;
     }
 
@@ -95,7 +95,7 @@ public class SpotifyService
             };
             return album;
         }
-        
+
         return null;
     }
 
@@ -119,9 +119,9 @@ public class SpotifyService
                 Album = album
             };
         }
-        
+
         return null;
     }
 
-    
+
 }

@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231116080324_AddedAlbumArtistCommentRatingFK")]
+    partial class AddedAlbumArtistCommentRatingFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,19 +221,19 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id_album_internal");
 
-                    b.Property<string>("Id_Sender")
+                    b.Property<string>("Id_User")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id_sender");
+                        .HasColumnName("id_user");
 
-                    b.Property<string>("SenderId")
+                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("albumsComment", (string)null);
                 });
@@ -324,19 +327,19 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id_artist_internal");
 
-                    b.Property<string>("Id_Sender")
+                    b.Property<string>("Id_User")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id_sender");
+                        .HasColumnName("id_user");
 
-                    b.Property<string>("SenderId")
+                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ArtistId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("artistsComment", (string)null);
                 });
@@ -767,13 +770,13 @@ namespace backend.Migrations
                         .WithMany("AlbumComments")
                         .HasForeignKey("AlbumId");
 
-                    b.HasOne("Models.User", "Sender")
+                    b.HasOne("Models.User", "User")
                         .WithMany("AlbumComments")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Album");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Models.AlbumRating", b =>
@@ -797,13 +800,13 @@ namespace backend.Migrations
                         .WithMany("ArtistComments")
                         .HasForeignKey("ArtistId");
 
-                    b.HasOne("Models.User", "Sender")
+                    b.HasOne("Models.User", "User")
                         .WithMany("ArtistComments")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Artist");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Models.ArtistRating", b =>

@@ -43,3 +43,24 @@ public class CreateCommentResponse
 
     public ProfileComment? ProfileComment { get; set; }
 }
+
+public class CreateSongCommentResponse
+{
+    public string Message { get; set; } = string.Empty;
+    public bool Success { get; set; }
+    public SongComment? SongComment { get; set; }
+}
+
+public class CreateAlbumCommentResponse
+{
+    public string Message { get; set; } = string.Empty;
+    public bool Success { get; set; }
+    public AlbumComment? AlbumComment { get; set; }
+}
+
+public class CreateArtistCommentResponse
+{
+    public string Message { get; set; } = string.Empty;
+    public bool Success { get; set; }
+    public ArtistComment? ArtistComment { get; set; }
+}

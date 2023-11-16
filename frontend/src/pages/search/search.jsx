@@ -16,13 +16,13 @@ function Search() {
   return (
     <div>
       <div class="w-full h-20">
-        <input
-          class="h-10 mt-3 ml-3"
-          onInput={(e) => setQuery(e.target.value)}
-        />
-        <button class="h-10 mt-3 ml-3" onClick={handleClick}>
-          Search
-        </button>
+        <form onSubmit={handleClick}>
+          <input
+            class="h-10 mt-3 ml-3"
+            onInput={(e) => setQuery(e.target.value)}
+          />
+          <button class="h-10 mt-3 ml-3">Search</button>
+        </form>
       </div>
       <div>
         {results() && results().length > 0 && (

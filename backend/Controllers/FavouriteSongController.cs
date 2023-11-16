@@ -29,11 +29,13 @@ public class FavouriteSongController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _favouriteSongService.AddFavouriteSong(request.SongId, user))
+            var favouriteSong = await _favouriteSongService.AddFavouriteSong(request.SongId, user);
+            if (favouriteSong != null)
                 return Ok(new FavouriteSongResponse
                 {
                     Success = true,
-                    Message = "Song added to favourites successfully"
+                    Message = "Song added to favourites successfully",
+                    FavouriteSong = favouriteSong
                 });
             return BadRequest(new FavouriteSongResponse
             {
@@ -55,11 +57,13 @@ public class FavouriteSongController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _favouriteSongService.DeleteFavouriteSong(request.SongId, user))
+            var favouriteSong = await _favouriteSongService.DeleteFavouriteSong(request.SongId, user);
+            if (favouriteSong != null)
                 return Ok(new FavouriteSongResponse
                 {
                     Success = true,
-                    Message = "Song deleted from favourites successfully"
+                    Message = "Song deleted from favourites successfully",
+                    FavouriteSong = favouriteSong
                 });
             return BadRequest(new FavouriteSongResponse
             {

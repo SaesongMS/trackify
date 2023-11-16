@@ -23,7 +23,7 @@ public class IntervalScrobblesRequest
     [Required]
     public DateTime Start { get; set; } = DateTime.Now.ToUniversalTime();
     public DateTime End { get; set; } = DateTime.Now.ToUniversalTime();
-    
+
 }
 
 public class IntervalScrobblesResponse
@@ -40,7 +40,7 @@ public class NIntervalScrobblesRequest
     public DateTime End { get; set; } = DateTime.Now;
     [Required]
     public int N { get; set; } = 1;
-    
+
 }
 
 public class NIntervalTopUserScrobblesRequest
@@ -113,7 +113,7 @@ public class DeleteScrobbleResponse
 
 public class TopNSongsScrobblesResponse
 {
-    public List<SongScrobbleCount> Songs {get; set;}
+    public List<SongScrobbleCount> Songs { get; set; }
     public bool Success { get; set; }
 }
 public class SongScrobbleCount
@@ -123,7 +123,7 @@ public class SongScrobbleCount
 }
 public class TopNAlbumsScrobblesResponse
 {
-    public List<AlbumScrobbleCount> Albums {get; set;}
+    public List<AlbumScrobbleCount> Albums { get; set; }
     public bool Success { get; set; }
 }
 public class AlbumScrobbleCount
@@ -133,11 +133,43 @@ public class AlbumScrobbleCount
 }
 public class TopNArtistsScrobblesResponse
 {
-    public List<ArtistScrobbleCount> Artists {get; set;}
+    public List<ArtistScrobbleCount> Artists { get; set; }
     public bool Success { get; set; }
 }
 public class ArtistScrobbleCount
 {
     public Artist Artist { get; set; }
     public int Count { get; set; }
+}
+
+public class SongResponse
+{
+    public Song Song { get; set; }
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+public class AlbumResponse
+{
+    public Album Album { get; set; }
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+public class ArtistResponse
+{
+    public Artist Artist { get; set; }
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+public class NIntervalTopSongsByArtistRequest
+{
+    [Required]
+    public DateTime Start { get; set; } = DateTime.Now;
+    public DateTime End { get; set; } = DateTime.Now;
+    [Required]
+    public int N { get; set; } = 1;
+    [Required]
+    public string ArtistId { get; set; } = string.Empty;
 }

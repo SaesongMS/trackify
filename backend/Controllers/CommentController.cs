@@ -108,11 +108,13 @@ public class CommentController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _commentService.CreateSongComment(request.Comment, request.SongId, user))
-                return Ok(new CreateCommentResponse
+            var songComment = await _commentService.CreateSongComment(request.Comment, request.SongId, user);
+            if (songComment != null)
+                return Ok(new CreateSongCommentResponse
                 {
                     Success = true,
-                    Message = "Comment created successfully"
+                    Message = "Comment created successfully",
+                    SongComment = songComment
                 });
             return BadRequest(new CreateCommentResponse
             {
@@ -168,11 +170,13 @@ public class CommentController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _commentService.CreateAlbumComment(request.Comment, request.AlbumId, user))
-                return Ok(new CreateCommentResponse
+            var albumComment = await _commentService.CreateAlbumComment(request.Comment, request.AlbumId, user);
+            if (albumComment != null)
+                return Ok(new CreateAlbumCommentResponse
                 {
                     Success = true,
-                    Message = "Comment created successfully"
+                    Message = "Comment created successfully",
+                    AlbumComment = albumComment
                 });
             return BadRequest(new CreateCommentResponse
             {
@@ -228,11 +232,13 @@ public class CommentController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if (await _commentService.CreateArtistComment(request.Comment, request.ArtistId, user))
-                return Ok(new CreateCommentResponse
+            var artistComment = await _commentService.CreateArtistComment(request.Comment, request.ArtistId, user);
+            if (artistComment != null)
+                return Ok(new CreateArtistCommentResponse
                 {
                     Success = true,
-                    Message = "Comment created successfully"
+                    Message = "Comment created successfully",
+                    ArtistComment = artistComment
                 });
             return BadRequest(new CreateCommentResponse
             {

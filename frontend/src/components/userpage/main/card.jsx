@@ -1,19 +1,36 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { deleteData } from "../../../getUserData";
 
 function Card(props) {
   const { cover, mainText, secText, rating, heart, ...others } = props;
-
+  const [subject, setSubject] = createSignal(null);
+  const [url, setUrl] = createSignal(null);
   const handleDelete = async (e) => {
     e.preventDefault();
     await deleteData(`favourite-song/delete`, { songId: props.songId });
     props.handleDelete(props.songId);
   };
 
+  createEffect(() => {
+    setSubject(others.subject);
+  });
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (others.subject) {
+      //setUrl(`/${props.subject}/${props.mainText.replace(" ", "+")}`);
+      window.location.href = `/${subject()}/${props.mainText.replaceAll(
+        " ",
+        "+"
+      )}`;
+    }
+  };
+
   return (
     <div
-      class="flex-col border border-slate-700 w-[15%] aspect-square bg-no-repeat bg-cover"
+      class="flex-col border border-slate-700 w-[15%] aspect-square bg-no-repeat bg-cover hover:cursor-pointer"
       style={`background-image: url(${cover})`}
+      onclick={handleClick}
     >
       {/* <div class="h-[75%] w-[100%] border-b border-slate-700">
                 <img class="h-[100%] w-[100%]" src={cover} />

@@ -141,7 +141,7 @@ public class ArtistCommentMap
         entityBuilder.Property(t => t.Id).HasColumnName("id");
         entityBuilder.Property(t => t.Content).HasColumnName("content");
         entityBuilder.Property(t => t.Creation_Date).HasColumnName("creation_date");
-        entityBuilder.Property(t => t.Id_User).HasColumnName("id_user");
+        entityBuilder.Property(t => t.Id_Sender).HasColumnName("id_sender");
         entityBuilder.Property(t => t.Id_Artist_Internal).HasColumnName("id_artist_internal");
     }
 }
@@ -186,7 +186,7 @@ public class AlbumCommentMap
         entityBuilder.Property(t => t.Id).HasColumnName("id");
         entityBuilder.Property(t => t.Content).HasColumnName("content");
         entityBuilder.Property(t => t.Creation_Date).HasColumnName("creation_date");
-        entityBuilder.Property(t => t.Id_User).HasColumnName("id_user");
+        entityBuilder.Property(t => t.Id_Sender).HasColumnName("id_sender");
         entityBuilder.Property(t => t.Id_Album_Internal).HasColumnName("id_album_internal");
     }
 }
