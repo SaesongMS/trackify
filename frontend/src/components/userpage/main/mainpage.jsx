@@ -33,7 +33,7 @@ function MainPage(props) {
 
   return (
     <div class="flex h-[80%] text-slate-200">
-      <div class="w-[63%] p-6 overflow-scroll h-[100%]">
+      <div class="w-[63%] p-6 overflow-y-auto h-[100%]">
         Artist
         <br />
         <div class="flex w-[100%] space-x-4 mt-4 mb-4">
@@ -108,7 +108,7 @@ function MainPage(props) {
           />
         ))}
       </div>
-      <div class="border-l-2 w-[37%] p-6 h-[100%]">
+      <div class="border-l-2 w-[37%] p-6 h-[100%] overflow-y-auto">
         Scrobbles
         <div class="flex flex-col space-y-2 mt-2">
           {props.scrobbles.map((scrobble) => (
