@@ -19,7 +19,7 @@ function ChartsCol(props){
         <>
             <div class="mt-5">
                 <h1 class="text-xl font-bold text-center capitalize">{type}</h1>
-                <div class="mt-5">
+                <div class="my-5">
                     {subjects.map((subject, index) => (
                         renderList(subject, index)
                     ))}

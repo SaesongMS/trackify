@@ -242,8 +242,12 @@ public class RatingService
 
     public async Task<List<AverageRatedSong>> FetchHighestRatedSongs(int n)
     {
-        var data = await _context.SongRatings
+        var groupings = await _context.SongRatings
+            .Include(s => s.Song.Album.Artist)
             .GroupBy(s => s.Song)
+            .ToListAsync();
+
+        var data = groupings
             .Select(group => new AverageRatedSong
             {
                 Song = group.Key,
@@ -251,14 +255,18 @@ public class RatingService
             })
             .OrderByDescending(s => s.Rating)
             .Take(n)
-            .ToListAsync();
+            .ToList();
         return data;
     }
 
     public async Task<List<AverageRatedAlbum>> FetchHighestRatedAlbums(int n)
     {
-        var data = await _context.AlbumRatings
+        var groupings = await _context.AlbumRatings
+            .Include(s => s.Album.Artist)
             .GroupBy(s => s.Album)
+            .ToListAsync();
+        
+        var data = groupings
             .Select(group => new AverageRatedAlbum
             {
                 Album = group.Key,
@@ -266,7 +274,8 @@ public class RatingService
             })
             .OrderByDescending(s => s.Rating)
             .Take(n)
-            .ToListAsync();
+            .ToList();
+            
         return data;
     }
 

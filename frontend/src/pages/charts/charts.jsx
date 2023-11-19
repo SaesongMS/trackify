@@ -1,8 +1,9 @@
-import { createComputed, createEffect, createSignal } from "solid-js"
+import { createComputed, createEffect, createRenderEffect, createSignal } from "solid-js"
 import { getData, postData } from "../../getUserData"
 import calendar from '../../assets/icons/calendar.svg'
-import ChartsRow from "../../components/chartspage/chartsrow"
 import ChartsCol from "../../components/chartspage/chartscol"
+import ChartsRow from "../../components/chartspage/chartsrow"
+import SearchCard from "../../components/searchpage/searchcard"
 
 function Charts() {
     
@@ -14,11 +15,8 @@ function Charts() {
     const [isOpen, setIsOpen] = createSignal(false)
 
     const handleSelect = (interval) => {
-        console.log("before-prop : "+interval)
-        console.log("before: "+popularInterval())
         setPopularInterval(interval);
         setIsOpen(false);
-        console.log("after: "+popularInterval())
     };
 
     const getInterval = (interval) => {
@@ -52,15 +50,16 @@ function Charts() {
 
     const getPopularArtists = async (i) => {
         setPopularArtists([])
-        console.log(i)
         const interval = getInterval(i)
-        console.log(interval)
-        console.log(new Date())
         const response = await postData("scrobbles/top-artists-all", {start: interval, end: new Date(), n:10})
         setPopularArtists(response.artists)
-        console.log(response.artists)
-        console.log(popularArtists())
     }
+
+    // createRenderEffect(() => {
+    //     getPopularSongs(popularInterval())
+    //     getPopularAlbums(popularInterval())
+    //     getPopularArtists(popularInterval())
+    // })
 
     createComputed(() => getPopularSongs(popularInterval()))
     createComputed(() => getPopularAlbums(popularInterval()))
@@ -93,7 +92,7 @@ function Charts() {
 
     createEffect(() => {
         getLikedSongs()
-    }, [])
+    })
 
     //#endregion
 
@@ -123,51 +122,130 @@ function Charts() {
         getRatedArtists()
     }, [])
 
+    // createRenderEffect(() => {
+    //     getRatedSongs()
+    //     getRatedAlbums()
+    //     getRatedArtists()
+    // })
+
     //#endregion
   
     return (
-        <div class="flex flex-col overflow-y-auto w-full">
-            {/* #region Liked*/}
-            <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
-                <div class="mt-5 w-[80%] mx-auto">
-                    <div class="flex flex-row justify-between">
-                        <h1 class="text-2xl font-bold">Most popular</h1>
-                        <div class="relative">
-                            <button onClick={() => setIsOpen(!isOpen())} ref={ref} class="h-10 ml-auto p-5 justify-center items-center flex hover:underline">
-                                <span class="mr-2 text-lg capitalize font-bold">{popularInterval}</span>
-                                <img src={calendar} alt="calendar" class="w-6 h-6" />
-                            </button>
-                            {isOpen() && (
-                            <div class="absolute right-0 w-24 bg-white border rounded shadow-xl">
-                                <button onClick={() => handleSelect('day')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Day</button>
-                                <button onClick={() => handleSelect('week')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Week</button>
-                                <button onClick={() => handleSelect('month')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Month</button>
-                                <button onClick={() => handleSelect('year')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Year</button>
+        <>
+            <div class="flex flex-col overflow-y-auto w-full">
+                {/* <div class="flex flex-row justify-between items-center w-[80%] mx-auto">
+                    <a href="#liked" class="text-lg font-bold hover:underline">Jump to Most Liked</a>
+                    <a href="#rated" class="text-lg font-bold hover:underline">Jump to Top Rated</a>
+                </div> */}
+                <section id="popular">
+                    <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                        <div class="mt-5 w-[80%] mx-auto">
+                            <div class="flex flex-row justify-between">
+                                <h1 class="text-2xl font-bold">Most popular</h1>
+                                <div class="relative">
+                                    <button onClick={() => setIsOpen(!isOpen())} ref={ref} class="h-10 ml-auto p-5 justify-center items-center flex hover:underline">
+                                        <span class="mr-2 text-lg capitalize font-bold">{popularInterval}</span>
+                                        <img src={calendar} alt="calendar" class="w-6 h-6" />
+                                    </button>
+                                    {isOpen() && (
+                                    <div class="absolute right-0 w-24 bg-white border rounded shadow-xl">
+                                        <button onClick={() => handleSelect('day')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Day</button>
+                                        <button onClick={() => handleSelect('week')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Week</button>
+                                        <button onClick={() => handleSelect('month')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Month</button>
+                                        <button onClick={() => handleSelect('year')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Year</button>
+                                    </div>
+                                    )}
+                                </div>
                             </div>
-                            )}
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-6 p-5">
+                            <div>
+                                {popularSongs().length>0 && (
+                                    <ChartsCol subjects={popularSongs()} type="songs" />
+                                )}
+                            </div>
+                            <div>
+                                {popularAlbums().length>0 && (
+                                    <ChartsCol subjects={popularAlbums()} type="albums" />
+                                )}
+                            </div>
+                            <div>
+                                {popularArtists().length>0 && (
+                                    <ChartsCol subjects={popularArtists()} type="artists" />
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-6 p-5">
-                    <div>
-                        {popularSongs().length>0 && (
-                            <ChartsCol subjects={popularSongs()} type="songs" />
-                        )}
+                </section>
+                <section id="liked">
+                    <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                        <div class="mt-5 w-[80%] mx-auto">
+                            <h1 class="text-2xl font-bold flex">Most liked songs</h1>
+                        </div>
+                        {likedSongs().length>0 &&
+                        <>
+                            <div class="my-5 flex xl:justify-center xl:items-center xl:mx-auto">
+                                <p class="w-8 text-xl font-bold">1.</p>
+                                <img onClick={(event) => handleClick(event, type, textMain)} src={`data:image/png;base64,${likedSongs()[0].song.album.cover}`} alt="cover" class="ml-2 w-32 h-32 rounded-md cursor-pointer" />
+                                <div class="ml-3 flex flex-col">
+                                    <p onClick={(event) => handleClick(event, type, textMain)} class="mr-2 truncate w-72 lg:w-56 xl:w-60 font-bold cursor-pointer">{likedSongs()[0].song.title}</p>
+                                    <p onClick={(event) => handleClick(event, typeSecondary, textSecondary)} class="mr-2 truncate w-72 lg:w-56 xl:w-60 cursor-pointer">{likedSongs()[0].song.album.artist.name}</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 xl:grid-cols-3 mt-5">
+                                
+                                    {likedSongs().slice(1).map((song, index) => (
+                                        <ChartsRow photo={song.song.album.cover} textMain={song.song.title} textSecondary={song.song.album.artist.name} type={"song"} typeSecondary={"artist"} index={index+1} />
+                                    ))}
+                            </div>
+                        </>
+                        }
                     </div>
-                    <div>
-                        {popularAlbums().length>0 && (
-                            <ChartsCol subjects={popularAlbums()} type="albums" />
-                        )}
+                </section>
+                {/* <section id="liked2">
+                    <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                        <div class="mt-5 w-[80%] mx-auto">
+                            <h1 class="text-2xl font-bold flex justify-center items-center">Most liked songs</h1>
+                        </div>
+                        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
+                            {likedSongs().length>0 && 
+                                likedSongs().map((subject) => (
+                                    <div class="mt-5 w-[80%] h-[80%] mx-auto">
+                                        <SearchCard photo={subject.song.album.cover} name={subject.song.title} subject="song" />
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
-                    <div>
-                        {popularArtists().length>0 && (
-                            <ChartsCol subjects={popularArtists()} type="artists" />
-                        )}
+                </section> */}
+                <section id="rated" class="mb-10">
+                <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                        <div class="mt-5 w-[80%] mx-auto">
+                            <div class="flex flex-row justify-between">
+                                <h1 class="text-2xl font-bold">Top rated</h1>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-6 p-5">
+                            <div>
+                                {ratedSongs().length>0 && (
+                                    <ChartsCol subjects={ratedSongs()} type="songs" />
+                                )}
+                            </div>
+                            <div>
+                                {ratedAlbums().length>0 && (
+                                    <ChartsCol subjects={ratedAlbums()} type="albums" />
+                                )}
+                            </div>
+                            <div>
+                                {ratedArtists().length>0 && (
+                                    <ChartsCol subjects={ratedArtists()} type="artists" />
+                                )}
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
             </div>
-            {/* #endregion */}
-        </div>
+        </>
   );
 }
 

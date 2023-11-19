@@ -90,7 +90,7 @@ public class UserService
                 Id_Artist_Internal = ar.Id_Artist_Internal,
                 Artist = ar.Artist
             }).ToListAsync();
-            var favouriteSongs = await _context.FavouriteSongs.Where(fs => fs.Id_User == user.Id).Select(fs => new FavouriteSongs
+            var favouriteSongs = await _context.FavouriteSongs.Where(fs => fs.Id_User == user.Id).Include(a => a.Song).ThenInclude(a => a.Album).ThenInclude(a => a.Artist).Select(fs => new FavouriteSongs
             {
                 Id_Song = fs.Song.Id,
                 Id_Song_Internal = fs.Id_Song_Internal,

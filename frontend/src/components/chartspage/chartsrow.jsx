@@ -11,7 +11,7 @@ function ChartsRow(props){
     
     return(
         <>
-            <div class="flex flex-row items-center justify-center mb-4">
+            <div class="flex flex-row items-center mb-4">
                 <p class="w-8">{(index+1)}.</p>
                 <img onClick={(event) => handleClick(event, type, textMain)} src={`data:image/png;base64,${photo}`} alt="cover" class="ml-2 w-20 h-20 rounded-md cursor-pointer" />
                 <div class="ml-3 flex flex-col">
