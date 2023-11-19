@@ -32,7 +32,7 @@ function ScrobbleRow(props) {
         class="mr-4 cursor-pointer w-[10%] hover:opacity-80 transition-all duration-150"
         src={`data:image/png;base64,${albumCover}`}
         onClick={() =>
-          (window.location.href = `/album/${album.replaceAll(" ", "+")}`)
+          (window.location.href = `/song/${title.replaceAll(" ", "+")}`)
         }
       />
       <span class="mr-4 cursor-pointer">
