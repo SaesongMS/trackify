@@ -50,6 +50,8 @@ public class FavouriteSongService
     {
         return await _context.FavouriteSongs
             .Include(fs => fs.Song)
+            .ThenInclude(s => s.Album)
+            .ThenInclude(a => a.Artist)
             .Include(fs => fs.User)
             .OrderByDescending(fs => fs.User.Followers.Count)
             .Take(count)
