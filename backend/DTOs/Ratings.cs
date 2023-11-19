@@ -110,3 +110,21 @@ public class CreateRateSongResponse
     public SongRating SongRating { get; set; } = new SongRating();
 }
 
+public class HighestRatedSongsResponse
+{
+    public List<AverageRatedSong> HighestRatedSongs { get; set; } = new List<AverageRatedSong>();
+    public bool Success { get; set; }
+}
+
+public class HighestRatedAlbumsResponse
+{
+    public List<AverageRatedAlbum> HighestRatedAlbums { get; set; } = new List<AverageRatedAlbum>();
+    public bool Success { get; set; }
+}
+
+public class HighestRatedArtistsResponse
+{
+    public List<AverageRatedArtist> HighestRatedArtists { get; set; } = new List<AverageRatedArtist>();
+    public bool Success { get; set; }
+}
+

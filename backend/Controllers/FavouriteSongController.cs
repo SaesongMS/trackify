@@ -76,4 +76,31 @@ public class FavouriteSongController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    //for all users
+    //most liked songs
+    [HttpGet("most-liked")]
+    public async Task<ActionResult> GetMostLikedSongs()
+    {
+        try
+        {
+            var songs = await _favouriteSongService.GetMostLikedSongs(10);
+            if (songs != null)
+                return Ok(new FavouriteSongListResponse
+                {
+                    Success = true,
+                    Message = "Songs retrieved successfully",
+                    FavouriteSongs = songs
+                });
+            return BadRequest(new FavouriteSongListResponse
+            {
+                Success = false,
+                Message = "Failed to retrieve songs"
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

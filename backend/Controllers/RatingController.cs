@@ -293,4 +293,60 @@ public class RatingController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    //for all users
+    //highest rated
+    [HttpPost("highest-rated-songs")]
+    public async Task<IActionResult> GetHighestRatedSongs([FromBody] NRatedItemsRequest request)
+    {
+        try
+        {
+            List<AverageRatedSong> ratedSongs = await _ratingService.FetchHighestRatedSongs(request.N);
+            return Ok(new NRatedSongsResponse
+            {
+                Success = true,
+                AverageRatedSongs = ratedSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("highest-rated-albums")]
+    public async Task<IActionResult> GetHighestRatedAlbums([FromBody] NRatedItemsRequest request)
+    {
+        try
+        {
+            List<AverageRatedAlbum> ratedAlbums = await _ratingService.FetchHighestRatedAlbums(request.N);
+            return Ok(new NRatedAlbumsResponse
+            {
+                Success = true,
+                AverageRatedAlbums = ratedAlbums
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("highest-rated-artists")]
+    public async Task<IActionResult> GetHighestRatedArtists([FromBody] NRatedItemsRequest request)
+    {
+        try
+        {
+            List<AverageRatedArtist> ratedArtists = await _ratingService.FetchHighestRatedArtists(request.N);
+            return Ok(new NRatedArtistsResponse
+            {
+                Success = true,
+                AverageRatedArtists = ratedArtists
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

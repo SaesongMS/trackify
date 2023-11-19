@@ -45,4 +45,14 @@ public class FavouriteSongService
         await _context.SaveChangesAsync();
         return favouriteSong;
     }
+
+    public async Task<List<FavouriteSong>> GetMostLikedSongs(int count)
+    {
+        return await _context.FavouriteSongs
+            .Include(fs => fs.Song)
+            .Include(fs => fs.User)
+            .OrderByDescending(fs => fs.User.Followers.Count)
+            .Take(count)
+            .ToListAsync();
+    }
 }

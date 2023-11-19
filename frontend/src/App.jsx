@@ -11,6 +11,7 @@ import { Router, Route, Routes } from "@solidjs/router";
 import ScrobbleLibrary from "./pages/user/library/scrobbleLibrary";
 import SubjectLibrary from "./pages/user/library/subjectLibrary";
 import SubjectPage from "./pages/subject/subject";
+import Charts from "./pages/charts/charts";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="/" element={<div></div>} />
         <Route path="/search" element={<Search />} />
         <Route path="/search/:query" element={<Search />} />
-        <Route path="/charts" element={<div></div>} />
+        <Route path="/charts" element={Charts} />
         <Route path="/user/settings" element={<UserSettings />} />
         <Route path="/user/:username/main" element={<UserPageMain />} />
         <Route path="/user/:username/library" element={<ScrobbleLibrary />} />

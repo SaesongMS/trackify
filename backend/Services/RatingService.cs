@@ -239,4 +239,50 @@ public class RatingService
 
         return false;
     }
+
+    public async Task<List<AverageRatedSong>> FetchHighestRatedSongs(int n)
+    {
+        var data = await _context.SongRatings
+            .GroupBy(s => s.Song)
+            .Select(group => new AverageRatedSong
+            {
+                Song = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<AverageRatedAlbum>> FetchHighestRatedAlbums(int n)
+    {
+        var data = await _context.AlbumRatings
+            .GroupBy(s => s.Album)
+            .Select(group => new AverageRatedAlbum
+            {
+                Album = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<AverageRatedArtist>> FetchHighestRatedArtists(int n)
+    {
+        var data = await _context.ArtistRatings
+            .GroupBy(s => s.Artist)
+            .Select(group => new AverageRatedArtist
+            {
+                Artist = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
 }
