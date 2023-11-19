@@ -15,11 +15,11 @@ function SearchCard(props) {
   };
 
   return (
-    <div className="relative mx-auto cursor-pointer" onClick={handleClick}>
-      <img src={`data:image/png;base64,${photo}`} alt={subject} className="rounded-md w-full h-full" />
-      <div className="text-white text-lg font-bold shadow-md absolute bottom-0 bg-black bg-opacity-50 rounded-b-md w-full flex justify-center items-center">
+    <div class="relative mx-auto cursor-pointer" onClick={handleClick}>
+      <img src={`data:image/png;base64,${photo}`} alt={subject} class="rounded-md w-full h-full aspect-square" />
+      <div class="text-white text-lg font-bold shadow-md absolute bottom-0 bg-black bg-opacity-50 rounded-b-md w-full flex justify-center items-center">
         {name}
-        {secondname && <span className="text-sm ml-2">{secondname}</span>}
+        {secondname && <span class="text-sm ml-2">{secondname}</span>}
         </div>
     </div>
   );

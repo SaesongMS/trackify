@@ -10,7 +10,8 @@ function Search() {
     e.preventDefault();
     if (query() === ""){
       return alert("Please enter a search query");
-    } 
+    }
+    setResults({}); 
     const response = await getData(`search/${query()}`);
     setResults(response);
     checkResults();
@@ -37,7 +38,7 @@ function Search() {
         />
         <button class="h-10 mt-3 ml-3 p-5 bg-slate-600 text-white rounded-md shadow-xl justify-center items-center flex">Search</button>
       </form>
-        {!isFound() && <span class="text-xl mx-auto">No results found</span>}
+        {!isFound() && <span class="text-xl flex justify-center">No results found</span>}
         {results().artists && results().artists.length > 0 && (
             <SearchGrid subjects={results().artists} type="artist" />
         )}
