@@ -61,11 +61,9 @@ function SubjectLibrary() {
 
     return pageNumbers.map((number) => {
       return (
-        <div class="flex flex-row justify-center items-center">
-          <a href={`/user/${params.username}/library?page=${number}`}>
-            {number}
-          </a>
-        </div>
+        <a class="mx-1" href={`/user/${params.username}/library/${subject()}?page=${number}`}>
+          {number}
+        </a>
       );
     });
   };
@@ -112,7 +110,7 @@ function SubjectLibrary() {
   };
 
   return (
-    <div class="w-[100%] h-[100%]">
+    <div class="w-[100%] h-[100%] overflow-y-auto">
       {profile() && (
         <>
           <UserBanner
@@ -130,13 +128,15 @@ function SubjectLibrary() {
             <a href={`/user/${params.username}/library/albums`}>Albums</a>
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
-          <div class="w-[37%] p-6 h-[100%]">
+          <div class="w-[37%] p-6">
             <div class="flex flex-col space-y-2 mt-2">
               {slicedSubjects() != null &&
                 slicedSubjects().map((subject) => renderSubject(subject))}
             </div>
           </div>
-          {numberOfPages() > 1 && renderPageNumbers()}
+          <div class="flex flex-row justify-center items-center mb-3">
+            {numberOfPages() > 1 && renderPageNumbers()}
+          </div>
         </>
       )}
     </div>

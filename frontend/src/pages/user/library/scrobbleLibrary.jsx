@@ -56,17 +56,15 @@ function ScrobbleLibrary() {
 
     return pageNumbers.map((number) => {
       return (
-        <div class="flex flex-row justify-center items-center">
-          <a href={`/user/${params.username}/library?page=${number}`}>
+          <a class={`mx-1 ${number == page() ? "underline" : ""}`} href={`/user/${params.username}/library/?page=${number}`}>
             {number}
           </a>
-        </div>
       );
     });
   };
 
   return (
-    <div class="w-[100%] h-[100%]">
+    <div class="w-[100%] h-[100%] overflow-y-auto">
       {profile() && (
         <>
           <UserBanner
@@ -84,7 +82,7 @@ function ScrobbleLibrary() {
             <a href={`/user/${params.username}/library/albums`}>Albums</a>
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
-          <div class="w-[37%] p-6 h-[100%]">
+          <div class="w-[37%] p-6">
             <div class="flex flex-col space-y-2 mt-2">
               {slicedScrobbles() != null &&
                 slicedScrobbles().map((scrobble) => (
@@ -99,7 +97,9 @@ function ScrobbleLibrary() {
                 ))}
             </div>
           </div>
-          {numberOfPages() > 1 && renderPageNumbers()}
+          <div class="flex flex-row justify-center items-center mb-3">
+            {numberOfPages() > 1 && renderPageNumbers()}
+          </div>
         </>
       )}
     </div>
