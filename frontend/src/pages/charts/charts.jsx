@@ -184,9 +184,9 @@ function Charts() {
                         </div>
                         {likedSongs().length>0 &&
                         <>
-                            <div class="my-5 flex xl:justify-center xl:items-center xl:mx-auto">
+                            <div class="my-5 flex flex-col md:flex-row xl:justify-center xl:items-center xl:mx-auto">
                                 <p class="w-8 text-xl font-bold">1.</p>
-                                <img onClick={(event) => handleClick(event, type, textMain)} src={`data:image/png;base64,${likedSongs()[0].song.album.cover}`} alt="cover" class="ml-2 w-32 h-32 rounded-md cursor-pointer" />
+                                <img onClick={(event) => handleClick(event, type, textMain)} src={`data:image/png;base64,${likedSongs()[0].song.album.cover}`} alt="cover" class="mx-auto md:mr-0 md:ml-2 w-32 h-32 rounded-md cursor-pointer" />
                                 <div class="ml-3 flex flex-col">
                                     <p onClick={(event) => handleClick(event, type, textMain)} class="mr-2 truncate w-72 lg:w-56 xl:w-60 font-bold cursor-pointer">{likedSongs()[0].song.title}</p>
                                     <p onClick={(event) => handleClick(event, typeSecondary, textSecondary)} class="mr-2 truncate w-72 lg:w-56 xl:w-60 cursor-pointer">{likedSongs()[0].song.album.artist.name}</p>
