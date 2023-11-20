@@ -13,22 +13,22 @@ function Follower(props) {
   };
 
   return (
-    <div class="w-auto flex flex-row mt-2 border border-slate-500 rounded-lg ml-2 hover:border-slate-600 shadow-md">
+    <div class="w-auto flex flex-row mt-2 border border-slate-500 rounded-lg ml-2 hover:border-slate-600 shadow-md mr-2">
       <A
         href={`/user/${userName}/main`}
-        class="shadow-lg mb-2 ml-2 transition-all w-auto duration-200  cursor-pointer"
+        class="shadow-lg mb-2 ml-2 transition-all duration-200  cursor-pointer"
       >
         <img
           src={`data:image/png;base64,${avatar}`}
           alt="profile picture"
-          class="max-w-[150px] hover:opacity-90 pt-2"
+          class="max-w-[150px] aspect-square hover:opacity-90 mt-2 rounded-md"
         />
       </A>
       <div class="flex flex-col">
         <A href={`/user/${userName}/main`} class="ml-2">
           <p class="font-bold hover:text-slate-700">{userName}</p>
         </A>
-        <p class="ml-2 truncate w-72 md:w-44 lg:w-36 xl:w-64">{bio}</p>
+        <p class="ml-2 truncate w-72 md:w-44 lg:w-36 xl:w-60 2xl:w-56">{bio}</p>
         {props.profileUsername != null &&
           props.loggedUsername != null &&
           props.profileUsername == props.loggedUsername && (
