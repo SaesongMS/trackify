@@ -16,10 +16,11 @@ function UserPageFollowers() {
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
     setFollowers(userData.followers);
+    console.log(userData.followers);
   });
 
   return (
-    <div class="w-[100%] h-[100%] flex flex-col">
+    <div class="w-[100%] h-[100%] flex flex-col overflow-hidden">
       {profile() && (
         <>
           <UserBanner
@@ -31,13 +32,16 @@ function UserPageFollowers() {
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
           />
-          {followers() != null &&
-            followers().map((follower) => (
-              <Follow
-                userName={follower.follower.userName}
-                avatar={follower.follower.profilePicture}
-              />
-            ))}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {followers() != null &&
+              followers().map((follower) => (
+                <Follow
+                  userName={follower.follower.userName}
+                  avatar={follower.follower.profilePicture}
+                  bio={follower.follower.bio}
+                />
+              ))}
+          </div>
         </>
       )}
     </div>

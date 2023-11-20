@@ -25,7 +25,7 @@ function UserPageFollowers() {
   });
 
   return (
-    <div class="w-[100%] h-[100%] flex flex-col">
+    <div class="w-[100%] h-[100%] flex flex-col overflow-hidden">
       {profile() && (
         <>
           <UserBanner
@@ -37,17 +37,20 @@ function UserPageFollowers() {
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
           />
-          {followings() != null &&
-            followings().map((following) => (
-              <Follow
-                userName={following.followed.userName}
-                avatar={following.followed.profilePicture}
-                loggedUsername={user() ? user().userName : null}
-                profileUsername={profile().userName}
-                handleUnfollow={handleUnfollow}
-                followedId={following.id_Followed}
-              />
-            ))}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {followings() != null &&
+              followings().map((following) => (
+                <Follow
+                  userName={following.followed.userName}
+                  avatar={following.followed.profilePicture}
+                  bio={following.followed.bio}
+                  loggedUsername={user() ? user().userName : null}
+                  profileUsername={profile().userName}
+                  handleUnfollow={handleUnfollow}
+                  followedId={following.id_Followed}
+                />
+              ))}
+          </div>
         </>
       )}
     </div>

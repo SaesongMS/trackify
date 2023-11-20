@@ -28,8 +28,8 @@ public class Follows
     public string Id { get; set; } = string.Empty;
     public string Id_Follower { get; set; } = string.Empty;
     public string Id_Followed { get; set; } = string.Empty;
-    public Sender Follower { get; set; } = null!;
-    public Sender Followed { get; set; } = null!;
+    public FollowerData Follower { get; set; } = null!;
+    public FollowerData Followed { get; set; } = null!;
 }
 
 public class ProfileComments
@@ -95,5 +95,13 @@ public class Sender
 {
     public string Id { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
+    public byte[] ProfilePicture { get; set; } = new byte[0];
+}
+
+public class FollowerData
+{
+    public string Id { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string Bio { get; set; } = string.Empty;
     public byte[] ProfilePicture { get; set; } = new byte[0];
 }

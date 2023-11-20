@@ -28,11 +28,12 @@ public class UserService
                 Id = f.Id,
                 Id_Follower = f.Id_Follower,
                 Id_Followed = f.Id_Followed,
-                Follower = new Sender
+                Follower = new FollowerData
                 {
                     Id = f.Follower.Id,
                     UserName = f.Follower.UserName!,
-                    ProfilePicture = f.Follower.Avatar
+                    ProfilePicture = f.Follower.Avatar,
+                    Bio = f.Follower.Bio
                 }
             }).ToListAsync();
             var following = await _context.Follows.Where(f => f.Id_Follower == user.Id).Include(f => f.Followed).Select(f => new Follows
@@ -40,11 +41,12 @@ public class UserService
                 Id = f.Id,
                 Id_Follower = f.Id_Follower,
                 Id_Followed = f.Id_Followed,
-                Followed = new Sender
+                Followed = new FollowerData
                 {
                     Id = f.Followed.Id,
                     UserName = f.Followed.UserName!,
-                    ProfilePicture = f.Followed.Avatar
+                    ProfilePicture = f.Followed.Avatar,
+                    Bio = f.Followed.Bio
                 }
             }).ToListAsync();
             var profileComments = await _context.ProfileComments.Where(pc => pc.Id_Recipient == user.Id).OrderByDescending(pc => pc.Creation_Date).Include(s => s.Sender).Select(pc => new ProfileComments
