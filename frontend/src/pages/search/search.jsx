@@ -29,7 +29,7 @@ function Search() {
   }
 
   return (
-    <div class="flex flex-col w-full overflow-scroll">
+    <div class="flex flex-col w-full overflow-y-auto mb-3">
     <div class="w-[80%] mx-auto">
       <form onSubmit={handleClick} class="h-20 w-[80%] flex flex-row justify-center mx-auto">
         <input
