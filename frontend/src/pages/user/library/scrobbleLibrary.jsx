@@ -76,7 +76,7 @@ function ScrobbleLibrary() {
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
           />
-          <div class="flex flex-row space-x-5 justify-center">
+          <div class="flex flex-row space-x-5 justify-center text-[#f2f3ea]">
             <a href={`/user/${params.username}/library`}>Scrobbles</a>
             <a href={`/user/${params.username}/library/artists`}>Artists</a>
             <a href={`/user/${params.username}/library/albums`}>Albums</a>

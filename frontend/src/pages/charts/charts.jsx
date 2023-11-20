@@ -138,8 +138,8 @@ function Charts() {
                     <a href="#rated" class="text-lg font-bold hover:underline">Jump to Top Rated</a>
                 </div> */}
                 <section id="popular">
-                    <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
-                        <div class="mt-5 w-[80%] mx-auto">
+                    <div class="bg-[#2b2d31] text-[#f2f3ea] shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                        <div class="mt-5 pt-5 w-[80%] mx-auto">
                             <div class="flex flex-row justify-between">
                                 <h1 class="text-2xl font-bold">Most popular</h1>
                                 <div class="relative">
@@ -178,7 +178,7 @@ function Charts() {
                     </div>
                 </section>
                 <section id="liked">
-                    <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                    <div class="bg-[#2b2d31] text-[#f2f3ea] shadow-xl mt-5 rounded-md w-[80%] mx-auto">
                         <div class="mt-5 w-[80%] mx-auto">
                             <h1 class="text-2xl font-bold flex">Most liked songs</h1>
                         </div>
@@ -219,7 +219,7 @@ function Charts() {
                     </div>
                 </section> */}
                 <section id="rated" class="mb-10">
-                <div class="bg-slate-500 shadow-xl mt-5 rounded-md w-[80%] mx-auto">
+                <div class="bg-[#2b2d31] text-[#f2f3ea] shadow-xl mt-5 rounded-md w-[80%] mx-auto">
                         <div class="mt-5 w-[80%] mx-auto">
                             <div class="flex flex-row justify-between">
                                 <h1 class="text-2xl font-bold">Top rated</h1>

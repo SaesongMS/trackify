@@ -15,7 +15,7 @@ import Charts from "./pages/charts/charts";
 
 function App() {
   return (
-    <div class="flex w-screen h-screen bg-slate-400">
+    <div class="flex w-screen h-screen bg-[#313338]">
       <Navbar />
       <Routes>
         <Route path="/" element={<div></div>} />

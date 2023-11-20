@@ -27,7 +27,7 @@ function ScrobbleRow(props) {
   }
 
   return (
-    <div class="flex flex-row w-[100%] pl-3 border border-slate-400 items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
+    <div class="text-[#f2f3ea] flex flex-row w-[100%] pl-3 border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
       <img
         class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
         src={`data:image/png;base64,${albumCover}`}

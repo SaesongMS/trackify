@@ -30,22 +30,22 @@ function Comment(props) {
   };
 
   return (
-    <div class="flex w-[100%] h-[10%] border border-slate-800 rounded-sm hover:border-slate-500 transition-all duration-200">
+    <div class="flex w-[100%] h-[10%] border border-[#3f4147] rounded-sm hover:border-slate-500 transition-all duration-200">
       <div onClick={handleUserClick}>
         <img
-          class="h-[100%] aspect-square mr-2"
+          class="h-[100%] w-20 aspect-square mr-2"
           src={`data:image/png;base64,${avatar}`}
         />
       </div>
       <div class="flex flex-grow">
-        <div class="flex flex-col">
-          <span class="mr-4 cursor-pointer">
+        <div class="flex flex-col mt-1">
+          <span class="mr-4 cursor-pointer text-md">
             <A href={`/user/${username}/main`}>{username}</A>
           </span>
-          <span class="mr-4 cursor-pointer">{comment}</span>
+          <span class="mr-4 cursor-pointer text-sm">{comment}</span>
         </div>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-end pb-1 text-xs">
         <span class="mr-4 cursor-pointer">options</span>
         <span class="mr-4 cursor-default">{date}</span>
         {loggedUser &&
