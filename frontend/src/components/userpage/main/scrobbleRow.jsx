@@ -27,28 +27,30 @@ function ScrobbleRow(props) {
   }
 
   return (
-    <div class="flex w-[100%] pl-3 border border-slate-400  items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
+    <div class="flex flex-row w-[100%] pl-3 border border-slate-400  items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
       <img
-        class="mr-4 cursor-pointer w-[10%] hover:opacity-80 transition-all duration-150"
+        class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
         src={`data:image/png;base64,${albumCover}`}
         onClick={() =>
           (window.location.href = `/song/${title.replaceAll(" ", "+")}`)
         }
       />
-      <span class="mr-4 cursor-pointer">
+      <span class="mr-4 cursor-pointer max-w-[10%]">
         <img src={heart} class="w-4" />
       </span>
-      <span class="mr-4 cursor-pointer hover:text-slate-300">
-        <A href={`/song/${title.replaceAll(" ", "+")}`}>{title}</A>
-      </span>
-      <span class="mr-4 cursor-pointer hover:text-slate-300">
-        <A href={`/artist/${artist.replaceAll(" ", "+")}`}>{artist}</A>
-      </span>
-      <span class="mr-4 cursor-pointer">{rating ? rating : ""}</span>
-      <span class="mr-4 cursor-pointer">options</span>
-      <span class="mr-4 cursor-default">
-        {date ? formatTimeDifference(date) : ""}
-      </span>
+      <div class="flex flex-col md:flex-row max-w-[75%] justify-center items-center">
+        <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate">
+          <A href={`/song/${title.replaceAll(" ", "+")}`}>{title}</A>
+        </span>
+        <span class="md:mr-4 cursor-pointer hover:text-slate-300truncate">
+          <A href={`/artist/${artist.replaceAll(" ", "+")}`}>{artist}</A>
+        </span>
+        <span class="md:mr-4 cursor-pointer md:max-w-[10%]">{rating ? rating : ""}</span>
+        <span class="md:mr-4 cursor-default md:max-w-[15%]">
+          {date ? formatTimeDifference(date) : ""}
+        </span>
+      </div>
+      <span class="mr-4 cursor-pointe text-red-500 max-w-[5%]">x</span>
     </div>
   );
 }

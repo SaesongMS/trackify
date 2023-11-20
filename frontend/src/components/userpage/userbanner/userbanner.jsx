@@ -8,7 +8,7 @@ function UserBanner(props) {
   return (
     <div class="flex w-[100%] h-[20%]">
       <Avatar image={props.avatar} />
-      <div class="flex flex-col h-[100%] flex-grow">
+      <div class="flex flex-col lg:flex-grow">
         <InfoBar
           topArtistImage={props.topArtistImage}
           username={props.username}
