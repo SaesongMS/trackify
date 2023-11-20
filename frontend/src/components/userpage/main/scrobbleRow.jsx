@@ -27,7 +27,7 @@ function ScrobbleRow(props) {
   }
 
   return (
-    <div class="flex flex-row w-[100%] pl-3 border border-slate-400  items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
+    <div class="flex flex-row w-[100%] pl-3 border border-slate-400 items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150 h-[10%]">
       <img
         class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
         src={`data:image/png;base64,${albumCover}`}
@@ -38,7 +38,7 @@ function ScrobbleRow(props) {
       <span class="mr-4 cursor-pointer max-w-[10%]">
         <img src={heart} class="w-4" />
       </span>
-      <div class="flex flex-col md:flex-row max-w-[75%] justify-center items-center">
+      <div class="flex flex-col md:flex-row max-w-[75%] md:justify-center md:items-center">
         <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate">
           <A href={`/song/${title.replaceAll(" ", "+")}`}>{title}</A>
         </span>

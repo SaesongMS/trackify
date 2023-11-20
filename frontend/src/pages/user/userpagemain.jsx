@@ -42,7 +42,7 @@ function UserPageMain() {
   });
 
   return (
-    <div class="w-[100%] h-[100%] flex flex-col">
+    <div class="h-[100%] flex flex-col">
       {profile() && songs() && artists() && albums() && (
         <>
           <UserBanner

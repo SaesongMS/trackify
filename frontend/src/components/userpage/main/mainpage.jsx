@@ -33,8 +33,8 @@ function MainPage(props) {
   };
 
   return (
-    <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-slate-200">
-      <div class="xl:border-l-2 w-full xl:w-[40%] p-6 max-h-[100%]">
+    <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-slate-200 w-full">
+      <div class="xl:border-l-2 w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
         <div class="flex flex-col space-y-2 mt-2">
           {props.scrobbles.slice(0,10).map((scrobble) => (
@@ -50,7 +50,7 @@ function MainPage(props) {
           ))}
         </div>
       </div>
-      <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto h-[100%]">
+      <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
         Artist
         <br />
         <div class="flex w-[100%] space-x-4 mt-4 mb-4">
