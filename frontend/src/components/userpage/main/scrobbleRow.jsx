@@ -34,7 +34,7 @@ function ScrobbleRow(props) {
         src={`data:image/png;base64,${albumCover}`}
         onClick={() =>
           (window.location.href = `/song/${title.replaceAll(" ", "+")}`)
-        }
+        } 
       />
       <div class="flex flex-grow">
 

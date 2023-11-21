@@ -29,16 +29,16 @@ function Search() {
   }
 
   return (
-    <div class="flex flex-col w-full overflow-y-auto mb-3">
+    <div class="flex flex-col w-full overflow-y-auto mb-3 text-[#f2f3ea]">
     <div class="w-[80%] mx-auto">
       <form onSubmit={handleClick} class="h-20 w-[80%] flex flex-row justify-center mx-auto">
         <input
-          class="h-10 mt-3 flex-grow-0 flex-shrink-0 w-[80%] border border-[#3f4147] bg-[#3f4147] rounded-sm"
+          class="h-10 mt-3 flex-grow-0 flex-shrink-0 w-[80%] border text-[#f2f3ea] border-[#3f4147] bg-[#3f4147] rounded-sm"
           onInput={(e) => setQuery(e.target.value)}
         />
         <button class="h-10 mt-3 ml-3 p-5 border border-[#3f4147] hover:border-slate-500 transition-all duration-200 text-[#f2f3ea] hover:rounded-sm shadow-xl justify-center items-center flex">Search</button>
       </form>
-        {!isFound() && <span class="text-xl flex justify-center">No results found</span>}
+        {!isFound() && <span class="text-xl flex justify-center text-[#f2f3ea]">No results found</span>}
         {results().artists && results().artists.length > 0 && (
             <SearchGrid subjects={results().artists} type="artist" />
         )}
