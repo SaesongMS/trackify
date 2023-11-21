@@ -24,7 +24,7 @@ function UserPageFollowers() {
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
     setFavouriteSongs(userData.favouriteSongs);
-    console.log(userData.favouriteSongs)
+    console.log(userData.favouriteSongs);
   };
 
   createEffect(() => {
@@ -38,7 +38,7 @@ function UserPageFollowers() {
           <UserBanner
             avatar={profile().profilePicture}
             username={profile().userName}
-            topArtistImage={Belmondo}
+            topArtistImage={`data:image/png;base64,${profile().topArtistImage}`}
             scrobbleCount={profile().scrobbles.length}
             favourites={favouriteSongs.length}
             date={new Date(profile().creation_Date).toLocaleDateString()}

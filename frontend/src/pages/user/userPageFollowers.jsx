@@ -26,7 +26,7 @@ function UserPageFollowers() {
           <UserBanner
             avatar={profile().profilePicture}
             username={profile().userName}
-            topArtistImage={Belmondo}
+            topArtistImage={`data:image/png;base64,${profile().topArtistImage}`}
             scrobbleCount={profile().scrobbles.length}
             favourites={profile().favouriteSongs.length}
             date={new Date(profile().creation_Date).toLocaleDateString()}
