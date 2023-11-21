@@ -6,6 +6,7 @@ function SubjectInfoBar(props){
     const [scrobbleCount, setscrobbleCount] = createSignal(null);
     const [usersCount, setusersCount] = createSignal(null);
     const [image, setimage] = createSignal(null);
+    const [subject, setsubject] = createSignal(null);
 
     createEffect(() => {
         setprimaryText(props.primaryText);
@@ -13,7 +14,20 @@ function SubjectInfoBar(props){
         setscrobbleCount(props.scrobbleCount);
         setusersCount(props.usersCount);
         setimage(props.image);
+        setsubject(props.subject);
+        console.log(props);
+        console.log(scrobbleCount());
+        console.log(usersCount());
     }, [props]);
+
+    const handleNavigation = () => {
+        if(subject() === "album" || subject() === "song"){
+            window.location.href = `/artist/${secondaryText().replaceAll(
+                " ",
+                "+"
+            )}`
+        }
+        }
     
     return(
       <div class="h-[100%] bg-no-repeat bg-cover" 
@@ -24,7 +38,7 @@ function SubjectInfoBar(props){
             
             <div class="flex flex-col justify-end ml-2">
               <div class="text-[40px] font-bold">{primaryText()}</div>
-              <div>{secondaryText()}</div>
+              <div onClick={handleNavigation} class="cursor-pointer">{secondaryText()}</div>
             </div>
             <div class="flex ml-2 md:ml-12 md:pl-4">
                 <Counter title="Scrobbles" count={scrobbleCount()}/>

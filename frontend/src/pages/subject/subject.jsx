@@ -21,6 +21,8 @@ function Subject() {
   const [comment, setComment] = createSignal("");
   const [popularInterval, setPopularInterval] = createSignal("week")
   const [isOpen, setIsOpen] = createSignal(false)
+  const [listenersCount, setListenersCount] = createSignal(0)
+  const [scrobbleCount, setScrobbleCount] = createSignal(0)
 
   const handleSelect = (interval) => {
       setPopularInterval(interval);
@@ -69,7 +71,8 @@ function Subject() {
       `scrobbles/${subject()}/${params.name.replaceAll("+", " ")}`
     );
     setSubjectData(data[subject()]);
-    console.log("subject data:", subjectData());
+    setListenersCount(data.listenersCount)
+    setScrobbleCount(data.scrobbleCount)
     if (subject() === "artist") {
       const data_ = await postData("scrobbles/top-n-songs-by-artist", {
         artistId: subjectData().id,
@@ -164,7 +167,7 @@ function Subject() {
           {user() && <img src={heart} class="w-4" />}
           <a
             href={`/song/${song.song.title.replaceAll(" ", "+")}`}
-            class="hover:text-slate-700"
+            class="hover:hover:text-slate-300"
           >
             {song.song.title}
           </a>
@@ -185,13 +188,14 @@ function Subject() {
                 subjectSecondaryImage={subjectData()?.photo}
                 primaryText={subjectData()?.name}
                 secondaryText={""}
-                scrobbleCount={subjectData()?.scrobbleCount}
-                usersCount={subjectData()?.usersCount}
+                scrobbleCount={scrobbleCount()}
+                usersCount={listenersCount()}
+                subject={subject()}
               />
             </div>
-            <div class="mt-5">
+            <div class="mt-5 pt-2 pl-2">
                 <div class="flex flex-row">
-                    <h1 class="text-2xl font-bold">Most listened songs</h1>
+                    <h1 class="text-2xl font-bold pl-4">Most listened songs</h1>
                     <div class="relative">
                         <button onClick={() => setIsOpen(!isOpen())} class="h-10 ml-auto p-5 justify-center items-center flex hover:underline">
                             <span class="mr-2 text-lg capitalize font-bold">{popularInterval}</span>
@@ -207,21 +211,23 @@ function Subject() {
                         )}
                     </div>
                 </div>
-            </div>
             { renderTopSongs(topSongs())}
-            <p>Albums:</p>
-            <div class="flex flex-row space-x-2 ml-2">
-              {s.albums &&
-                s.albums.map((album) => (
-                  <Card
-                    cover={`data:image/png;base64,${album.cover}`}
-                    mainText={album.name}
-                    secText={""}
-                    rating={album.rating}
-                    heart="heart"
-                    subject="album"
-                  />
-                ))}
+            </div>
+            <div class=" pt-2 pl-2">
+              <h1 class="text-2xl font-bold mt-5 mb-2 pl-5">Albums</h1>
+              <div class="flex flex-row space-x-2 ml-2">
+                {s.albums &&
+                  s.albums.map((album) => (
+                    <Card
+                      cover={`data:image/png;base64,${album.cover}`}
+                      mainText={album.name}
+                      secText={""}
+                      rating={album.rating}
+                      heart="heart"
+                      subject="album"
+                    />
+                  ))}
+              </div>
             </div>
           </div>
         );
@@ -234,8 +240,9 @@ function Subject() {
                 subjectSecondaryImage={subjectData()?.cover}
                 primaryText={subjectData()?.name}
                 secondaryText={subjectData()?.artist.name}
-                scrobbleCount={subjectData()?.scrobbleCount}
-                usersCount={subjectData()?.usersCount}
+                scrobbleCount={scrobbleCount()}
+                usersCount={listenersCount()}
+                subject={subject()}
               />
             </div>
             <p>Songs:</p>
@@ -265,8 +272,9 @@ function Subject() {
                 subjectSecondaryImage={subjectData()?.album.cover}
                 primaryText={subjectData()?.title}
                 secondaryText={subjectData()?.album.artist.name}
-                scrobbleCount={subjectData()?.scrobbleCount}
-                usersCount={subjectData()?.usersCount}
+                scrobbleCount={scrobbleCount()}
+                usersCount={listenersCount()}
+                subject={subject()}
               />
             </div>
             {user() && (
@@ -284,8 +292,7 @@ function Subject() {
     }
   };
   return (
-    <div class="w-full overflow-y-auto">
-      {/* <h1 class={"text-2xl"}>{subject().toUpperCase()}</h1> */}
+    <div class="w-full overflow-y-auto text-[#f2f3ea]">
       {subjectData() && renderSubject(subjectData())}
       {subjectData() != null && user() && (
         <StarRating
@@ -295,33 +302,35 @@ function Subject() {
           subject={subject()}
         />
       )}
-      Comments:
-      <br />
-      {user() && (
-        <form onsubmit={handleSendComment} class="flex mb-4">
-          <input
-            type="text"
-            class="border border-slate-700 w-[100%] bg-slate-700"
-            value={comment()}
-            onInput={(e) => setComment(e.target.value)}
-          />
-          <button class="border border-slate-700 ml-4 p-4">Send</button>
-        </form>
-      )}
-      {comments() != null &&
-        comments().map((comment) => (
-          <Comment
-            avatar={comment.sender.avatar}
-            comment={comment.content}
-            username={comment.sender.userName}
-            date={new Date(comment.creation_Date).toLocaleDateString()}
-            loggedUser={user()}
-            recipientId={comment.sender.id}
-            onDelete={handleDeleteComment}
-            commentId={comment.id}
-            subject={subject()}
-          />
-        ))}
+      <div class="pt-2 pl-2">
+        <h1 class="text-2xl font-bold mt-5 mb-2 pl-5">Comments</h1>
+        {user() && (
+          <form onsubmit={handleSendComment} class="flex mb-4 mx-5">
+            <input
+              type="text"
+              class="border border-slate-700 w-[100%] bg-slate-700"
+              value={comment()}
+              onInput={(e) => setComment(e.target.value)}
+            />
+            <button class="border border-slate-700 ml-4 p-4">Send</button>
+          </form>
+        )}
+        {comments() != null &&
+          comments().map((comment) => (
+            <Comment
+              avatar={comment.sender.avatar}
+              comment={comment.content}
+              username={comment.sender.userName}
+              date={new Date(comment.creation_Date).toLocaleDateString()}
+              loggedUser={user()}
+              recipientId={comment.sender.id}
+              onDelete={handleDeleteComment}
+              commentId={comment.id}
+              subject={subject()}
+            />
+          ))}
+
+      </div>
     </div>
   );
 }

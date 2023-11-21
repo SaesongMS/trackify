@@ -364,11 +364,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            var song = await _scrobbleService.GetSongByName(name);
+            var data = await _scrobbleService.GetSongByName(name);
             return Ok(new SongResponse
             {
                 Success = true,
-                Song = song
+                Song = data.Song,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount
             });
         }
         catch (Exception e)
@@ -382,11 +384,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            var album = await _scrobbleService.GetAlbumByName(name);
+            var data = await _scrobbleService.GetAlbumByName(name);
             return Ok(new AlbumResponse
             {
                 Success = true,
-                Album = album
+                Album = data.Album,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount
             });
         }
         catch (Exception e)
@@ -400,12 +404,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            var artist = await _scrobbleService.GetArtistByName(name);
-            // var top_song = FetchTopNSongsScrobblesForArtist(request.N, request.Start, request.End, request.ArtistId);
+            var data = await _scrobbleService.GetArtistByName(name);
             return Ok(new ArtistResponse
             {
                 Success = true,
-                Artist = artist
+                Artist = data.Artist,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount
             });
         }
         catch (Exception e)

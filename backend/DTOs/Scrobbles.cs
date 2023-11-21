@@ -145,6 +145,8 @@ public class ArtistScrobbleCount
 public class SongResponse
 {
     public Song Song { get; set; }
+    public int ScrobbleCount { get; set; }
+    public int ListenersCount { get; set; }
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
 }
@@ -152,6 +154,8 @@ public class SongResponse
 public class AlbumResponse
 {
     public Album Album { get; set; }
+    public int ScrobbleCount { get; set; }
+    public int ListenersCount { get; set; }
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
 }
@@ -159,6 +163,8 @@ public class AlbumResponse
 public class ArtistResponse
 {
     public Artist Artist { get; set; }
+    public int ScrobbleCount { get; set; }
+    public int ListenersCount { get; set; }
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
 }

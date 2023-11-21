@@ -40,7 +40,8 @@ const StarRating = (props) => {
   });
 
   return (
-    <div>
+    <div class=" pt-2 pl-2">
+      <span class="pl-5 text-slate-200 text-2xl font-bold mr-2">Rate this {subject}:</span>
       {[1, 2, 3, 4, 5].map((value) => (
         <span
           key={value}

@@ -401,7 +401,7 @@ public class ScrobbleService
         return artists;
     }
 
-    public async Task<Song> GetSongByName(string name)
+    public async Task<SongResponse> GetSongByName(string name)
     {
 
         var song = await _context.Songs
@@ -413,10 +413,21 @@ public class ScrobbleService
             .Include(s => s.FavouriteSongs)
             .ThenInclude(s => s.User)
             .FirstOrDefaultAsync(s => s.Title.ToLower() == name.ToLower());
-        return song;
+        var scrobbleCount = await _context.Scrobbles.CountAsync(s => s.Id_Song_Internal == song.Id);
+        var userCount = await _context.Scrobbles
+            .Where(s => s.Id_Song_Internal == song.Id)
+            .Select(s => s.Id_User)
+            .Distinct()
+            .CountAsync();
+        return new SongResponse
+        {
+            Song = song,
+            ScrobbleCount = scrobbleCount,
+            ListenersCount = userCount
+        };
     }
 
-    public async Task<Album> GetAlbumByName(string name)
+    public async Task<AlbumResponse> GetAlbumByName(string name)
     {
         var album = await _context.Albums
             .Include(a => a.Artist)
@@ -425,10 +436,23 @@ public class ScrobbleService
             .ThenInclude(a => a.Sender)
             .Include(a => a.AlbumRatings)
             .FirstOrDefaultAsync(a => a.Name.ToLower() == name.ToLower());
-        return album;
+        var scrobbleCount = await _context.Scrobbles
+            .Where(s => s.Song.Album.Id == album.Id)
+            .CountAsync();
+        var userCount = await _context.Scrobbles
+            .Where(s => s.Song.Album.Id == album.Id)
+            .Select(s => s.Id_User)
+            .Distinct()
+            .CountAsync();
+        return new AlbumResponse
+        {
+            Album = album,
+            ScrobbleCount = scrobbleCount,
+            ListenersCount = userCount
+        };
     }
 
-    public async Task<Artist> GetArtistByName(string name)
+    public async Task<ArtistResponse> GetArtistByName(string name)
     {
         var artist = await _context.Artists
             .Include(a => a.Albums)
@@ -438,7 +462,20 @@ public class ScrobbleService
             .ThenInclude(a => a.Sender)
             .Include(a => a.ArtistRatings)
             .FirstOrDefaultAsync(a => a.Name.ToLower() == name.ToLower());
-        return artist;
+        var scrobbleCount = await _context.Scrobbles
+            .Where(s => s.Song.Album.Artist.Id == artist.Id)
+            .CountAsync();
+        var userCount = await _context.Scrobbles
+            .Where(s => s.Song.Album.Artist.Id == artist.Id)
+            .Select(s => s.Id_User)
+            .Distinct()
+            .CountAsync();
+        return new ArtistResponse
+        {
+            Artist = artist,
+            ScrobbleCount = scrobbleCount,
+            ListenersCount = userCount
+        };
     }
 
     public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobblesForArtist(int n, DateTime start, DateTime end, string artistId)
