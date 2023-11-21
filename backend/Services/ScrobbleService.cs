@@ -433,6 +433,7 @@ public class ScrobbleService
         var artist = await _context.Artists
             .Include(a => a.Albums)
             .ThenInclude(a => a.Songs)
+            .ThenInclude(s => s.Scrobbles)
             .Include(a => a.ArtistComments)
             .ThenInclude(a => a.Sender)
             .Include(a => a.ArtistRatings)

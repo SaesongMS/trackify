@@ -401,6 +401,7 @@ public class ScrobblesController : ControllerBase
         try
         {
             var artist = await _scrobbleService.GetArtistByName(name);
+            // var top_song = FetchTopNSongsScrobblesForArtist(request.N, request.Start, request.End, request.ArtistId);
             return Ok(new ArtistResponse
             {
                 Success = true,

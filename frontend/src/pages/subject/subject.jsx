@@ -1,4 +1,4 @@
-import { createEffect, createSignal, useContext } from "solid-js";
+import { createComputed, createEffect, createRenderEffect, createSignal, useContext } from "solid-js";
 import { deleteData, getData, postData } from "../../getUserData";
 import { A, useParams } from "@solidjs/router";
 import Card from "../../components/userpage/main/card";
@@ -7,6 +7,8 @@ import filledHeart from "../../assets/icons/filledHeart.svg";
 import { UserContext } from "../../contexts/UserContext";
 import Comment from "../../components/userpage/main/comment";
 import StarRating from "../../components/subjectpage/star-rating";
+import SubjectBanner from "../../components/subjectpage/subjectbanner";
+import calendar from "../../assets/icons/calendar.svg";
 
 function Subject() {
   const { user, setUser } = useContext(UserContext);
@@ -17,6 +19,29 @@ function Subject() {
   const [topSongs, setTopSongs] = createSignal(null);
   const [comments, setComments] = createSignal([]);
   const [comment, setComment] = createSignal("");
+  const [popularInterval, setPopularInterval] = createSignal("week")
+  const [isOpen, setIsOpen] = createSignal(false)
+
+  const handleSelect = (interval) => {
+      setPopularInterval(interval);
+      setIsOpen(false);
+  };
+  
+  const getInterval = (interval) => {
+    switch(interval){
+        case "day":
+            return new Date(new Date().setDate(new Date().getDate() - 1))
+        case "week":
+            return new Date(new Date().setDate(new Date().getDate() - 7))
+        case "month":
+            return new Date(new Date().setMonth(new Date().getMonth() - 1))
+        case "year":
+            return new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+        default:
+            return new Date(new Date().setDate(new Date().getDate() - 7))
+    }
+  }
+
   createEffect(() => {
     setSubject(params.subject);
   });
@@ -27,10 +52,8 @@ function Subject() {
   });
 
   createEffect(() => {
-    if (
-      subjectData() != null &&
-      subjectData()[`${subject()}Ratings`].length > 0
-    ) {
+    if ( subjectData() != null &&
+        subjectData()[`${subject()}Ratings`].length > 0) {
       // check if user has rated this subject
       const userRating_ = subjectData()[`${subject()}Ratings`].filter(
         (rating) => rating.id_User === user().id
@@ -41,31 +64,28 @@ function Subject() {
     }
   });
 
-  createEffect(async () => {
+  const getSubjectData = async (i) => {
     const data = await getData(
       `scrobbles/${subject()}/${params.name.replaceAll("+", " ")}`
     );
     setSubjectData(data[subject()]);
     console.log("subject data:", subjectData());
     if (subject() === "artist") {
-      const now = new Date();
-      //const offset = now.getTimezoneOffset() * 60000;
-      const localISOTime = new Date(now).toISOString();
-      const formattedNow = localISOTime;
-
-      const sevenDaysBeforeNow = new Date(now.setDate(now.getDate() - 7))
-        .toISOString()
-        .slice(0, -1);
-
       const data_ = await postData("scrobbles/top-n-songs-by-artist", {
         artistId: subjectData().id,
         n: 5,
-        start: sevenDaysBeforeNow,
-        end: formattedNow,
+        start: getInterval(i),
+        end: new Date(),
       });
       setTopSongs(data_.songs);
     }
+  };
+
+  createComputed(() => {
+    getSubjectData(popularInterval());
   });
+
+
 
   const songIsFavourite = () => {
     if (user() && subjectData() != null) {
@@ -158,11 +178,37 @@ function Subject() {
     switch (subject()) {
       case "artist":
         return (
-          <div>
-            <p>Artist name: {s.name}</p>
-            <img src={`data:image/png;base64,${s.photo}`} class="w-20 h-20" />
-            <p>Most listened songs (last 7 days):</p>
-            {renderTopSongs(topSongs())}
+          <div class="">
+            <div class="w-full">
+              <SubjectBanner
+                subjectImage={subjectData()?.photo}
+                subjectSecondaryImage={subjectData()?.photo}
+                primaryText={subjectData()?.name}
+                secondaryText={""}
+                scrobbleCount={subjectData()?.scrobbleCount}
+                usersCount={subjectData()?.usersCount}
+              />
+            </div>
+            <div class="mt-5">
+                <div class="flex flex-row">
+                    <h1 class="text-2xl font-bold">Most listened songs</h1>
+                    <div class="relative">
+                        <button onClick={() => setIsOpen(!isOpen())} class="h-10 ml-auto p-5 justify-center items-center flex hover:underline">
+                            <span class="mr-2 text-lg capitalize font-bold">{popularInterval}</span>
+                            <img src={calendar} alt="calendar" class="w-6 h-6" />
+                        </button>
+                        {isOpen() && (
+                        <div class="absolute right-0 w-24 bg-white border rounded shadow-xl">
+                            <button onClick={() => handleSelect('day')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Day</button>
+                            <button onClick={() => handleSelect('week')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Week</button>
+                            <button onClick={() => handleSelect('month')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Month</button>
+                            <button onClick={() => handleSelect('year')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Year</button>
+                        </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+            { renderTopSongs(topSongs())}
             <p>Albums:</p>
             <div class="flex flex-row space-x-2 ml-2">
               {s.albums &&
@@ -182,19 +228,17 @@ function Subject() {
       case "album":
         return (
           <>
-            <p>Album name: {s.name}</p>
-            <p>
-              Artist name:{" "}
-              <a
-                href={`/artist/${s.artist.name.replaceAll(" ", "+")}`}
-                class="hover:text-slate-700"
-              >
-                {s.artist.name}
-              </a>
-            </p>
-            <img src={`data:image/png;base64,${s.cover}`} class="w-20 h-20" />
+            <div class="w-full">
+              <SubjectBanner
+                subjectImage={subjectData()?.cover}
+                subjectSecondaryImage={subjectData()?.cover}
+                primaryText={subjectData()?.name}
+                secondaryText={subjectData()?.artist.name}
+                scrobbleCount={subjectData()?.scrobbleCount}
+                usersCount={subjectData()?.usersCount}
+              />
+            </div>
             <p>Songs:</p>
-
             {s.songs.map((song, index) => (
               <div class="flex flex-row space-x-2">
                 <p>{index + 1}</p>
@@ -215,30 +259,16 @@ function Subject() {
         //when trying to click on album page properties change but url stays the same. why?
         return (
           <div class="flex flex-col justify-between">
-            <p>Song name: {s.title}</p>
-            <p>
-              Album name:&nbsp;
-              <a
-                href={`/album/${s.album.name.replaceAll(" ", "+")}`}
-                class="hover:text-slate-700"
-              >
-                {s.album.name}
-              </a>
-            </p>
-            <p>
-              Artist name:&nbsp;
-              <a
-                href={`/artist/${s.album.artist.name.replaceAll(" ", "+")}`}
-                class="hover:text-slate-700"
-              >
-                {s.album.artist.name}
-              </a>
-            </p>
-            <p>Album cover:</p>
-            <img
-              src={`data:image/png;base64,${s.album.cover}`}
-              class="w-20 h-20"
-            />
+            <div class="w-full">
+              <SubjectBanner
+                subjectImage={subjectData()?.album.cover}
+                subjectSecondaryImage={subjectData()?.album.cover}
+                primaryText={subjectData()?.title}
+                secondaryText={subjectData()?.album.artist.name}
+                scrobbleCount={subjectData()?.scrobbleCount}
+                usersCount={subjectData()?.usersCount}
+              />
+            </div>
             {user() && (
               <img
                 src={songIsFavourite() ? filledHeart : heart}
@@ -254,9 +284,9 @@ function Subject() {
     }
   };
   return (
-    <div class="w-[100%]">
-      <h1 class={"text-2xl"}>{subject().toUpperCase()}</h1>
-      {subjectData() != null && renderSubject(subjectData())}
+    <div class="w-full overflow-y-auto">
+      {/* <h1 class={"text-2xl"}>{subject().toUpperCase()}</h1> */}
+      {subjectData() && renderSubject(subjectData())}
       {subjectData() != null && user() && (
         <StarRating
           rating={userRating()}
