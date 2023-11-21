@@ -1,4 +1,10 @@
-import { createComputed, createEffect, createRenderEffect, createSignal, useContext } from "solid-js";
+import {
+  createComputed,
+  createEffect,
+  createRenderEffect,
+  createSignal,
+  useContext,
+} from "solid-js";
 import { deleteData, getData, postData } from "../../getUserData";
 import { A, useParams } from "@solidjs/router";
 import Card from "../../components/userpage/main/card";
@@ -19,30 +25,30 @@ function Subject() {
   const [topSongs, setTopSongs] = createSignal(null);
   const [comments, setComments] = createSignal([]);
   const [comment, setComment] = createSignal("");
-  const [popularInterval, setPopularInterval] = createSignal("week")
-  const [isOpen, setIsOpen] = createSignal(false)
-  const [listenersCount, setListenersCount] = createSignal(0)
-  const [scrobbleCount, setScrobbleCount] = createSignal(0)
+  const [popularInterval, setPopularInterval] = createSignal("week");
+  const [isOpen, setIsOpen] = createSignal(false);
+  const [listenersCount, setListenersCount] = createSignal(0);
+  const [scrobbleCount, setScrobbleCount] = createSignal(0);
 
   const handleSelect = (interval) => {
-      setPopularInterval(interval);
-      setIsOpen(false);
+    setPopularInterval(interval);
+    setIsOpen(false);
   };
-  
+
   const getInterval = (interval) => {
-    switch(interval){
-        case "day":
-            return new Date(new Date().setDate(new Date().getDate() - 1))
-        case "week":
-            return new Date(new Date().setDate(new Date().getDate() - 7))
-        case "month":
-            return new Date(new Date().setMonth(new Date().getMonth() - 1))
-        case "year":
-            return new Date(new Date().setFullYear(new Date().getFullYear() - 1))
-        default:
-            return new Date(new Date().setDate(new Date().getDate() - 7))
+    switch (interval) {
+      case "day":
+        return new Date(new Date().setDate(new Date().getDate() - 1));
+      case "week":
+        return new Date(new Date().setDate(new Date().getDate() - 7));
+      case "month":
+        return new Date(new Date().setMonth(new Date().getMonth() - 1));
+      case "year":
+        return new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+      default:
+        return new Date(new Date().setDate(new Date().getDate() - 7));
     }
-  }
+  };
 
   createEffect(() => {
     setSubject(params.subject);
@@ -54,8 +60,10 @@ function Subject() {
   });
 
   createEffect(() => {
-    if ( subjectData() != null &&
-        subjectData()[`${subject()}Ratings`].length > 0) {
+    if (
+      subjectData() != null &&
+      subjectData()[`${subject()}Ratings`].length > 0
+    ) {
       // check if user has rated this subject
       const userRating_ = subjectData()[`${subject()}Ratings`].filter(
         (rating) => rating.id_User === user().id
@@ -71,8 +79,8 @@ function Subject() {
       `scrobbles/${subject()}/${params.name.replaceAll("+", " ")}`
     );
     setSubjectData(data[subject()]);
-    setListenersCount(data.listenersCount)
-    setScrobbleCount(data.scrobbleCount)
+    setListenersCount(data.listenersCount);
+    setScrobbleCount(data.scrobbleCount);
     if (subject() === "artist") {
       const data_ = await postData("scrobbles/top-n-songs-by-artist", {
         artistId: subjectData().id,
@@ -87,8 +95,6 @@ function Subject() {
   createComputed(() => {
     getSubjectData(popularInterval());
   });
-
-
 
   const songIsFavourite = () => {
     if (user() && subjectData() != null) {
@@ -194,38 +200,65 @@ function Subject() {
               />
             </div>
             <div class="mt-5 pt-2 pl-2">
-                <div class="flex flex-row">
-                    <h1 class="text-2xl font-bold pl-4">Most listened songs</h1>
-                    <div class="relative">
-                        <button onClick={() => setIsOpen(!isOpen())} class="h-10 ml-auto p-5 justify-center items-center flex hover:underline">
-                            <span class="mr-2 text-lg capitalize font-bold">{popularInterval}</span>
-                            <img src={calendar} alt="calendar" class="w-6 h-6" />
-                        </button>
-                        {isOpen() && (
-                        <div class="absolute right-0 w-24 bg-white border rounded shadow-xl">
-                            <button onClick={() => handleSelect('day')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Day</button>
-                            <button onClick={() => handleSelect('week')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Week</button>
-                            <button onClick={() => handleSelect('month')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Month</button>
-                            <button onClick={() => handleSelect('year')} class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white">Year</button>
-                        </div>
-                        )}
+              <div class="flex flex-row">
+                <h1 class="text-2xl font-bold pl-4">Most listened songs</h1>
+                <div class="relative">
+                  <button
+                    onClick={() => setIsOpen(!isOpen())}
+                    class="h-10 ml-auto p-5 justify-center items-center flex hover:underline"
+                  >
+                    <span class="mr-2 text-lg capitalize font-bold">
+                      {popularInterval}
+                    </span>
+                    <img src={calendar} alt="calendar" class="w-6 h-6" />
+                  </button>
+                  {isOpen() && (
+                    <div class="absolute right-0 w-24 bg-white border rounded shadow-xl">
+                      <button
+                        onClick={() => handleSelect("day")}
+                        class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white"
+                      >
+                        Day
+                      </button>
+                      <button
+                        onClick={() => handleSelect("week")}
+                        class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white"
+                      >
+                        Week
+                      </button>
+                      <button
+                        onClick={() => handleSelect("month")}
+                        class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white"
+                      >
+                        Month
+                      </button>
+                      <button
+                        onClick={() => handleSelect("year")}
+                        class="w-full text-center block px-4 py-1 text-sm text-gray-700 hover:bg-slate-600 hover:text-white"
+                      >
+                        Year
+                      </button>
                     </div>
+                  )}
                 </div>
-            { renderTopSongs(topSongs())}
+              </div>
+              {renderTopSongs(topSongs())}
             </div>
             <div class=" pt-2 pl-2">
               <h1 class="text-2xl font-bold mt-5 mb-2 pl-5">Albums</h1>
               <div class="flex flex-row space-x-2 ml-2">
                 {s.albums &&
                   s.albums.map((album) => (
-                    <Card
-                      cover={`data:image/png;base64,${album.cover}`}
-                      mainText={album.name}
-                      secText={""}
-                      rating={album.rating}
-                      heart="heart"
-                      subject="album"
-                    />
+                    <div class="w-[20%]">
+                      <Card
+                        cover={`data:image/png;base64,${album.cover}`}
+                        mainText={album.name}
+                        secText={""}
+                        rating={album.rating}
+                        heart="heart"
+                        subject="album"
+                      />
+                    </div>
                   ))}
               </div>
             </div>
@@ -329,7 +362,6 @@ function Subject() {
               subject={subject()}
             />
           ))}
-
       </div>
     </div>
   );
