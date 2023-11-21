@@ -41,7 +41,7 @@ function Navbar() {
   });
 
   return (
-    <div class="flex flex-col w-20 sticky top-0 bg-slate-700 shadow-lg">
+    <div class="flex flex-col w-20 sticky top-0 bg-[#1e1f22] shadow-lg">
       <div class="flex flex-grow flex-col">
         <NavbarButton destination="/" image={AppLogo} />
         <NavbarButton destination="/search" image={SearchIcon} />
@@ -52,7 +52,7 @@ function Navbar() {
           <>
             <button
               onclick={handleLogout}
-              class="relative flex items-center justify-center h-16 w-16 mt-2 mb-2 mx-auto shadow-lg bg-slate-500 rounded-[30px] hover:rounded-xl transition-all duration-200 ease-linear cursor-pointer"
+              class="relative flex items-center justify-center h-16 w-16 mt-2 mb-2 mx-auto shadow-lg bg-[#2b2d31] rounded-[30px] hover:rounded-xl transition-all duration-200 ease-linear cursor-pointer"
             >
               <img src={LogoutLogo} alt="Logout" />
             </button>

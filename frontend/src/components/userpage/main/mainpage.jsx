@@ -33,8 +33,8 @@ function MainPage(props) {
   };
 
   return (
-    <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-slate-200 w-full">
-      <div class="xl:border-l-2 w-full xl:w-[40%] p-6 xl:overflow-y-auto">
+    <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-[#f2f3ea] w-full">
+      <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
         <div class="flex flex-col space-y-2 mt-2">
           {props.scrobbles.slice(0,10).map((scrobble) => (
@@ -103,14 +103,16 @@ function MainPage(props) {
             <form onsubmit={handleSendComment} class="flex">
               <input
                 type="text"
-                class="border border-slate-700 w-[100%] bg-slate-700"
+                class="border border-[#3f4147] w-[100%] bg-[#3f4147] "
                 value={comment()}
                 onInput={(e) => setComment(e.target.value)}
               />
-              <button class="border border-slate-700 ml-4 p-4">Send</button>
+              <button class="border border-[#3f4147] ml-4 p-4 hover:border-slate-500 transition-all duration-200">Send</button>
             </form>
           </div>
         )}
+        <div class="flex flex-col space-y-2">
+
         {comments().map((comment) => (
           <Comment
             avatar={
@@ -128,6 +130,7 @@ function MainPage(props) {
             subject="profile"
           />
         ))}
+        </div>
       </div>
       
     </div>

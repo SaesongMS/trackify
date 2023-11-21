@@ -1,5 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { deleteData } from "../../../getUserData";
+import hearticon from "../../../assets/icons/heart.svg";
 
 function Card(props) {
   const { cover, mainText, secText, rating, heart, ...others } = props;
@@ -28,21 +29,30 @@ function Card(props) {
 
   return (
     <div
-      class="flex-col border border-slate-700 w-[15%] aspect-square bg-no-repeat bg-cover hover:cursor-pointer"
+      class="flex flex-col border border-[#3f4147] hover:border-slate-500 hover:rounded-sm transition-all duration-150 w-[15%] aspect-square bg-no-repeat bg-cover hover:cursor-pointer"
       style={`background-image: url(${cover})`}
       onclick={handleClick}
     >
       {/* <div class="h-[75%] w-[100%] border-b border-slate-700">
                 <img class="h-[100%] w-[100%]" src={cover} />
             </div> */}
-      <div class="h-[25%] w-[100%] flex justify-between pl-2 pr-2 pt-2">
-        <div class="flex flex-col">
-          <span class="text-xs">{mainText}</span>
-          <span class="text-xs">{secText}</span>
+        <div class="flex h-full flex-col bg-black bg-opacity-30">
+
+        <div class="flex flex-grow flex-col pl-1">
+
+          <span class="text-m w-[100%] truncate">{mainText}</span>
+          <span class="text-xs w-[100%] truncate">{secText}</span>
         </div>
+
+            <div class="flex flex-col pl-1 pb-1">
+          <span class="text-xs"><img src={hearticon} class="w-4" /></span>
+
+            </div>
+        </div>
+        
+      {/* <div class="h-[25%] w-[100%] flex justify-between pl-2 pr-2 pt-2">
         <div class="flex flex-col">
           <span class="text-xs">{rating}</span>
-          <span class="text-xs">{heart}</span>
           {props.profileId != null &&
             props.loggedUserId != null &&
             props.profileId == props.loggedUserId && (
@@ -51,7 +61,7 @@ function Card(props) {
               </button>
             )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
