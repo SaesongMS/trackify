@@ -31,8 +31,12 @@ function UserPageFollowers() {
     getUserData();
   });
 
+  createEffect(() => {
+    if (favouriteSongs() !== null) setFavouriteSongs(profile().favouriteSongs);
+  });
+
   return (
-    <div class="w-[100%] h-[100%] flex flex-col">
+    <div class="w-[100%] h-[100%] flex flex-col overflow-auto">
       {profile() && (
         <>
           <UserBanner
@@ -40,22 +44,27 @@ function UserPageFollowers() {
             username={profile().userName}
             topArtistImage={`data:image/png;base64,${profile().topArtistImage}`}
             scrobbleCount={profile().scrobbles.length}
-            favourites={favouriteSongs.length}
+            favourites={favouriteSongs() ? favouriteSongs().length : 0}
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
           />
-          {favouriteSongs() != null &&
-            favouriteSongs().map((favouriteSong) => (
-              <Card
-                cover={`data:image/png;base64,${favouriteSong.song.album.cover}`}
-                mainText={favouriteSong.song.title}
-                secText={favouriteSong.song.album.artist.name}
-                loggedUserId={user() ? user().id : null}
-                profileId={profile().id}
-                handleDelete={handleDeleteFavouriteSong}
-                songId={favouriteSong.song.id}
-              />
-            ))}
+          <div class="grid grid-rows-4">
+            {favouriteSongs() != null &&
+              favouriteSongs().map((favouriteSong) => (
+                <div class="w-[20%]">
+                  <Card
+                    cover={`data:image/png;base64,${favouriteSong.song.album.cover}`}
+                    mainText={favouriteSong.song.title}
+                    secText={favouriteSong.song.album.artist.name}
+                    loggedUserId={user() ? user().id : null}
+                    profileId={profile().id}
+                    handleDelete={handleDeleteFavouriteSong}
+                    songId={favouriteSong.song.id}
+                    subject="song"
+                  />
+                </div>
+              ))}
+          </div>
         </>
       )}
     </div>
