@@ -53,7 +53,7 @@ function MainPage(props) {
       <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
         Artist
         <br />
-        <div class="flex w-[100%] space-x-4 mt-4 mb-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
           {props.topArtists.slice(0,5).map((topArtist) => (
             <Card
               cover={`data:image/png;base64,${topArtist.artist.photo}`}
@@ -63,14 +63,14 @@ function MainPage(props) {
               subject="artist"
             />
           ))}
-          <div class="flex flex-col justify-center items-center">
+          <div class="flex flex-col justify-center items-center lg:hidden">
             <img class="w-8 h-8 rotate-90" src={ArrowUp} />
             <p class=" text-black">See more</p>
           </div>
         </div>
         Album
         <br />
-        <div class="flex w-[100%] space-x-4 mt-4 mb-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
           {props.topAlbums.slice(0,5).map((topAlbum) => (
             <Card
               cover={`data:image/png;base64,${topAlbum.album.cover}`}
@@ -81,10 +81,14 @@ function MainPage(props) {
               subject="album"
             />
           ))}
+          <div class="flex flex-col justify-center items-center lg:hidden">
+            <img class="w-8 h-8 rotate-90" src={ArrowUp} />
+            <p class=" text-black">See more</p>
+          </div>
         </div>
         Song
         <br />
-        <div class="flex w-[100%] space-x-4 mt-4 mb-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
           {props.topSongs.slice(0,5).map((topSong) => (
             <Card
               cover={`data:image/png;base64,${topSong.song.album.cover}`}
@@ -95,6 +99,10 @@ function MainPage(props) {
               subject="song"
             />
           ))}
+          <div class="flex flex-col justify-center items-center lg:hidden">
+            <img class="w-8 h-8 rotate-90" src={ArrowUp} />
+            <p class=" text-black">See more</p>
+          </div>
         </div>
         Comments
         <br />

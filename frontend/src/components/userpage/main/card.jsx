@@ -29,7 +29,7 @@ function Card(props) {
 
   return (
     <div
-      class="flex flex-col border border-[#3f4147] hover:border-slate-500 hover:rounded-sm transition-all duration-150 w-[15%] aspect-square bg-no-repeat bg-cover hover:cursor-pointer"
+      class="flex flex-col border border-[#3f4147] hover:border-slate-500 hover:rounded-sm transition-all duration-150 w-[100%] aspect-square bg-no-repeat bg-cover hover:cursor-pointer"
       style={`background-image: url(${cover})`}
       onclick={handleClick}
     >
@@ -40,8 +40,8 @@ function Card(props) {
 
         <div class="flex flex-grow flex-col pl-1">
 
-          <span class="text-m w-[100%] truncate">{mainText}</span>
-          <span class="text-xs w-[100%] truncate">{secText}</span>
+          <span class="text-m w-[100%]">{mainText}</span>
+          <span class="text-xs w-[100%]">{secText}</span>
         </div>
 
             <div class="flex flex-col pl-1 pb-1">
