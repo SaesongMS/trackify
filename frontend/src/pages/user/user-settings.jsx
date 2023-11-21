@@ -39,7 +39,7 @@ function UserSettings() {
   };
 
   return (
-    <div class="mt-2 ml-2">
+    <div class="mt-2 ml-2 text-white">
       <form onsubmit={handleEditProfile}>
         <h1 class="text-2xl">User Settings</h1>
         <h2 class="text-xl">Description:</h2>
@@ -47,10 +47,19 @@ function UserSettings() {
           type="text"
           value={oldBio()}
           onInput={(e) => setBio(e.target.value)}
+          class="text-slate-950"
         />
         <br />
         <h2 class="text-xl">Avatar:</h2>
         <input type="file" accept="image/*" onChange={handleFileChange} />
+        {avatar() && (
+          <div>
+            <span>Preview:</span>
+            <div class="border-2 border-[#1e1f22] w-[25%] max-w- hover:border-slate-500 hover:rounded-sm transition-all duration-150 aspect-square">
+              <img src={avatar()} alt="Preview" />
+            </div>
+          </div>
+        )}
         <br />
         <input
           type="submit"
