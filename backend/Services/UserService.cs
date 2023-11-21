@@ -99,6 +99,7 @@ public class UserService
                 Song = fs.Song
             }).ToListAsync();
             var artistCount = await _context.Scrobbles.Where(s => s.Id_User == user.Id).Select(s => s.Song.Album.Artist).Distinct().CountAsync();
+            var topArtist = await _context.Scrobbles.Where(s => s.Id_User == user.Id).GroupBy(s => s.Song.Album.Artist).OrderByDescending(s => s.Count()).Select(s => s.Key).FirstOrDefaultAsync();
             var userData = new ProfileResponse
             {
                 Id = user.Id,
@@ -114,7 +115,8 @@ public class UserService
                 RatedAlbums = ratedAlbums,
                 RatedArtists = ratedArtist,
                 FavouriteSongs = favouriteSongs,
-                Creation_Date = user.Creation_Date
+                Creation_Date = user.Creation_Date,
+                TopArtistImage = topArtist != null ? topArtist.Photo : null
             };
             return userData;
         }

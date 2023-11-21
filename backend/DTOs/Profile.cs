@@ -21,6 +21,7 @@ public class ProfileResponse
     public List<RatedAlbums> RatedAlbums { get; set; } = new List<RatedAlbums>();
     public List<RatedArtists> RatedArtists { get; set; } = new List<RatedArtists>();
     public List<FavouriteSongs> FavouriteSongs { get; set; } = new List<FavouriteSongs>();
+    public byte[] TopArtistImage { get; set; } = new byte[0];
 }
 
 public class Follows
