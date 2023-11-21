@@ -1,8 +1,19 @@
 import { A } from "@solidjs/router";
 import heart from "../../../assets/icons/heart.svg";
+import Belmondo from "../../../assets/icons/belmondoblur.png";
+import { createSignal, createEffect } from "solid-js";
 
 function ScrobbleRow(props) {
-  const { albumCover, title, artist, rating, date, album, ...others } = props;
+  const { title, artist, rating, date, album, ...others } = props;
+
+  const [albumCover, setAlbumCover] = createSignal(null);
+
+  createEffect(() => {
+    if(props.albumCover.length !== 0)
+      setAlbumCover(`data:image/png;base64,${props.albumCover}`);
+    else
+      setAlbumCover(Belmondo);
+  }, [props.albumCover]);
 
   function formatTimeDifference(scrobbleDate) {
     const currentDate = new Date();
@@ -30,7 +41,8 @@ function ScrobbleRow(props) {
     <div class="text-[#f2f3ea] h-[100%] flex flex-row w-[100%] border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
       <img
         class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
-        src={`data:image/png;base64,${albumCover}`}
+        // src={`data:image/png;base64,${albumCover}` || albumCover}
+        src={albumCover()}
         onClick={() =>
           (window.location.href = `/song/${title.replaceAll(" ", "+")}`)
         }

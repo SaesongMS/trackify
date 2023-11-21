@@ -40,13 +40,12 @@ function Comment(props) {
       <div class="flex flex-grow">
         <div class="flex flex-col mt-1">
           <span class="mr-4 cursor-pointer text-md">
-            <A href={`/user/${username}/main`}>{username}</A>
+            <a href={`/user/${username}/main`}>{username}</a>
           </span>
           <span class="mr-4 cursor-pointer text-sm">{comment}</span>
         </div>
       </div>
-      <div class="flex items-end pb-1 text-xs">
-        <span class="mr-4 cursor-pointer">options</span>
+      <div class="flex items-start pb-1 text-xs">
         <span class="mr-4 cursor-default">{date}</span>
         {loggedUser &&
           (loggedUser.userName == username ||

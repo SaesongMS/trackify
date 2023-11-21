@@ -4,6 +4,7 @@ import Comment from "./comment";
 import { createEffect, createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
 import ArrowUp from "../../../assets/icons/arrow-up.svg";
+import Belmondo from "../../../assets/icons/belmondoblur.png";
 
 function MainPage(props) {
   const { loggedUser } = props;
@@ -32,6 +33,17 @@ function MainPage(props) {
     }
   };
 
+  const mockCard = [
+    {
+      cover: Belmondo,
+      mainText: "Your top subject",
+      rating: "5/5",
+      secText: "will appear here",
+      heart: "heart",
+    }
+  ];
+
+
   return (
     <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-[#f2f3ea] w-full">
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
@@ -54,7 +66,8 @@ function MainPage(props) {
         Artist
         <br />
         <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
-          {props.topArtists.slice(0,5).map((topArtist) => (
+          {props.topArtists.length !== 0 ?
+          props.topArtists.slice(0,5).map((topArtist) => (
             <Card
               cover={`data:image/png;base64,${topArtist.artist.photo}`}
               mainText={topArtist.artist.name}
@@ -62,7 +75,18 @@ function MainPage(props) {
               heart="heart"
               subject="artist"
             />
-          ))}
+          )) :
+          mockCard.slice(0,5).map((topArtist) => (
+            <Card
+              cover={topArtist.cover}
+              mainText={topArtist.mainText}
+              secText={topArtist.secText}
+              rating={topArtist.rating}
+              heart={topArtist.heart}
+              subject="artist"
+            />
+          ))
+        }
           <div class="flex flex-col justify-center items-center lg:hidden">
             <img class="w-8 h-8 rotate-90" src={ArrowUp} />
             <p class=" text-black">See more</p>
@@ -71,7 +95,8 @@ function MainPage(props) {
         Album
         <br />
         <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
-          {props.topAlbums.slice(0,5).map((topAlbum) => (
+          {props.topAlbums.length !== 0 ?
+          props.topAlbums.slice(0,5).map((topAlbum) => (
             <Card
               cover={`data:image/png;base64,${topAlbum.album.cover}`}
               mainText={topAlbum.album.name}
@@ -80,7 +105,18 @@ function MainPage(props) {
               heart="heart"
               subject="album"
             />
-          ))}
+          )) :
+          mockCard.slice(0,5).map((topAlbum) => (
+            <Card
+              cover={topAlbum.cover}
+              mainText={topAlbum.mainText}
+              secText={topAlbum.secText}
+              rating={topAlbum.rating}
+              heart={topAlbum.heart}
+              subject="album"
+            />
+          ))
+          }
           <div class="flex flex-col justify-center items-center lg:hidden">
             <img class="w-8 h-8 rotate-90" src={ArrowUp} />
             <p class=" text-black">See more</p>
@@ -89,7 +125,8 @@ function MainPage(props) {
         Song
         <br />
         <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">
-          {props.topSongs.slice(0,5).map((topSong) => (
+          {props.topSongs.length !== 0 ?
+          props.topSongs.slice(0,5).map((topSong) => (
             <Card
               cover={`data:image/png;base64,${topSong.song.album.cover}`}
               mainText={topSong.song.title}
@@ -98,7 +135,18 @@ function MainPage(props) {
               heart="heart"
               subject="song"
             />
-          ))}
+          )) :
+          mockCard.slice(0,5).map((topSong) => (
+            <Card
+              cover={topSong.cover}
+              mainText={topSong.mainText}
+              secText={topSong.secText}
+              rating={topSong.rating}
+              heart={topSong.heart}
+              subject="song"
+            />
+          ))
+        }
           <div class="flex flex-col justify-center items-center lg:hidden">
             <img class="w-8 h-8 rotate-90" src={ArrowUp} />
             <p class=" text-black">See more</p>
@@ -107,7 +155,7 @@ function MainPage(props) {
         Comments
         <br />
         {loggedUser && (
-          <div class="h-[10%] pb-4 mt-4 mb-4">
+          <div class="pb-4 mt-4 mb-4">
             <form onsubmit={handleSendComment} class="flex">
               <input
                 type="text"

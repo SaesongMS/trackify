@@ -10,9 +10,9 @@ function Counter(props)
         setcount(props.count);
     }, [props]);
     return(
-        <div class="flex flex-col justify-end pr-6">
+        <div class="flex  flex-row lg:flex-col items-center lg:items-start justify-start lg:justify-end pr-6">
             <div>{title}</div>
-            <div class="font-bold text-lg">{count}</div>
+            <div class="ml-3 lg:ml-0 font-bold text-lg">{count}</div>
         </div>
     )
 }

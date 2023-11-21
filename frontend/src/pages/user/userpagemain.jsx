@@ -39,7 +39,23 @@ function UserPageMain() {
   createEffect(async () => {
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
+    console.log(userData);
   });
+
+  const mockScrobbles = [
+    {
+      "scrobble_Date": new Date(),
+      "song": {
+          "title": "Your scrobbles",
+          "album": {
+              "cover": "",
+              "artist": {
+                  "name": "will appear here",
+              }
+          }
+      }
+    }];
+  
 
   return (
     <div class="h-[100%] flex flex-col">
@@ -55,7 +71,7 @@ function UserPageMain() {
             artistCount={profile().artistCount}
           />
           <MainPage
-            scrobbles={profile().scrobbles}
+            scrobbles={profile().scrobbles.length > 0 ? profile().scrobbles : mockScrobbles}
             comments={profile().profileComments}
             topArtists={artists()}
             topAlbums={albums()}
