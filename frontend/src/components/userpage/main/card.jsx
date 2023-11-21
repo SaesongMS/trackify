@@ -36,20 +36,20 @@ function Card(props) {
       {/* <div class="h-[75%] w-[100%] border-b border-slate-700">
                 <img class="h-[100%] w-[100%]" src={cover} />
             </div> */}
-        <div class="flex h-full flex-col bg-black bg-opacity-30">
-
+      <div class="flex h-full flex-col bg-black bg-opacity-30">
         <div class="flex flex-grow flex-col pl-1">
-
           <span class="text-m w-[100%]">{mainText}</span>
           <span class="text-xs w-[100%]">{secText}</span>
         </div>
+        {subject() == "song" && (
+          <div class="flex flex-col pl-1 pb-1">
+            <span class="text-xs">
+              <img src={hearticon} class="w-4" />
+            </span>
+          </div>
+        )}
+      </div>
 
-            <div class="flex flex-col pl-1 pb-1">
-          <span class="text-xs"><img src={hearticon} class="w-4" /></span>
-
-            </div>
-        </div>
-        
       {/* <div class="h-[25%] w-[100%] flex justify-between pl-2 pr-2 pt-2">
         <div class="flex flex-col">
           <span class="text-xs">{rating}</span>
