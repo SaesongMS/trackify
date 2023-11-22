@@ -29,6 +29,7 @@ function Subject() {
   const [isOpen, setIsOpen] = createSignal(false);
   const [listenersCount, setListenersCount] = createSignal(0);
   const [scrobbleCount, setScrobbleCount] = createSignal(0);
+  const [avgRating, setAvgRating] = createSignal(0);
 
   const handleSelect = (interval) => {
     setPopularInterval(interval);
@@ -50,6 +51,10 @@ function Subject() {
     }
   };
 
+  const updateAvgRating = async () => {
+    getSubjectData(popularInterval());
+  };
+
   createEffect(() => {
     setSubject(params.subject);
   });
@@ -62,7 +67,8 @@ function Subject() {
   createEffect(() => {
     if (
       subjectData() != null &&
-      subjectData()[`${subject()}Ratings`].length > 0
+      subjectData()[`${subject()}Ratings`].length > 0 &&
+      user()
     ) {
       // check if user has rated this subject
       const userRating_ = subjectData()[`${subject()}Ratings`].filter(
@@ -81,6 +87,7 @@ function Subject() {
     setSubjectData(data[subject()]);
     setListenersCount(data.listenersCount);
     setScrobbleCount(data.scrobbleCount);
+    setAvgRating(data.avgRating);
     if (subject() === "artist") {
       const data_ = await postData("scrobbles/top-n-songs-by-artist", {
         artistId: subjectData().id,
@@ -296,7 +303,6 @@ function Subject() {
           </>
         );
       case "song":
-        //when trying to click on album page properties change but url stays the same. why?
         return (
           <div class="flex flex-col justify-between">
             <div class="w-full">
@@ -330,9 +336,10 @@ function Subject() {
       {subjectData() != null && user() && (
         <StarRating
           rating={userRating()}
-          setRating={setUserRating}
+          avgRating={avgRating()}
           itemId={subjectData().id}
           subject={subject()}
+          updateAvgRating={updateAvgRating}
         />
       )}
       <div class="pt-2 pl-2">

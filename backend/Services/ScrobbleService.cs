@@ -175,7 +175,7 @@ public class ScrobbleService
             .Include(s => s.Song.Album.Artist)
             .GroupBy(s => s.Song)
             .ToListAsync();
-        
+
         var data = groupings
             .Select(s => new SongScrobbleCount
             {
@@ -403,7 +403,6 @@ public class ScrobbleService
 
     public async Task<SongResponse> GetSongByName(string name)
     {
-
         var song = await _context.Songs
             .Include(s => s.Album)
             .ThenInclude(a => a.Artist)
@@ -419,11 +418,17 @@ public class ScrobbleService
             .Select(s => s.Id_User)
             .Distinct()
             .CountAsync();
+        double avgRating = 0;
+        if (await _context.SongRatings.AnyAsync(r => r.Id_Song_Internal == song.Id))
+            avgRating = await _context.SongRatings
+                .Where(r => r.Id_Song_Internal == song.Id)
+                .AverageAsync(r => r.Rating);
         return new SongResponse
         {
             Song = song,
             ScrobbleCount = scrobbleCount,
-            ListenersCount = userCount
+            ListenersCount = userCount,
+            AvgRating = avgRating
         };
     }
 
@@ -444,11 +449,17 @@ public class ScrobbleService
             .Select(s => s.Id_User)
             .Distinct()
             .CountAsync();
+        double avgRating = 0;
+        if (await _context.AlbumRatings.AnyAsync(r => r.Id_Album_Internal == album.Id))
+            avgRating = await _context.AlbumRatings
+                .Where(r => r.Id_Album_Internal == album.Id)
+                .AverageAsync(r => r.Rating);
         return new AlbumResponse
         {
             Album = album,
             ScrobbleCount = scrobbleCount,
-            ListenersCount = userCount
+            ListenersCount = userCount,
+            AvgRating = avgRating
         };
     }
 
@@ -470,11 +481,17 @@ public class ScrobbleService
             .Select(s => s.Id_User)
             .Distinct()
             .CountAsync();
+        double avgRating = 0;
+        if (await _context.ArtistRatings.AnyAsync(r => r.Id_Artist_Internal == artist.Id))
+            avgRating = await _context.ArtistRatings
+               .Where(r => r.Id_Artist_Internal == artist.Id)
+               .AverageAsync(r => r.Rating);
         return new ArtistResponse
         {
             Artist = artist,
             ScrobbleCount = scrobbleCount,
-            ListenersCount = userCount
+            ListenersCount = userCount,
+            AvgRating = avgRating
         };
     }
 

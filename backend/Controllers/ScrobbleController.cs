@@ -370,7 +370,8 @@ public class ScrobblesController : ControllerBase
                 Success = true,
                 Song = data.Song,
                 ScrobbleCount = data.ScrobbleCount,
-                ListenersCount = data.ListenersCount
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
             });
         }
         catch (Exception e)
@@ -390,7 +391,8 @@ public class ScrobblesController : ControllerBase
                 Success = true,
                 Album = data.Album,
                 ScrobbleCount = data.ScrobbleCount,
-                ListenersCount = data.ListenersCount
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
             });
         }
         catch (Exception e)
@@ -410,7 +412,8 @@ public class ScrobblesController : ControllerBase
                 Success = true,
                 Artist = data.Artist,
                 ScrobbleCount = data.ScrobbleCount,
-                ListenersCount = data.ListenersCount
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
             });
         }
         catch (Exception e)
