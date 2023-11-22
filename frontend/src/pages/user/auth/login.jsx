@@ -51,7 +51,7 @@ function Login() {
             value={password()}
             onInput={(e) => setPassword(e.target.value)}
           />
-          <A class="text-slate-700" href="/register">
+          <A class="text-white" href="/register">
             Don't have an account? Register here!
           </A>
           <button

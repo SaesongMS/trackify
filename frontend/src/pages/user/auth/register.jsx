@@ -81,7 +81,7 @@ function Register() {
             onInput={(e) => setPasswordConfirm(e.target.value)}
             required
           />
-          <A class="text-slate-700" href="/login">
+          <A class="text-white" href="/login">
             Already have an account? Login here!
           </A>
           <button
