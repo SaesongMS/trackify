@@ -437,6 +437,7 @@ public class ScrobbleService
         var album = await _context.Albums
             .Include(a => a.Artist)
             .Include(a => a.Songs)
+            .ThenInclude(s => s.FavouriteSongs)
             .Include(a => a.AlbumComments)
             .ThenInclude(a => a.Sender)
             .Include(a => a.AlbumRatings)
@@ -467,10 +468,10 @@ public class ScrobbleService
     {
         var artist = await _context.Artists
             .Include(a => a.Albums)
-            .ThenInclude(a => a.Songs)
-            .ThenInclude(s => s.Scrobbles)
+                .ThenInclude(a => a.Songs)
+                    .ThenInclude(s => s.Scrobbles)
             .Include(a => a.ArtistComments)
-            .ThenInclude(a => a.Sender)
+                .ThenInclude(a => a.Sender)
             .Include(a => a.ArtistRatings)
             .FirstOrDefaultAsync(a => a.Name.ToLower() == name.ToLower());
         var scrobbleCount = await _context.Scrobbles
@@ -503,6 +504,7 @@ public class ScrobbleService
         var groupings = await _context.Scrobbles
             .Where(s => s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date && s.Song.Album.Artist.Id == artistId)
             .Include(s => s.Song.Album.Artist)
+            .Include(s => s.Song.FavouriteSongs)
             .GroupBy(s => s.Song)
             .ToListAsync();
 

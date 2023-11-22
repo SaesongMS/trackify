@@ -36,6 +36,15 @@ function Subject() {
     setIsOpen(false);
   };
 
+  const isFavouriteSong = (songs) => {
+    if (
+      songs.song.favouriteSongs.some((song) => song.id_User === loggedUser.id)
+    )
+      return "filledHeart";
+
+    return "heart";
+  };
+
   const getInterval = (interval) => {
     switch (interval) {
       case "day":
@@ -103,45 +112,24 @@ function Subject() {
     getSubjectData(popularInterval());
   });
 
-  const songIsFavourite = () => {
-    if (user() && subjectData() != null) {
-      const favouriteSong = subjectData().favouriteSongs.filter(
-        (song) => song.id_User === user().id
-      );
-      if (favouriteSong.length > 0) {
+  const songIsFavourite = (song) => {
+    if (user() && subjectData() != null && song.favouriteSongs) {
+      if (song.favouriteSongs.some((record) => record.id_User === user().id))
         return true;
-      }
     }
     return false;
   };
 
-  const handleEditFavouriteSong = async () => {
-    const img = document.getElementById("favouriteSong");
-    if (songIsFavourite()) {
-      const res = await deleteData(`favourite-song/delete`, {
-        songId: subjectData().id,
+  const handleEditFavouriteSong = async (song) => {
+    if (songIsFavourite(song))
+      await deleteData(`favourite-song/delete`, {
+        songId: song.id,
       });
-      if (res.success) {
-        setSubjectData({
-          ...subjectData(),
-          favouriteSongs: subjectData().favouriteSongs.filter(
-            (song) => song.id_User !== user().id
-          ),
-        });
-        img.src = heart;
-      }
-    } else {
-      const res = await postData(`favourite-song/create`, {
-        songId: subjectData().id,
+    else
+      await postData(`favourite-song/create`, {
+        songId: song.id,
       });
-      if (res.success) {
-        setSubjectData({
-          ...subjectData(),
-          favouriteSongs: [...subjectData().favouriteSongs, res.favouriteSong],
-        });
-        img.src = filledHeart;
-      }
-    }
+    getSubjectData(popularInterval());
   };
 
   const handleDeleteComment = (commentId) => {
@@ -177,7 +165,16 @@ function Subject() {
               )}`)
             }
           />
-          {user() && <img src={heart} class="w-4" />}
+          {user() && (
+            <img
+              src={songIsFavourite(song.song) ? filledHeart : heart}
+              class="w-4 cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                handleEditFavouriteSong(song.song);
+              }}
+            />
+          )}
           <a
             href={`/song/${song.song.title.replaceAll(" ", "+")}`}
             class="hover:hover:text-slate-300"
@@ -289,7 +286,16 @@ function Subject() {
             {s.songs.map((song, index) => (
               <div class="flex flex-row space-x-2">
                 <p>{index + 1}</p>
-                {user() && <img src={heart} class="w-4" />}
+                {user() && (
+                  <img
+                    src={songIsFavourite(song) ? filledHeart : heart}
+                    class="w-4 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleEditFavouriteSong(song);
+                    }}
+                  />
+                )}
                 <p>
                   <a
                     href={`/song/${song.title.replaceAll(" ", "+")}`}
@@ -318,10 +324,12 @@ function Subject() {
             </div>
             {user() && (
               <img
-                src={songIsFavourite() ? filledHeart : heart}
-                class="w-4"
-                onClick={handleEditFavouriteSong}
-                id="favouriteSong"
+                src={songIsFavourite(subjectData()) ? filledHeart : heart}
+                class="w-4 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleEditFavouriteSong(subjectData());
+                }}
               />
             )}
           </div>
