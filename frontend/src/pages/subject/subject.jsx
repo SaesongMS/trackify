@@ -36,15 +36,6 @@ function Subject() {
     setIsOpen(false);
   };
 
-  const isFavouriteSong = (songs) => {
-    if (
-      songs.song.favouriteSongs.some((song) => song.id_User === loggedUser.id)
-    )
-      return "filledHeart";
-
-    return "heart";
-  };
-
   const getInterval = (interval) => {
     switch (interval) {
       case "day":
