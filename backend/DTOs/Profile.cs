@@ -22,6 +22,7 @@ public class ProfileResponse
     public List<RatedArtists> RatedArtists { get; set; } = new List<RatedArtists>();
     public List<FavouriteSongs> FavouriteSongs { get; set; } = new List<FavouriteSongs>();
     public byte[] TopArtistImage { get; set; } = new byte[0];
+    public string RefreshToken { get; set; } = string.Empty;
 }
 
 public class Follows
@@ -105,4 +106,10 @@ public class FollowerData
     public string UserName { get; set; } = string.Empty;
     public string Bio { get; set; } = string.Empty;
     public byte[] ProfilePicture { get; set; } = new byte[0];
+}
+
+public class ConnectSpotifyRequest
+{ 
+    public string RefreshToken { get; set; } = string.Empty;
+    public string Id_User_Spotify_API { get; set; } = string.Empty;
 }

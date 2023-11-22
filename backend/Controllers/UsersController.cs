@@ -180,5 +180,55 @@ public class UsersController : ControllerBase
     }
   }
 
+  [HttpPost("connectSpotify")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> ConnectSpotify([FromBody] ConnectSpotifyRequest request)
+  {
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+    try
+    {
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.ConnectSpotify(request.RefreshToken, request.Id_User_Spotify_API, user.Id);
+
+      if(response)
+        return Ok(new { Success = true, Message = "Spotify account was successfully connected" });
+      else
+        return BadRequest(new { Success = false, Message = "Error connecting Spotify account" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error connecting Spotify account: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
+  [HttpPatch("disconnectSpotify")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> DisconnectSpotify()
+  {
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+    try
+    {
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.DisconnectSpotify(user.Id);
+
+      if(response)
+        return Ok(new { Success = true, Message = "Spotify account was successfully disconnected" });
+      else
+        return BadRequest(new { Success = false, Message = "Error disconnecting Spotify account" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error disconnecting Spotify account: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
 
 }

@@ -116,7 +116,8 @@ public class UserService
                 RatedArtists = ratedArtist,
                 FavouriteSongs = favouriteSongs,
                 Creation_Date = user.Creation_Date,
-                TopArtistImage = topArtist != null ? topArtist.Photo : null
+                TopArtistImage = topArtist != null ? topArtist.Photo : null,
+                RefreshToken = user.RefreshToken
             };
             return userData;
         }
@@ -183,4 +184,31 @@ public class UserService
     {
         return base64String[(base64String.IndexOf(',') + 1)..];
     }
+    public async Task<bool> ConnectSpotify(string token, string spotifyId, string userId)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user != null)
+        {
+            user.Id_User_Spotify_API = spotifyId;
+            user.RefreshToken = token;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+
+    }
+
+    public async Task<bool> DisconnectSpotify(string userId)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user != null)
+        {
+            user.Id_User_Spotify_API = string.Empty;
+            user.RefreshToken = string.Empty;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
 }
