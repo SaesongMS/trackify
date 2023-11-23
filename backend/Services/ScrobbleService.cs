@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using DTOs;
+using System.Drawing;
 
 namespace Services;
 
@@ -522,4 +523,83 @@ public class ScrobbleService
             .ToList();
         return data;
     }
+
+    public async Task<byte[]> GetCollage(string userId, DateTime start, DateTime end, int n)
+    {
+        var start_date = start.ToUniversalTime();
+        var end_date = end.ToUniversalTime();
+
+        var groupings = await _context.Scrobbles
+            .Where(s => s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date && s.Id_User == userId)
+            .Include(s => s.Song.Album.Artist)
+            .GroupBy(s => s.Song.Album.Artist)
+            .ToListAsync();
+
+        var data = groupings
+            .Select(s => new ArtistScrobbleCount
+            {
+                Artist = s.Key,
+                Count = s.Count()
+            })
+            .OrderByDescending(s => s.Count)
+            .Take(n)
+            .ToList();
+        int collageSize = (int)Math.Sqrt(n);
+        int imageSize = 1000 / collageSize;
+        int adjustedCollageSize = imageSize * collageSize;
+
+        var collage = new Bitmap(adjustedCollageSize, adjustedCollageSize);
+        var graphics = Graphics.FromImage(collage);
+
+        var matrix = new System.Drawing.Imaging.ColorMatrix();
+        matrix.Matrix33 = 0.7f;
+        var attributes = new System.Drawing.Imaging.ImageAttributes();
+        attributes.SetColorMatrix(matrix);
+
+        var fontSize = 0;
+        switch (n)
+        {
+            case 4:
+                fontSize = 24;
+                break;
+            case 9:
+                fontSize = 18;
+                break;
+            case 16:
+                fontSize = 16;
+                break;
+        }
+        var font = new Font("Comic Sans MS", fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
+        var brush = new SolidBrush(Color.White);
+
+        int x = 0, y = 0;
+        foreach (var artist in data)
+        {
+            var imageBytes = artist.Artist.Photo;
+            using var ms = new MemoryStream(imageBytes);
+            var image = Image.FromStream(ms);
+            var rect = new Rectangle(x, y, imageSize, imageSize);
+            graphics.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+
+            graphics.DrawString(artist.Artist.Name, font, brush, x, y + imageSize - font.Height);
+            x += imageSize;
+            if (x == adjustedCollageSize)
+            {
+                x = 0;
+                y += imageSize;
+            }
+        }
+
+        var collageBytes = ImageToByte(collage);
+
+        return collageBytes;
+    }
+
+    private byte[] ImageToByte(Image img)
+    {
+        using var stream = new MemoryStream();
+        img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+        return stream.ToArray();
+    }
+
 }

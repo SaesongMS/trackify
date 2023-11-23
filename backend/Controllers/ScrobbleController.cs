@@ -439,4 +439,25 @@ public class ScrobblesController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpPost("collage")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> GetCollage([FromBody] CollageRequest request)
+    {
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            var collage = await _scrobbleService.GetCollage(user.Id, request.Start, request.End, request.Size);
+            return Ok(new ArtistCollageResponse
+            {
+                Success = true,
+                Collage = collage
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

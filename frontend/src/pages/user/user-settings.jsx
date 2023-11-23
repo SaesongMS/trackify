@@ -11,48 +11,50 @@ function UserSettings() {
 
   const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI + "/user/settings";
-  const SCOPES = "user-read-private user-read-email user-top-read user-read-playback-state"
+  const SCOPES =
+    "user-read-private user-read-email user-top-read user-read-playback-state";
 
   const generateRandomString = (length) => {
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const values = crypto.getRandomValues(new Uint8Array(length));
     return values.reduce((acc, x) => acc + possible[x % possible.length], "");
-  }
+  };
 
   const sha256 = async (plain) => {
-    const encoder = new TextEncoder()
-    const data = encoder.encode(plain)
-    return window.crypto.subtle.digest('SHA-256', data)
-  }
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plain);
+    return window.crypto.subtle.digest("SHA-256", data);
+  };
 
   const base64encode = (input) => {
     return btoa(String.fromCharCode(...new Uint8Array(input)))
-      .replace(/=/g, '')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_');
-  }
+      .replace(/=/g, "")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_");
+  };
 
-  const codeVerifier  = generateRandomString(64);
-  const authUrl = new URL("https://accounts.spotify.com/authorize")
+  const codeVerifier = generateRandomString(64);
+  const authUrl = new URL("https://accounts.spotify.com/authorize");
 
   const getCode = async () => {
-    const hashed = await sha256(codeVerifier)
+    const hashed = await sha256(codeVerifier);
     const codeChallenge = base64encode(hashed);
 
     window.localStorage.setItem("code_verifier", codeVerifier);
 
-    const params =  {
-      response_type: 'code',
+    const params = {
+      response_type: "code",
       client_id: CLIENT_ID,
       scope: SCOPES,
-      code_challenge_method: 'S256',
+      code_challenge_method: "S256",
       code_challenge: codeChallenge,
       redirect_uri: REDIRECT_URI.toString(),
-    }
-    
+    };
+
     authUrl.search = new URLSearchParams(params).toString();
     window.location.href = authUrl.toString();
-  }
+  };
 
   const getSpotifyUserId = async (access_token) => {
     const res = await fetch("https://api.spotify.com/v1/me", {
@@ -65,27 +67,27 @@ function UserSettings() {
   };
 
   const getRefreshToken = async (code) => {
-    let codeVerifier = localStorage.getItem('code_verifier');
-  
+    let codeVerifier = localStorage.getItem("code_verifier");
+
     const payload = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         client_id: CLIENT_ID,
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         code,
         redirect_uri: REDIRECT_URI.toString(),
         code_verifier: codeVerifier,
       }),
-    }
-  
+    };
+
     const body = await fetch("https://accounts.spotify.com/api/token", payload);
     const response = await body.json();
 
     const spotifyUserId = await getSpotifyUserId(response.access_token);
-  
+
     const res = await postData(`users/connectSpotify`, {
       RefreshToken: response.refresh_token,
       Id_User_Spotify_API: spotifyUserId,
@@ -95,7 +97,7 @@ function UserSettings() {
     } else {
       console.log(res.message);
     }
-  }
+  };
 
   //dla przyszlej referencji
   // const getAccessToken = async (refresh_token) => {
@@ -116,23 +118,23 @@ function UserSettings() {
 
   createEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    let code = urlParams.get('code');
-    if (code){
+    let code = urlParams.get("code");
+    if (code) {
       window.history.replaceState({}, document.title, "/user/settings");
       getRefreshToken(code);
     }
-  })
+  });
 
   const handleSpotifyConnect = (e) => {
     e.preventDefault();
     getCode();
-  }
+  };
 
   const handleSpotifyDisconnect = async (e) => {
     e.preventDefault();
     await patchData(`users/disconnectSpotify`, {});
     setConnectedSpotify(false);
-  }
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -149,11 +151,13 @@ function UserSettings() {
     if (user()) {
       const data = await getData(`users/${user().userName}`);
       setOldBio(data.description ? data.description : "");
-      if(data.refreshToken.length > 0) 
-        setConnectedSpotify(true);
+      if (data.refreshToken.length > 0) setConnectedSpotify(true);
     }
   });
 
+  createEffect(() => {
+    if (!user()) window.location.href = "/login";
+  });
   const handleEditProfile = async (e) => {
     e.preventDefault();
     if (avatar() || (bio() !== oldBio() && bio().trim() !== "")) {
@@ -196,13 +200,19 @@ function UserSettings() {
         />
       </form>
       <button
-        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${connectedSpotify() ? "hidden" : ""}`}
-        onClick={handleSpotifyConnect}>
+        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${
+          connectedSpotify() ? "hidden" : ""
+        }`}
+        onClick={handleSpotifyConnect}
+      >
         Connect Spotify
       </button>
-      <button 
-        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${connectedSpotify() ? "" : "hidden"}`}
-        onClick={handleSpotifyDisconnect}>
+      <button
+        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${
+          connectedSpotify() ? "" : "hidden"
+        }`}
+        onClick={handleSpotifyDisconnect}
+      >
         Disconnect Spotify
       </button>
     </div>
