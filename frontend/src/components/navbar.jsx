@@ -9,6 +9,7 @@ import { UserContext } from "../contexts/UserContext";
 import { useNavigate } from "@solidjs/router";
 import SettingsLogo from "../assets/icons/settings.svg";
 import LogoutLogo from "../assets/icons/logout.svg";
+import CollageLogo from "../assets/icons/collage.svg";
 function Navbar() {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ function Navbar() {
             >
               <img src={LogoutLogo} alt="Logout" />
             </button>
+
+            <NavbarButton destination="collage" image={CollageLogo} />
 
             <NavbarButton destination={"/user/settings"} image={SettingsLogo} />
             <NavbarButton

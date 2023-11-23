@@ -63,7 +63,7 @@ public class UserService
                 },
                 Id_Recipient = pc.Id_Recipient,
             }).ToListAsync();
-            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Include(a => a.Song).ThenInclude(a => a.Album).ThenInclude(a => a.Artist).Select(s => new Scrobbles
+            var scrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).OrderByDescending(s => s.Scrobble_Date).Include(a => a.Song).ThenInclude(a => a.Album).ThenInclude(a => a.Artist).Include(s => s.Song.FavouriteSongs).Select(s => new Scrobbles
             {
                 Id = s.Id,
                 Scrobble_Date = s.Scrobble_Date,

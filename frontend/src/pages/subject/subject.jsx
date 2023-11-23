@@ -248,7 +248,6 @@ function Subject() {
                         mainText={album.name}
                         secText={""}
                         rating={album.rating}
-                        heart="heart"
                         subject="album"
                       />
                     </div>
@@ -309,18 +308,10 @@ function Subject() {
                 scrobbleCount={scrobbleCount()}
                 usersCount={listenersCount()}
                 subject={subject()}
+                heart={songIsFavourite(subjectData()) ? "filledHeart" : "heart"}
+                songId={subjectData().id}
               />
             </div>
-            {user() && (
-              <img
-                src={songIsFavourite(subjectData()) ? filledHeart : heart}
-                class="w-4 cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleEditFavouriteSong(subjectData());
-                }}
-              />
-            )}
           </div>
         );
       default:

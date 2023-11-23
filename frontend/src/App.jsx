@@ -12,6 +12,7 @@ import ScrobbleLibrary from "./pages/user/library/scrobbleLibrary";
 import SubjectLibrary from "./pages/user/library/subjectLibrary";
 import SubjectPage from "./pages/subject/subject";
 import Charts from "./pages/charts/charts";
+import Collage from "./pages/collage/collage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/:subject/:name" element={<SubjectPage />} />
+        <Route path="/collage" element={<Collage />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>

@@ -184,3 +184,19 @@ public class NIntervalTopSongsByArtistRequest
     [Required]
     public string ArtistId { get; set; } = string.Empty;
 }
+
+public class CollageRequest
+{
+    //time period, size
+    [Required]
+    public DateTime Start { get; set; } = DateTime.Now;
+    public DateTime End { get; set; } = DateTime.Now;
+    [Required]
+    public int Size { get; set; } = 1;
+}
+
+public class ArtistCollageResponse
+{
+    public byte[] Collage { get; set; }
+    public bool Success { get; set; }
+}

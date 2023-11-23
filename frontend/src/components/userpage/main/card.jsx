@@ -1,17 +1,9 @@
 import { createEffect, createSignal } from "solid-js";
-import { deleteData } from "../../../getUserData";
-import hearticon from "../../../assets/icons/heart.svg";
 import { encodeSubjectName } from "../../../encodeSubjectName";
 
 function Card(props) {
-  const { cover, mainText, secText, rating, heart, ...others } = props;
+  const { cover, mainText, secText, rating, ...others } = props;
   const [subject, setSubject] = createSignal(null);
-  const [url, setUrl] = createSignal(null);
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    await deleteData(`favourite-song/delete`, { songId: props.songId });
-    props.handleDelete(props.songId);
-  };
 
   createEffect(() => {
     setSubject(others.subject);
@@ -19,6 +11,7 @@ function Card(props) {
 
   const handleClick = (e) => {
     e.preventDefault();
+    if (mainText === "Your top subject") return;
     if (others.subject) {
       window.location.href = `/${subject()}/${encodeSubjectName(
         props.mainText
@@ -40,27 +33,7 @@ function Card(props) {
           <span class="text-m w-[100%]">{mainText}</span>
           <span class="text-xs w-[100%]">{secText}</span>
         </div>
-        {subject() == "song" && (
-          <div class="flex flex-col pl-1 pb-1">
-            <span class="text-xs">
-              <img src={hearticon} class="w-4" />
-            </span>
-          </div>
-        )}
       </div>
-
-      {/* <div class="h-[25%] w-[100%] flex justify-between pl-2 pr-2 pt-2">
-        <div class="flex flex-col">
-          <span class="text-xs">{rating}</span>
-          {props.profileId != null &&
-            props.loggedUserId != null &&
-            props.profileId == props.loggedUserId && (
-              <button class="mr-4 cursor-pointer" onClick={handleDelete}>
-                X
-              </button>
-            )}
-        </div>
-      </div> */}
     </div>
   );
 }
