@@ -67,8 +67,17 @@ public class CreateScrobbleJob : IJob
                     var trackAlbumId = item["track"]["album"]["id"].ToString()!;
                     //get track date
                     var trackDate = item["played_at"].ToString();
-                    var trackDateUtc = DateTimeOffset.Parse(trackDate).UtcDateTime;
-
+                    var trackDateUniversal = DateTime.Parse(trackDate);
+                    var trackDateUtc = new DateTime(
+                        trackDateUniversal.Year, 
+                        trackDateUniversal.Month, 
+                        trackDateUniversal.Day, 
+                        trackDateUniversal.Hour, 
+                        trackDateUniversal.Minute, 
+                        trackDateUniversal.Second, 
+                        DateTimeKind.Utc
+                    );
+                    
                     //create scrobble
                     var check = await _scrobbleService.CreateScrobble(user.Id, trackId, trackAlbumId, trackArtistId, trackDateUtc);
                     if (check)
