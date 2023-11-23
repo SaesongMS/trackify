@@ -1,13 +1,30 @@
 import { A } from "@solidjs/router";
-import heart from "../../../assets/icons/heart.svg";
+import heartIcon from "../../../assets/icons/heart.svg";
+import filledHeart from "../../../assets/icons/filledHeart.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
 import { createSignal, createEffect } from "solid-js";
+import { deleteData, postData } from "../../../getUserData";
 import { encodeSubjectName } from "../../../encodeSubjectName";
 
 function ScrobbleRow(props) {
-  const { title, artist, rating, date, album, ...others } = props;
-
+  const { title, artist, rating, date, album, songId, ...others } = props;
+  const [heart, setHeart] = createSignal(props.heart);
   const [albumCover, setAlbumCover] = createSignal(null);
+
+  const handleEditFavouriteSong = async () => {
+    if (props.heart === "heart") {
+      postData("favourite-song/create", {
+        songId: songId,
+      });
+      setHeart("filledHeart");
+    } else {
+      deleteData("favourite-song/delete", {
+        songId: songId,
+      });
+      setHeart("heart");
+    }
+    props.handleEditFavouriteSong(songId, heart());
+  };
 
   createEffect(() => {
     if (props.albumCover.length !== 0)
@@ -41,7 +58,6 @@ function ScrobbleRow(props) {
     <div class="text-[#f2f3ea] h-[100%] flex flex-row w-[100%] border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
       <img
         class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
-        // src={`data:image/png;base64,${albumCover}` || albumCover}
         src={albumCover()}
         onClick={() =>
           (window.location.href = `/song/${encodeSubjectName(title)}`)
@@ -49,7 +65,11 @@ function ScrobbleRow(props) {
       />
       <div class="flex flex-grow max-w-[35%]">
         <span class="mr-4 cursor-pointer max-w-[10%] flex flex-grow">
-          <img src={heart} class="w-4" />
+          <img
+            src={heart() === "heart" ? heartIcon : filledHeart}
+            class="w-4"
+            onClick={handleEditFavouriteSong}
+          />
         </span>
         <span class="md:mr-4 cursor-pointer hover:text-slate-300 max-w-[30%] truncate">
           <A href={`/song/${encodeSubjectName(title)}`}>{title}</A>
