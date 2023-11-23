@@ -10,7 +10,8 @@ function Collage() {
   const [size, setSize] = createSignal(4);
   const { user } = useContext(UserContext);
 
-  createEffect(() => {
+  createEffect(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
     if (!user()) window.location.href = "/login";
   });
 
