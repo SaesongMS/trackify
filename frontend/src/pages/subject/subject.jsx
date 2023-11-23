@@ -15,6 +15,7 @@ import Comment from "../../components/userpage/main/comment";
 import StarRating from "../../components/subjectpage/star-rating";
 import SubjectBanner from "../../components/subjectpage/subjectbanner";
 import calendar from "../../assets/icons/calendar.svg";
+import { encodeSubjectName } from "../../encodeSubjectName";
 
 function Subject() {
   const { user, setUser } = useContext(UserContext);
@@ -81,9 +82,7 @@ function Subject() {
   });
 
   const getSubjectData = async (i) => {
-    const data = await getData(
-      `scrobbles/${subject()}/${params.name.replaceAll("+", " ")}`
-    );
+    const data = await getData(`scrobbles/${subject()}/${params.name}`);
     setSubjectData(data[subject()]);
     setListenersCount(data.listenersCount);
     setScrobbleCount(data.scrobbleCount);
@@ -150,9 +149,8 @@ function Subject() {
             src={`data:image/png;base64,${song.song.album.cover}`}
             class="w-20 cursor-pointer"
             onClick={() =>
-              (window.location.href = `/album/${song.song.album.name.replaceAll(
-                " ",
-                "+"
+              (window.location.href = `/song/${encodeSubjectName(
+                song.song.title
               )}`)
             }
           />
@@ -167,7 +165,7 @@ function Subject() {
             />
           )}
           <a
-            href={`/song/${song.song.title.replaceAll(" ", "+")}`}
+            href={`/song/${encodeSubjectName(song.song.title)}`}
             class="hover:hover:text-slate-300"
           >
             {song.song.title}
@@ -289,7 +287,7 @@ function Subject() {
                 )}
                 <p>
                   <a
-                    href={`/song/${song.title.replaceAll(" ", "+")}`}
+                    href={`/song/${encodeSubjectName(song.title)}`}
                     class="hover:text-slate-700"
                   >
                     {song.title}

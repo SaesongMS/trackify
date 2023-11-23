@@ -1,6 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { deleteData } from "../../../getUserData";
 import hearticon from "../../../assets/icons/heart.svg";
+import { encodeSubjectName } from "../../../encodeSubjectName";
 
 function Card(props) {
   const { cover, mainText, secText, rating, heart, ...others } = props;
@@ -19,10 +20,8 @@ function Card(props) {
   const handleClick = (e) => {
     e.preventDefault();
     if (others.subject) {
-      //setUrl(`/${props.subject}/${props.mainText.replace(" ", "+")}`);
-      window.location.href = `/${subject()}/${props.mainText.replaceAll(
-        " ",
-        "+"
+      window.location.href = `/${subject()}/${encodeSubjectName(
+        props.mainText
       )}`;
     }
   };

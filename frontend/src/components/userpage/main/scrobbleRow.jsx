@@ -2,6 +2,7 @@ import { A } from "@solidjs/router";
 import heart from "../../../assets/icons/heart.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
 import { createSignal, createEffect } from "solid-js";
+import { encodeSubjectName } from "../../../encodeSubjectName";
 
 function ScrobbleRow(props) {
   const { title, artist, rating, date, album, ...others } = props;
@@ -9,10 +10,9 @@ function ScrobbleRow(props) {
   const [albumCover, setAlbumCover] = createSignal(null);
 
   createEffect(() => {
-    if(props.albumCover.length !== 0)
+    if (props.albumCover.length !== 0)
       setAlbumCover(`data:image/png;base64,${props.albumCover}`);
-    else
-      setAlbumCover(Belmondo);
+    else setAlbumCover(Belmondo);
   }, [props.albumCover]);
 
   function formatTimeDifference(scrobbleDate) {
@@ -44,7 +44,7 @@ function ScrobbleRow(props) {
         // src={`data:image/png;base64,${albumCover}` || albumCover}
         src={albumCover()}
         onClick={() =>
-          (window.location.href = `/song/${title.replaceAll(" ", "+")}`)
+          (window.location.href = `/song/${encodeSubjectName(title)}`)
         }
       />
       <div class="flex flex-grow max-w-[35%]">
@@ -52,13 +52,13 @@ function ScrobbleRow(props) {
           <img src={heart} class="w-4" />
         </span>
         <span class="md:mr-4 cursor-pointer hover:text-slate-300 max-w-[30%] truncate">
-          <A href={`/song/${title.replaceAll(" ", "+")}`}>{title}</A>
+          <A href={`/song/${encodeSubjectName(title)}`}>{title}</A>
         </span>
       </div>
 
       <div class="flex flex-col md:flex-row max-w-[75%] md:justify-between md:items-center">
         <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate max-w-[30%]">
-          <A href={`/artist/${artist.replaceAll(" ", "+")}`}>{artist}</A>
+          <A href={`/artist/${encodeSubjectName(artist)}`}>{artist}</A>
         </span>
         <span class="md:mr-4 cursor-pointer md:max-w-[10%]">
           {rating ? rating : ""}

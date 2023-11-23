@@ -403,6 +403,7 @@ public class ScrobbleService
 
     public async Task<SongResponse> GetSongByName(string name)
     {
+        name = System.Net.WebUtility.UrlDecode(name);
         var song = await _context.Songs
             .Include(s => s.Album)
             .ThenInclude(a => a.Artist)
@@ -434,6 +435,7 @@ public class ScrobbleService
 
     public async Task<AlbumResponse> GetAlbumByName(string name)
     {
+        name = System.Net.WebUtility.UrlDecode(name);
         var album = await _context.Albums
             .Include(a => a.Artist)
             .Include(a => a.Songs)
@@ -466,6 +468,7 @@ public class ScrobbleService
 
     public async Task<ArtistResponse> GetArtistByName(string name)
     {
+        name = System.Net.WebUtility.UrlDecode(name);
         var artist = await _context.Artists
             .Include(a => a.Albums)
                 .ThenInclude(a => a.Songs)
