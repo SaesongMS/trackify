@@ -298,6 +298,36 @@ public class ScrobbleService
         return false;
     }
 
+    public async Task<bool> CreateScrobble(string userId, string spotify_songId, string spotify_albumId, string spotify_artistId, DateTime date)
+    {
+        var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id_Song_Spotify_API == spotify_songId)
+            ?? await CreateSong(spotify_songId, spotify_albumId, spotify_artistId);
+        if (song != null)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            var exist = await _context.Scrobbles.FirstOrDefaultAsync(s => s.Id_User == userId && s.Id_Song_Internal == song.Id && s.Scrobble_Date == date);
+            if(exist != null)
+                return false;
+            
+            var scrobble = new Scrobble
+            {
+                Id = Guid.NewGuid().ToString(),
+                Scrobble_Date = date,
+                Id_User = userId,
+                User = user!,
+                Id_Song_Internal = song.Id,
+                Song = song
+            };
+            await _context.Scrobbles.AddAsync(scrobble);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+        return false;
+    }
+
     public async Task<Song> CreateSong(string spotify_songId, string spotify_albumId, string spotify_artistId)
     {
         var album = await _context.Albums.FirstOrDefaultAsync(a => a.Id_Album_Spotify_API == spotify_albumId)

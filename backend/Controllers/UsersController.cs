@@ -211,7 +211,7 @@ public class UsersController : ControllerBase
   {
     var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-
+    
     try
     {
       var user = await _authenticationService.GetUser(nameIdentifier);

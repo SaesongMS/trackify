@@ -9,8 +9,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// disable logging of ef core
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
+
 
 // Add services to the container.
 
@@ -114,6 +119,28 @@ builder.Services.Configure<IdentityOptions>(options =>
 //     options.AddPolicy("RequireAdminRole",
 //          policy => policy.RequireRole("Admin"));
 // });
+
+//comment this region to disable automatic scrobbling
+#region Quartz
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("CreateScrobbleJob");
+    q.AddJob<Jobs.CreateScrobbleJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("CreateScrobbleJob-trigger")
+        // .WithCronSchedule("0/30 * * * * ? *")); //every 30 seconds
+        .WithCronSchedule("0 0/1 * 1/1 * ? *")); // every minute
+        //.WithCronSchedule("0 * * ? * *") // every minute when seconds are 0
+});
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+    options.AwaitApplicationStarted = true;
+});
+#endregion
 
 
 var app = builder.Build();

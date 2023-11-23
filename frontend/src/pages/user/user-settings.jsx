@@ -11,7 +11,7 @@ function UserSettings() {
 
   const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI + "/user/settings";
-  const SCOPES = "user-read-private user-read-email user-top-read user-read-playback-state"
+  const SCOPES = "user-read-private user-read-email user-top-read user-read-playback-state user-read-recently-played"
 
   const generateRandomString = (length) => {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
