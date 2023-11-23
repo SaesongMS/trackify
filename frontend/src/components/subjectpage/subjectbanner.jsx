@@ -42,7 +42,7 @@ function SubjectBanner(props) {
   return (
     <div class="flex flex-row h-[100%]">
       <div
-        class="border border-slate-700 aspect-square h-[100%] w-[15%] relative"
+        class="border border-slate-700 aspect-square h-[100%] w-[15%] relative bg-no-repeat bg-cover"
         style={`background-image: url(data:image/png;base64,${props.subjectImage})`}
       >
         {subject() === "song" && user() && (
