@@ -51,6 +51,7 @@ function MainPage(props) {
   const isFavouriteSong = (scrobbleRecord) => {
     if (
       loggedUser &&
+      scrobbleRecord.song.favouriteSongs &&
       scrobbleRecord.song.favouriteSongs.some(
         (song) => song.id_User === loggedUser.id
       )
@@ -84,7 +85,6 @@ function MainPage(props) {
       mainText: "Your top subject",
       rating: "5/5",
       secText: "will appear here",
-      heart: "heart",
     },
   ];
 
@@ -122,7 +122,6 @@ function MainPage(props) {
                     cover={`data:image/png;base64,${topArtist.artist.photo}`}
                     mainText={topArtist.artist.name}
                     rating={topArtist.rating}
-                    heart="heart"
                     subject="artist"
                   />
                 ))
@@ -134,7 +133,6 @@ function MainPage(props) {
                     mainText={topArtist.mainText}
                     secText={topArtist.secText}
                     rating={topArtist.rating}
-                    heart={topArtist.heart}
                     subject="artist"
                   />
                 ))}
@@ -155,7 +153,6 @@ function MainPage(props) {
                     mainText={topAlbum.album.name}
                     secText={topAlbum.album.artist.name}
                     rating={topAlbum.rating}
-                    heart="heart"
                     subject="album"
                   />
                 ))
@@ -167,7 +164,6 @@ function MainPage(props) {
                     mainText={topAlbum.mainText}
                     secText={topAlbum.secText}
                     rating={topAlbum.rating}
-                    heart={topAlbum.heart}
                     subject="album"
                   />
                 ))}
@@ -188,7 +184,6 @@ function MainPage(props) {
                     mainText={topSong.song.title}
                     secText={topSong.song.album.artist.name}
                     rating={topSong.rating}
-                    heart="heart"
                     subject="song"
                   />
                 ))
@@ -200,7 +195,6 @@ function MainPage(props) {
                     mainText={topSong.mainText}
                     secText={topSong.secText}
                     rating={topSong.rating}
-                    heart={topSong.heart}
                     subject="song"
                   />
                 ))}

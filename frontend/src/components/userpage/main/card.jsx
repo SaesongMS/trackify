@@ -2,7 +2,7 @@ import { createEffect, createSignal } from "solid-js";
 import { encodeSubjectName } from "../../../encodeSubjectName";
 
 function Card(props) {
-  const { cover, mainText, secText, rating, heart, ...others } = props;
+  const { cover, mainText, secText, rating, ...others } = props;
   const [subject, setSubject] = createSignal(null);
 
   createEffect(() => {
@@ -11,6 +11,7 @@ function Card(props) {
 
   const handleClick = (e) => {
     e.preventDefault();
+    if (mainText === "Your top subject") return;
     if (others.subject) {
       window.location.href = `/${subject()}/${encodeSubjectName(
         props.mainText

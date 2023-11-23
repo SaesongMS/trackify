@@ -12,6 +12,7 @@ function ScrobbleRow(props) {
   const [albumCover, setAlbumCover] = createSignal(null);
 
   const handleEditFavouriteSong = async () => {
+    if (!songId) return;
     if (props.heart === "heart") {
       postData("favourite-song/create", {
         songId: songId,
@@ -53,7 +54,35 @@ function ScrobbleRow(props) {
       return `${seconds} second(s) ago`;
     }
   }
-
+  if (title === "Your scrobbles")
+    return (
+      <div class="text-[#f2f3ea] h-[100%] flex flex-row w-[100%] border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
+        <img
+          class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
+          src={albumCover()}
+        />
+        <div class="flex flex-grow max-w-[35%]">
+          <span class="mr-4 cursor-pointer max-w-[10%] flex flex-grow">
+            <img src={heartIcon} class="w-4" />
+          </span>
+          <span class="md:mr-4 cursor-pointer hover:text-slate-300 max-w-[30%] truncate">
+            {title}
+          </span>
+        </div>
+        <div class="flex flex-col md:flex-row max-w-[75%] md:justify-between md:items-center">
+          <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate max-w-[30%]">
+            {artist}
+          </span>
+          <span class="md:mr-4 cursor-pointer md:max-w-[10%]">
+            {rating ? rating : ""}
+          </span>
+          <span class="md:mr-4 cursor-default md:max-w-[15%]">
+            {date ? formatTimeDifference(date) : ""}
+          </span>
+          <span class="mr-2 ml-4 cursor-pointer text-red-500 max-w-[5%]"></span>
+        </div>
+      </div>
+    );
   return (
     <div class="text-[#f2f3ea] h-[100%] flex flex-row w-[100%] border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
       <img
