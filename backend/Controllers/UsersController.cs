@@ -230,5 +230,24 @@ public class UsersController : ControllerBase
     }
   }
 
+  [HttpGet("most-active")]
+  public async Task<IActionResult> MostActiveUsers()
+  {
+    try
+    {
+      var data = await _userService.FetchMostActiveUsers();
+
+      if (data != null)
+        return Ok(data);
+      else
+        return BadRequest(new { Success = false, Message = "No users found" });
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error fetching most active users: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
 
 }

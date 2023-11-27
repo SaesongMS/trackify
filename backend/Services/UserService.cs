@@ -211,4 +211,22 @@ public class UserService
         return false;
     }
 
+    public async Task<List<MostActiveUsers>> FetchMostActiveUsers()
+    {
+        var users = await _context.Users
+            .OrderByDescending(u => u.Scrobbles.Count)
+            .Take(10)
+            .Select(u => new MostActiveUsers
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                ProfilePicture = u.Avatar,
+                ScrobbleCount = u.Scrobbles.Count
+            }).ToListAsync();
+
+        if (users != null)
+            return users;
+        return null!;
+    }
+
 }
