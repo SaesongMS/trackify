@@ -44,18 +44,18 @@ function UserPageMain() {
 
   const mockScrobbles = [
     {
-      "scrobble_Date": new Date(),
-      "song": {
-          "title": "Your scrobbles",
-          "album": {
-              "cover": "",
-              "artist": {
-                  "name": "will appear here",
-              }
-          }
-      }
-    }];
-  
+      scrobble_Date: new Date(),
+      song: {
+        title: "Your scrobbles",
+        album: {
+          cover: "",
+          artist: {
+            name: "will appear here",
+          },
+        },
+      },
+    },
+  ];
 
   return (
     <div class="h-[100%] flex flex-col">
@@ -69,9 +69,15 @@ function UserPageMain() {
             favourites={profile().favouriteSongs.length}
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
+            profileId={profile().id}
+            followers={profile().followers}
           />
           <MainPage
-            scrobbles={profile().scrobbles.length > 0 ? profile().scrobbles : mockScrobbles}
+            scrobbles={
+              profile().scrobbles.length > 0
+                ? profile().scrobbles
+                : mockScrobbles
+            }
             comments={profile().profileComments}
             topArtists={artists()}
             topAlbums={albums()}

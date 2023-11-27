@@ -1,8 +1,10 @@
 import NavbarButton from "./navbar-button";
-import AppLogo from "../assets/icons/logo.png";
+// import AppLogo from "../assets/icons/logo.png";
+import AppLogo from "../assets/icons/logo-white.png";
 import SearchIcon from "../assets/icons/search.svg";
-import UserIcon from "../assets/icons/user.png";
-import ChartsIcon from "../assets/icons/charts.png";
+import UserIcon from "../assets/icons/user.svg";
+// import ChartsIcon from "../assets/icons/charts.png";
+import ChartsIcon from "../assets/icons/charts.svg";
 import { getData, postData } from "../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
 import { UserContext } from "../contexts/UserContext";

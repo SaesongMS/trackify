@@ -47,6 +47,8 @@ function UserPageFollowers() {
             favourites={favouriteSongs() ? favouriteSongs().length : 0}
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
+            profileId={profile().id}
+            followers={profile().followers}
           />
           <div class="grid grid-rows-4">
             {favouriteSongs() != null &&
