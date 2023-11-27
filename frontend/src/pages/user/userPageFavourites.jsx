@@ -50,7 +50,7 @@ function UserPageFollowers() {
             profileId={profile().id}
             followers={profile().followers}
           />
-          <div class="grid grid-rows-4">
+          <div class="grid grid-rows-4 max-h-[80%]">
             {favouriteSongs() != null &&
               favouriteSongs().map((favouriteSong) => (
                 <div class="w-[20%]">
