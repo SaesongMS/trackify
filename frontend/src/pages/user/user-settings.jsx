@@ -156,7 +156,7 @@ function UserSettings() {
   });
 
   createEffect(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     if (!user()) window.location.href = "/login";
   });
   const handleEditProfile = async (e) => {

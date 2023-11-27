@@ -72,7 +72,6 @@ function Collage() {
         <option value="9">3x3</option>
         <option value="16">4x4</option>
       </select>
-      {size()}
       <div class="relative">
         <button
           onClick={() => setIsOpen(!isOpen())}
@@ -124,7 +123,7 @@ function Collage() {
           <img
             src={`data:image/png;base64,${collage()}`}
             alt="collage"
-            class="ml-2"
+            class="ml-2 w-[40%]"
           />
 
           <button onClick={(e) => handleDownload(e)}>Download</button>
