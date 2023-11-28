@@ -3,6 +3,7 @@ using Models;
 using Newtonsoft.Json.Linq;
 using Helpers;
 using Data;
+using DTOs;
 
 namespace Services;
 
@@ -184,5 +185,32 @@ public class SpotifyService
         return JObject.Parse("{error: true}");
     }
 
+    public async Task<SongRecommendations> GetSongRecommendations(string artistId, string songId)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/recommendations?limit=5&seed_artists={artistId}&seed_tracks={songId}");
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            return new SongRecommendations{
+                Songs = json["tracks"].Select(song => new ReccomendedSong{
+                    Title = song["name"].ToString(),
+                    Id = song["id"].ToString(),
+                    Artist = song["artists"][0]["name"].ToString(),
+                    Cover = song["album"]["images"][0]["url"].ToString()
+                }).ToList()
+            };
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return new SongRecommendations{
+            Songs = new List<ReccomendedSong>()
+        };
+    }
 
 }

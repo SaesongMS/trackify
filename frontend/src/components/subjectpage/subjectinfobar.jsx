@@ -19,9 +19,6 @@ function SubjectInfoBar(props) {
     setimage(props.image);
     setsubject(props.subject);
     setidSpotify(props.idSpotify);
-    console.log(props);
-    console.log(scrobbleCount());
-    console.log(usersCount());
   }, [props]);
 
   const handleNavigation = () => {
@@ -57,7 +54,7 @@ function SubjectInfoBar(props) {
           <div class="right-0 flex flex-col justify-end pr-6">
             <a
               href={getHref()}
-              class="bg-[#191414] text-[#1DB954] p-2 rounded-xl font-bold text-center"
+              class="bg-[#191414] text-[#1DB954] p-2 rounded-xl font-bold text-center opacity-80 hover:opacity-100 transition-all duration-150 hover:shadow-lg"
             >
               <img
                 class="w-4 inline-block mr-1"

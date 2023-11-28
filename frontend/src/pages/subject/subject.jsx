@@ -31,6 +31,7 @@ function Subject() {
   const [listenersCount, setListenersCount] = createSignal(0);
   const [scrobbleCount, setScrobbleCount] = createSignal(0);
   const [avgRating, setAvgRating] = createSignal(0);
+  const [songRecommendations, setSongRecommendations] = createSignal([]);
 
   const handleSelect = (interval) => {
     setPopularInterval(interval);
@@ -139,6 +140,54 @@ function Subject() {
         setComment("");
       }
     }
+  };
+
+  const getSongRecommendations = async () => {
+    if(subjectData() === null) return;
+    const uri = `http://localhost:5217/api/spotify/songRecommendations`
+      +`?artistId=${subjectData().album.artist.id_Artist_Spotify_API}`
+      +`&songId=${subjectData().id_Song_Spotify_API}`;
+    const response = await fetch(uri, {
+    headers: {
+      "Content-Type": "application/json",
+    }
+    });
+    const data = await response.json();
+    console.log(data);
+    setSongRecommendations(data.songs);
+  };
+
+  createEffect(() => {
+    if(subject() === "song") { 
+      getSongRecommendations();
+    }
+  });
+
+  const renderSongRecommendations = (songs) => {
+    console.log(songs.length);
+    if(songs.length === 0) return;
+    return songs.map((song, index) => (
+      <div 
+        class="flex flex-row space-x-4 items-center"
+      >
+        <p>{index + 1}.</p>
+        <a
+          href={`https://open.spotify.com/track/${song.id}`}
+          class="flex flex-row space-x-4 mt-2 mb-2 items-center"
+        >
+        <img
+          src={song.cover}
+          class="w-20 cursor-pointer"
+        />
+        <span
+          
+          class="hover:hover:text-slate-300"
+        >
+          {song.title}
+        </span>
+        </a>
+      </div>
+    ));
   };
 
   const renderTopSongs = (songs) => {
@@ -316,6 +365,8 @@ function Subject() {
                 id={subjectData().id_Song_Spotify_API}
               />
             </div>
+            <h1 class="text-2xl font-bold pl-4">Recommended songs</h1>
+            {renderSongRecommendations(songRecommendations())}
           </div>
         );
       default:
