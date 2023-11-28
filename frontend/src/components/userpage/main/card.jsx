@@ -43,12 +43,16 @@ function Card(props) {
             {mainText}
           </a>
           {secText && secText != "will appear here" && (
-            <span
-              class="text-xs w-[100%] hover:text-slate-300"
-              onClick={(e) => redirectToArtistPage(e)}
+            <a
+              href={`/artist/${encodeSubjectName(secText)}`}
             >
-              {secText}
-            </span>
+              <span
+                class="text-xs w-[100%] hover:text-slate-300"
+                // onClick={(e) => redirectToArtistPage(e)}
+              >
+                {secText}
+              </span>
+            </a>
           )}
           {secText && secText == "will appear here" && (
             <span class="text-xs w-[100%] hover:text-slate-300">{secText}</span>
