@@ -33,7 +33,7 @@ function Comment(props) {
     <div class="flex w-[100%] h-[10%] border border-[#3f4147] rounded-sm hover:border-slate-500 transition-all duration-200">
       <div onClick={handleUserClick}>
         <img
-          class="h-[100%] w-20 aspect-square mr-2"
+          class="h-[100%] w-20 aspect-square mr-2 hover:cursor-pointer"
           src={`data:image/png;base64,${avatar}`}
         />
       </div>
@@ -42,7 +42,7 @@ function Comment(props) {
           <span class="mr-4 cursor-pointer text-md">
             <a href={`/user/${username}/main`}>{username}</a>
           </span>
-          <span class="mr-4 cursor-pointer text-sm">{comment}</span>
+          <span class="mr-4 text-sm">{comment}</span>
         </div>
       </div>
       <div class="flex items-start pb-1 text-xs">

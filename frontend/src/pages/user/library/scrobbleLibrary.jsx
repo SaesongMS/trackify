@@ -90,14 +90,14 @@ function ScrobbleLibrary() {
           <div class="w-[37%] p-6">
             <div class="flex flex-col space-y-2 mt-2">
               {slicedScrobbles() != null &&
-                slicedScrobbles().map((scrobble) => (
+                slicedScrobbles().map((data) => (
                   <ScrobbleRow
-                    albumCover={scrobble.song.album.cover}
+                    albumCover={data.scrobble.song.album.cover}
                     heart="heart"
-                    title={scrobble.song.title}
-                    artist={scrobble.song.album.artist.name}
-                    rating="5/5"
-                    date={scrobble.scrobble_Date}
+                    title={data.scrobble.song.title}
+                    artist={data.scrobble.song.album.artist.name}
+                    rating={data.avgRating}
+                    date={data.scrobble.scrobble_Date}
                   />
                 ))}
             </div>

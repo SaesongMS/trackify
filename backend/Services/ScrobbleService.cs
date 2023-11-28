@@ -29,7 +29,7 @@ public class ScrobbleService
         return scrobbles;
     }
 
-    public async Task<List<Scrobble>> GetScrobblesInInterval(string userId, DateTime start, DateTime end)
+    public async Task<List<ScrobbleWithRating>> GetScrobblesInInterval(string userId, DateTime start, DateTime end)
     {
         // //create a new start with utc timezone
         // start = new DateTime(start.Year, start.Month, start.Day, start.Hour, start.Minute, start.Second, DateTimeKind.Utc);
@@ -45,7 +45,14 @@ public class ScrobbleService
             .Include(s => s.Song)
             .ThenInclude(s => s.Album)
             .ThenInclude(a => a.Artist)
+            .Include(s => s.Song.SongRatings)
+            .Select(s => new ScrobbleWithRating
+            {
+                Scrobble = s,
+                AvgRating = s.Song.SongRatings.Count() > 0 ? s.Song.SongRatings.Average(r => r.Rating) : 0
+            })
             .ToListAsync();
+        //return scrobbles with avgRating for each song:
 
         return scrobbles;
     }
@@ -58,6 +65,7 @@ public class ScrobbleService
         var groupings = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .Include(s => s.Song.Album.Artist)
+            .Include(s => s.Song.SongRatings)
             .GroupBy(s => s.Song)
             .ToListAsync();
 
@@ -65,7 +73,8 @@ public class ScrobbleService
             .Select(s => new SongScrobbleCount
             {
                 Song = s.Key,
-                Count = s.Count()
+                Count = s.Count(),
+                AvgRating = s.Average(s => s.Song.SongRatings.Count() > 0 ? s.Song.SongRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
             .ToList();
@@ -80,6 +89,7 @@ public class ScrobbleService
         var groupings = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
             .Include(s => s.Song.Album.Artist)
+            .Include(s => s.Song.Album.AlbumRatings)
             .GroupBy(s => s.Song.Album)
             .ToListAsync();
 
@@ -87,7 +97,8 @@ public class ScrobbleService
             .Select(s => new AlbumScrobbleCount
             {
                 Album = s.Key,
-                Count = s.Count()
+                Count = s.Count(),
+                AvgRating = s.Average(s => s.Song.Album.AlbumRatings.Count() > 0 ? s.Song.Album.AlbumRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
             .ToList();
@@ -101,11 +112,13 @@ public class ScrobbleService
 
         var data = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
+            .Include(s => s.Song.Album.Artist.ArtistRatings)
             .GroupBy(s => s.Song.Album.Artist)
             .Select(s => new ArtistScrobbleCount
             {
                 Artist = s.Key,
-                Count = s.Count()
+                Count = s.Count(),
+                AvgRating = s.Average(s => s.Song.Album.Artist.ArtistRatings.Count() > 0 ? s.Song.Album.Artist.ArtistRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
             .ToListAsync();
@@ -308,9 +321,9 @@ public class ScrobbleService
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             var exist = await _context.Scrobbles.FirstOrDefaultAsync(s => s.Id_User == userId && s.Id_Song_Internal == song.Id && s.Scrobble_Date == date);
-            if(exist != null)
+            if (exist != null)
                 return false;
-            
+
             var scrobble = new Scrobble
             {
                 Id = Guid.NewGuid().ToString(),

@@ -54,6 +54,7 @@ function ScrobbleRow(props) {
       return `${seconds} second(s) ago`;
     }
   }
+
   if (title === "Your scrobbles")
     return (
       <div class="text-[#f2f3ea] h-[100%] flex flex-row w-[100%] border border-[#3f4147] items-center hover:rounded-sm hover:border-slate-500 transition-all duration-150">
@@ -73,9 +74,7 @@ function ScrobbleRow(props) {
           <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate max-w-[30%]">
             {artist}
           </span>
-          <span class="md:mr-4 cursor-pointer md:max-w-[10%]">
-            {rating ? rating : ""}
-          </span>
+          <span class="md:mr-4 md:max-w-[10%] text-yellow-400">{`5/5 \u2605`}</span>
           <span class="md:mr-4 cursor-default md:max-w-[15%]">
             {date ? formatTimeDifference(date) : ""}
           </span>
@@ -109,8 +108,8 @@ function ScrobbleRow(props) {
         <span class="md:mr-4 cursor-pointer hover:text-slate-300 truncate max-w-[30%]">
           <A href={`/artist/${encodeSubjectName(artist)}`}>{artist}</A>
         </span>
-        <span class="md:mr-4 cursor-pointer md:max-w-[10%]">
-          {rating ? rating : ""}
+        <span class="md:mr-4 cursor-pointer md:max-w-[10%] text-yellow-400">
+          {rating ? `${rating}/5 \u2605` : `0/5 \u2605`}
         </span>
         <span class="md:mr-4 cursor-default md:max-w-[15%]">
           {date ? formatTimeDifference(date) : ""}

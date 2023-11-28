@@ -30,7 +30,7 @@ public class IntervalScrobblesResponse
 {
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
-    public List<Scrobble> Scrobbles { get; set; } = new List<Scrobble>();
+    public List<ScrobbleWithRating> Scrobbles { get; set; } = new List<ScrobbleWithRating>();
 }
 
 public class NIntervalScrobblesRequest
@@ -78,7 +78,7 @@ public class NIntervalScrobblesResponse
 {
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
-    public List<Scrobble> Scrobbles { get; set; } = new List<Scrobble>();
+    public List<ScrobbleWithRating> Scrobbles { get; set; } = new List<ScrobbleWithRating>();
 }
 
 public class CreateScrobbleRequest
@@ -120,7 +120,15 @@ public class SongScrobbleCount
 {
     public Song Song { get; set; }
     public int Count { get; set; }
+    public double AvgRating { get; set; }
 }
+
+public class ScrobbleWithRating
+{
+    public Scrobble Scrobble { get; set; }
+    public double AvgRating { get; set; }
+}
+
 public class TopNAlbumsScrobblesResponse
 {
     public List<AlbumScrobbleCount> Albums { get; set; }
@@ -130,6 +138,7 @@ public class AlbumScrobbleCount
 {
     public Album Album { get; set; }
     public int Count { get; set; }
+    public double AvgRating { get; set; }
 }
 public class TopNArtistsScrobblesResponse
 {
@@ -140,6 +149,7 @@ public class ArtistScrobbleCount
 {
     public Artist Artist { get; set; }
     public int Count { get; set; }
+    public double AvgRating { get; set; }
 }
 
 public class SongResponse

@@ -81,6 +81,7 @@ function SubjectLibrary() {
               heart="heart"
               title={s.artist.name}
               artist={""}
+              rating={s.avgRating}
             />
             <p>Count: {s.count}</p>
           </div>
@@ -93,6 +94,7 @@ function SubjectLibrary() {
               heart="heart"
               title={s.album.name}
               artist={s.album.artist.name}
+              rating={s.avgRating}
             />
             <p>Count: {s.count}</p>
           </div>
@@ -105,6 +107,7 @@ function SubjectLibrary() {
               heart="heart"
               title={s.song.title}
               artist={s.song.album.artist.name}
+              rating={s.avgRating}
             />
             <p>Count: {s.count}</p>
           </div>

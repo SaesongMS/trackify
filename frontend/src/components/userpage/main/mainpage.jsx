@@ -83,7 +83,7 @@ function MainPage(props) {
     {
       cover: Belmondo,
       mainText: "Your top subject",
-      rating: "5/5",
+      avgRating: "5",
       secText: "will appear here",
     },
   ];
@@ -102,7 +102,7 @@ function MainPage(props) {
                 title={scrobble.song.title}
                 artist={scrobble.song.album.artist.name}
                 album={scrobble.song.album.name}
-                rating="5/5"
+                rating={scrobble.avgRating}
                 songId={scrobble.song.id}
                 date={scrobble.scrobble_Date}
                 handleEditFavouriteSong={handleEditFavouriteSong}
