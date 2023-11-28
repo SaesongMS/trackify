@@ -8,12 +8,14 @@ import { deleteData, postData } from "../../getUserData";
 function SubjectBanner(props) {
   const [bannerImage, setbannerImage] = createSignal(null);
   const [subject, setsubject] = createSignal(null);
+  const [idSpotify, setidSpotify] = createSignal(null);
   const { user, setUser } = useContext(UserContext);
   const [heart, setHeart] = createSignal("");
 
   createEffect(() => {
     setbannerImage(props.subjectSecondaryImage);
     setsubject(props.subject);
+    setidSpotify(props.id);
   }, [props]);
 
   createEffect(() => {
@@ -42,7 +44,7 @@ function SubjectBanner(props) {
   return (
     <div class="flex flex-row h-[100%]">
       <div
-        class="border border-slate-700 aspect-square h-[100%] w-[15%] relative bg-no-repeat bg-cover"
+        class="border border-slate-700 aspect-square max-w-[15%] flex-grow relative bg-no-repeat bg-cover hidden md:block"
         style={`background-image: url(data:image/png;base64,${props.subjectImage})`}
       >
         {subject() === "song" && user() && (
@@ -57,7 +59,7 @@ function SubjectBanner(props) {
         )}
         {/* <img class="" src={`data:image/png;base64,${props.subjectImage}`} /> */}
       </div>
-      <div class="flex flex-col flex-grow">
+      <div class="flex flex-col md:max-w-[85%] flex-grow">
         <SubjectInfoBar
           image={bannerImage()}
           primaryText={props.primaryText}
@@ -65,6 +67,7 @@ function SubjectBanner(props) {
           scrobbleCount={props.scrobbleCount}
           usersCount={props.usersCount}
           subject={subject()}
+          idSpotify={idSpotify()}
         />
       </div>
     </div>

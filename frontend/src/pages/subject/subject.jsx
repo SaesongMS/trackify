@@ -84,6 +84,7 @@ function Subject() {
   const getSubjectData = async (i) => {
     const data = await getData(`scrobbles/${subject()}/${params.name}`);
     setSubjectData(data[subject()]);
+    console.log(subjectData());
     setListenersCount(data.listenersCount);
     setScrobbleCount(data.scrobbleCount);
     setAvgRating(data.avgRating);
@@ -190,6 +191,7 @@ function Subject() {
                 scrobbleCount={scrobbleCount()}
                 usersCount={listenersCount()}
                 subject={subject()}
+                id={subjectData().id_Artist_Spotify_API}
               />
             </div>
             <div class="mt-5 pt-2 pl-2">
@@ -268,6 +270,7 @@ function Subject() {
                 scrobbleCount={scrobbleCount()}
                 usersCount={listenersCount()}
                 subject={subject()}
+                id={subjectData().id_Album_Spotify_API}
               />
             </div>
             <p>Songs:</p>
@@ -310,6 +313,7 @@ function Subject() {
                 subject={subject()}
                 heart={songIsFavourite(subjectData()) ? "filledHeart" : "heart"}
                 songId={subjectData().id}
+                id={subjectData().id_Song_Spotify_API}
               />
             </div>
           </div>

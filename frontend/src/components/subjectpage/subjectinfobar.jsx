@@ -1,6 +1,7 @@
 import Counter from "../userpage/userbanner/counter";
 import { createEffect, createSignal } from "solid-js";
 import { encodeSubjectName } from "../../encodeSubjectName";
+import SpotifyLogo from "../../assets/icons/spotify_logo.png";
 function SubjectInfoBar(props) {
   const [primaryText, setprimaryText] = createSignal(null);
   const [secondaryText, setsecondaryText] = createSignal(null);
@@ -8,6 +9,7 @@ function SubjectInfoBar(props) {
   const [usersCount, setusersCount] = createSignal(null);
   const [image, setimage] = createSignal(null);
   const [subject, setsubject] = createSignal(null);
+  const [idSpotify, setidSpotify] = createSignal(null);
 
   createEffect(() => {
     setprimaryText(props.primaryText);
@@ -16,6 +18,7 @@ function SubjectInfoBar(props) {
     setusersCount(props.usersCount);
     setimage(props.image);
     setsubject(props.subject);
+    setidSpotify(props.idSpotify);
     console.log(props);
     console.log(scrobbleCount());
     console.log(usersCount());
@@ -26,6 +29,13 @@ function SubjectInfoBar(props) {
       window.location.href = `/artist/${encodeSubjectName(secondaryText())}`;
     }
   };
+
+  const getHref = () => {
+    if (subject() == "song")
+      return `https://open.spotify.com/track/${idSpotify()}`
+    else
+      return `https://open.spotify.com/${subject()}/${idSpotify()}`
+  }
 
   return (
     <div
@@ -41,9 +51,21 @@ function SubjectInfoBar(props) {
             {secondaryText()}
           </div>
         </div>
-        <div class="flex ml-2 md:ml-12 md:pl-4">
+        <div class="flex ml-2 md:ml-12 md:pl-4 ">
           <Counter title="Scrobbles" count={scrobbleCount()} />
           <Counter title="Listeners" count={usersCount()} />
+          <div class="right-0 flex flex-col justify-end pr-6">
+            <a
+              href={getHref()}
+              class="bg-[#191414] text-[#1DB954] p-2 rounded-xl font-bold text-center"
+            >
+              <img
+                class="w-4 inline-block mr-1"
+                src={SpotifyLogo}
+              />
+              Play on Spotify
+            </a>
+          </div>
         </div>
       </div>
     </div>
