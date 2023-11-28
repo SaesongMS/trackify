@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using DTOs;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Services;
 
@@ -142,23 +143,51 @@ public class ScrobbleService
             .OrderByDescending(s => s.Count)
             .Take(n)
             .ToList();
-
         return data;
     }
 
     public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, int n)
     {
-        var groupings = await _context.Scrobbles
-            .Include(s => s.Song.Album.Artist)
+        // var groupings = await _context.Scrobbles
+        //     .Where(s => s.Id_User == userId)
+        //     .Include(s => s.Song.Album.Artist)
+        //     .GroupBy(s => s.Song.Album)
+        //     .ToListAsync();
+        // stopwatch.Stop();
+        // Console.WriteLine($"groupings took {stopwatch.ElapsedMilliseconds}ms");
+        // stopwatch.Restart();
+
+        // var data = groupings
+        //     .Select(s => new AlbumScrobbleCount
+        //     {
+        //         Album = s.Key,
+        //         Count = s.Count()
+        //     })
+        //     .OrderByDescending(s => s.Count)
+        //     .Take(n)
+        //     .ToList();
+        // stopwatch.Stop();
+        // Console.WriteLine($"data took {stopwatch.ElapsedMilliseconds}ms");
+        
+        var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId)
-            .GroupBy(s => s.Song.Album)
+            .Include(s => s.Song)
+            .ThenInclude(s => s.Album)
+            .ThenInclude(a => a.Artist)
             .ToListAsync();
 
-        var data = groupings
-            .Select(s => new AlbumScrobbleCount
+        var data = scrobbles
+            .GroupBy(s => new { s.Song.Album.Id, s.Song.Album.Name, Artist = s.Song.Album.Artist })
+            .Select(g => new AlbumScrobbleCount
             {
-                Album = s.Key,
-                Count = s.Count()
+                Album = new Album 
+                { 
+                    Id = g.Key.Id, 
+                    Name = g.Key.Name, 
+                    Artist = g.Key.Artist,
+                    Cover = g.First().Song.Album.Cover
+                },
+                Count = g.Count()
             })
             .OrderByDescending(s => s.Count)
             .Take(n)
