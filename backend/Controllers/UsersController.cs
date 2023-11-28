@@ -41,15 +41,15 @@ public class UsersController : ControllerBase
     {
       var result = await _authenticationService.Register(registerRequest);
 
-      if (result)
+      if (result.Item1)
       {
-        result = await _authenticationService.AddRole(registerRequest.Username, "User");
-        if (!result)
+        var result2 = await _authenticationService.AddRole(registerRequest.Username, "User");
+        if (!result2)
           return BadRequest(new RegisterResponse { Success = false, Message = "Could not add role to user" });
         return Ok(new RegisterResponse { Success = true, Message = "Registration successful" });
       }
 
-      return BadRequest(new RegisterResponse { Success = false, Message = "Registration failed" });
+      return BadRequest(new RegisterResponse { Success = false, Message = result.Item2.ToString() });
     }
     catch (Exception ex)
     {
@@ -80,7 +80,7 @@ public class UsersController : ControllerBase
         return Ok(new LoginResponse { Success = true, Message = "Login successful", Id = id });
       }
 
-      return BadRequest(new LoginResponse { Success = false, Message = "Login failed" });
+      return BadRequest(new LoginResponse { Success = false, Message = "Bad credentials" });
     }
     catch (Exception ex)
     {

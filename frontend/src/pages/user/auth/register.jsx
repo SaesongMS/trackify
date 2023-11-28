@@ -10,6 +10,7 @@ function Register() {
   const [password, setPassword] = createSignal("");
   const [passwordConfirm, setPasswordConfirm] = createSignal("");
   const [email, setEmail] = createSignal("");
+  const [error, setError] = createSignal("");
 
   const passwordMatch = () => {
     return password() === passwordConfirm();
@@ -31,7 +32,13 @@ function Register() {
         localStorage.setItem("user", username());
         setUser({ userName: username(), id: res2.id });
         navigate(`/user/${username()}/main`);
+      }else{
+        setError(res.message);
+        document.getElementById("error").classList.remove("hidden");
       }
+    }else{
+      setError("Passwords do not match");
+      document.getElementById("error").classList.remove("hidden");
     }
   };
 
@@ -81,6 +88,7 @@ function Register() {
             onInput={(e) => setPasswordConfirm(e.target.value)}
             required
           />
+          <span id="error" class="text-red-500 my-0 p-0 hidden">{error()}</span>
           <A class="text-white" href="/login">
             Already have an account? Login here!
           </A>

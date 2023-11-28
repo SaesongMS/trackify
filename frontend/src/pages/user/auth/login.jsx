@@ -6,6 +6,7 @@ import { UserContext } from "../../../contexts/UserContext";
 function Login() {
   const [username, setUsername] = createSignal("");
   const [password, setPassword] = createSignal("");
+  const [error, setError] = createSignal("");
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
 
@@ -15,10 +16,14 @@ function Login() {
       username: username(),
       password: password(),
     });
+    console.log(res);
     if (res.success) {
       localStorage.setItem("user", username());
       setUser({ userName: username(), id: res.id });
       navigate(`/user/${username()}/main`);
+    }else{
+      setError(res.message);
+      document.getElementById("error").classList.remove("hidden");
     }
   };
 
@@ -51,6 +56,7 @@ function Login() {
             value={password()}
             onInput={(e) => setPassword(e.target.value)}
           />
+          <span id="error" class="text-red-500 my-0 p-0 hidden">{error()}</span>
           <A class="text-white" href="/register">
             Don't have an account? Register here!
           </A>
