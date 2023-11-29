@@ -32,6 +32,7 @@ function Subject() {
   const [scrobbleCount, setScrobbleCount] = createSignal(0);
   const [avgRating, setAvgRating] = createSignal(0);
   const [songRecommendations, setSongRecommendations] = createSignal([]);
+  const [artistRecommendations, setArtistRecommendations] = createSignal([]);
 
   const handleSelect = (interval) => {
     setPopularInterval(interval);
@@ -157,11 +158,29 @@ function Subject() {
     setSongRecommendations(data.songs);
   };
 
+  const getArtistRecommendations = async () => {
+    if(subjectData() === null) return;
+    const uri = `http://localhost:5217/api/spotify/artistRecommendations`
+      +`?artistId=${subjectData().id_Artist_Spotify_API}`;
+    const response = await fetch(uri, {
+    headers: {
+      "Content-Type": "application/json",
+    }
+    });
+    const data = await response.json();
+    console.log(data);
+    setArtistRecommendations(data.artists);
+  }
+
   createEffect(() => {
     if(subject() === "song") { 
       getSongRecommendations();
+    }else if(subject() === "artist") {
+      getArtistRecommendations();
     }
   });
+
+
 
   const renderSongRecommendations = (songs) => {
     console.log(songs.length);
@@ -188,6 +207,36 @@ function Subject() {
         </a>
       </div>
     ));
+  };
+
+  const renderArtistRecommendations = (artists) => {
+    if(artists.length === 0) return;
+    return( 
+      <>
+        <h1 class="text-2xl font-bold mt-5 mb-2 pl-5">Recommended artists</h1>
+      {artists.map((artist, index) => (
+        <div
+          class="flex flex-row space-x-4 items-center"
+        >
+          <p>{index + 1}.</p>
+          <a
+            href={`https://open.spotify.com/artist/${artist.id}`}
+            class="flex flex-row space-x-4 mt-2 mb-2 items-center"
+          >
+          <img
+            src={artist.photo}
+            class="w-20 cursor-pointer"
+          />
+          <span
+
+            class="hover:hover:text-slate-300"
+          >
+            {artist.name}
+          </span>
+          </a>
+        </div>))}
+      </>
+    );
   };
 
   const renderTopSongs = (songs) => {
@@ -304,6 +353,7 @@ function Subject() {
                     </div>
                   ))}
               </div>
+              {renderArtistRecommendations(artistRecommendations())}
             </div>
           </div>
         );

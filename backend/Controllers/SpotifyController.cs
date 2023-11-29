@@ -19,4 +19,11 @@ public class SpotifyController : ControllerBase
         var recommendations = await _spotifyService.GetSongRecommendations(artistId, songId);
         return Ok(recommendations);
     }
+
+    [HttpGet("artistRecommendations")]
+    public async Task<IActionResult> GetArtistRecommendations([FromQuery] string artistId)
+    {
+        var recommendations = await _spotifyService.GetArtistRecommendations(artistId);
+        return Ok(recommendations);
+    }
 }

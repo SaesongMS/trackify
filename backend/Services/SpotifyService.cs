@@ -213,4 +213,31 @@ public class SpotifyService
         };
     }
 
+    public async Task<ArtistRecommendations> GetArtistRecommendations(string artistId)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/artists/{artistId}/related-artists");
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            return new ArtistRecommendations{
+                Artists = json["artists"].Select(artist => new ReccomendedArtist{
+                    Name = artist["name"].ToString(),
+                    Id = artist["id"].ToString(),
+                    Photo = artist["images"][0]["url"].ToString()
+                }).Take(5).ToList()
+            };
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return new ArtistRecommendations{
+            Artists = new List<ReccomendedArtist>()
+        };
+    }
+
 }
