@@ -249,5 +249,31 @@ public class UsersController : ControllerBase
     }
   }
 
+  [HttpGet("compability")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> Compability([FromQuery] string user_id )
+  {
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+    try
+    {
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.Compability(user_id, user.Id);
+
+      if(response.Item1 != -1)
+        return Ok(new { Success = true, Message = "Compability was successfully calculated", Compability = response.Item1, Artists = response.Item2 });
+      else
+        return BadRequest(new { Success = false, Message = "Error calculating compability" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error calculating compability: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
+
 
 }
