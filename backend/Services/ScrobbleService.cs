@@ -693,12 +693,6 @@ public class ScrobbleService
             .OrderByDescending(s => s.Count)
             .Take(n)
             .ToList();
-        
-        foreach (var song in data)
-        {
-            Console.WriteLine(song.Song.Title);
-            Console.WriteLine(song.Song.Album.Name);
-        }
         int x = 0, y = 0;
         foreach (var song in data)
         {
