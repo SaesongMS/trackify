@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.OpenApi.Any;
 using Models;
+using System.Diagnostics;
 
 
 namespace Services;
@@ -236,6 +237,34 @@ public class UserService
         if (users != null)
             return users;
         return null!;
+    }
+
+    public async Task<(float,List<string>)> Compability(string userId, string senderId)
+    {
+        //calculate compability between two users by comparing artist in their scrobbles
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var sender = await _context.Users.FirstOrDefaultAsync(u => u.Id == senderId);
+
+        if (user != null && sender != null)
+        {
+            var userScrobbles = await _context.Scrobbles.Where(s => s.Id_User == user.Id).Include(s => s.Song).ThenInclude(s => s.Album).ThenInclude(s => s.Artist).ToListAsync();
+            var senderScrobbles = await _context.Scrobbles.Where(s => s.Id_User == sender.Id).Include(s => s.Song).ThenInclude(s => s.Album).ThenInclude(s => s.Artist).ToListAsync();
+
+            var userArtists = userScrobbles.Select(s => s.Song.Album.Artist).Distinct().ToList();
+            var senderArtists = senderScrobbles.Select(s => s.Song.Album.Artist).Distinct().ToList();
+
+            var commonArtists = userArtists.Intersect(senderArtists).ToList();
+
+            var compability = (float)commonArtists.Count / (float)Math.Max(userArtists.Count, senderArtists.Count);
+
+            //get top 3 common artists names
+            var topArtists = commonArtists.Take(3).ToList();
+            var topArtistsNames = topArtists.Select(a => a.Name).ToList();
+
+            return (compability, topArtistsNames);
+        }
+
+        return (-1f,new List<string>());
     }
 
 }

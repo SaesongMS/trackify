@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { getData, postData } from "../../getUserData";
-import { createEffect, createSignal, useContext } from "solid-js";
+import { createComputed, createEffect, createSignal, useContext } from "solid-js";
 import UserBanner from "../../components/userpage/userbanner/userbanner";
 import MainPage from "../../components/userpage/main/mainpage";
 import Belmondo from "../../assets/icons/belmondo.png";
@@ -13,6 +13,7 @@ function UserPageMain() {
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
   const { user, setUser } = useContext(UserContext);
+  const [compability, setCompability] = createSignal(null);
 
   createEffect(async () => {
     if (profile() !== null) {
@@ -42,6 +43,21 @@ function UserPageMain() {
     console.log(userData);
   });
 
+  createComputed(async () => {
+    if(user() !== null && profile() !== null){
+      if(user().id !== profile().id){
+        const compabilityData = await getData(`users/compability/?user_id=${profile().id}`);
+        console.log(compabilityData);
+        setCompability(compabilityData);
+        console.log(compability());
+      }else{
+        setCompability({compability: -1, artists: ["", "", ""]});
+      }
+    }
+  });
+
+
+
   const mockScrobbles = [
     {
       scrobble_Date: new Date(),
@@ -59,7 +75,7 @@ function UserPageMain() {
 
   return (
     <div class="h-[100%] flex flex-col">
-      {profile() && songs() && artists() && albums() && (
+      {profile() && songs() && artists() && albums() && compability() && (
         <>
           <UserBanner
             avatar={profile().profilePicture}
@@ -71,6 +87,8 @@ function UserPageMain() {
             artistCount={profile().artistCount}
             profileId={profile().id}
             followers={profile().followers}
+            compability={compability().compability}
+            compabilityArtist={compability().artists}
           />
           <MainPage
             scrobbles={
@@ -84,6 +102,9 @@ function UserPageMain() {
             topSongs={songs()}
             loggedUser={user() ? user() : null}
             profileId={profile().id}
+            bio={profile().description}
+            compability={compability().compability}
+            compabilityArtist={compability().artists}
           />
         </>
       )}

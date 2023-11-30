@@ -5,16 +5,19 @@ import { createEffect, createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
 import ArrowUp from "../../../assets/icons/arrow-up.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
+import Compability from "../compability"
 
 function MainPage(props) {
   const { loggedUser } = props;
   const [comments, setComments] = createSignal(props.comments);
   const [comment, setComment] = createSignal("");
   const [scrobbles, setScrobbles] = createSignal(props.scrobbles);
+  const [compability, setCompability] = createSignal(null);
 
   createEffect(() => {
     setComments(props.comments);
     setScrobbles(props.scrobbles);
+    setCompability(props.compability.compability);
   }, [props.comments]);
 
   const handleEditFavouriteSong = (songId, status) => {
@@ -90,6 +93,19 @@ function MainPage(props) {
 
   return (
     <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-[#f2f3ea] w-full">
+      {props.bio &&
+        <div id="bio" class="xl:hidden p-6">
+              <div>
+              <h1 class="text-2xl font-bold">About me</h1>
+              <p class="mt-2 text-sm">{props.bio}</p>
+            </div>
+        </div>
+        } 
+      {props.compability && props.compability!=-1 && (
+        <div id="compability" class="xl:hidden pl-6 pb-6">
+        <Compability compability={props.compability} artists={props.compabilityArtist} />
+        </div>
+      )}
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
         <div class="flex flex-col space-y-2 mt-2">
@@ -111,6 +127,13 @@ function MainPage(props) {
         </div>
       </div>
       <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
+        <div id="bio-xl" class="hidden xl:block pb-6">
+          <div>
+            <h1 class="text-2xl font-bold">About me</h1>
+            <p class="mt-2 text-sm">{props.bio}</p>
+          </div>
+        </div>
+        <h1 class="text-2xl font-bold pb-2">Top subjects</h1>
         Artist
         <br />
         <div class="grid grid-cols-2 lg:grid-cols-5 w-[100%] gap-4 mt-4 mb-4">

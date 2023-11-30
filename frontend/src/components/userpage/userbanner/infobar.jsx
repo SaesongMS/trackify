@@ -1,3 +1,4 @@
+import Compability from "../compability";
 import Counter from "./counter";
 import { createEffect, createSignal } from "solid-js";
 function InfoBar(props) {
@@ -8,6 +9,8 @@ function InfoBar(props) {
   const [artistCount, setArtistCount] = createSignal(null);
   const [songsCount, setSongsCount] = createSignal(null);
   const [topArtistImage, setTopArtistImage] = createSignal(null);
+  const [compability, setCompability] = createSignal(null);
+  const [compabilityArtist, setCompabilityArtist] = createSignal(null);
 
   createEffect(() => {
     setUsername(props.username);
@@ -16,6 +19,8 @@ function InfoBar(props) {
     setArtistCount(props.artistCount);
     setSongsCount(props.songsCount);
     setTopArtistImage(props.topArtistImage);
+    setCompability(props.compability);
+    setCompabilityArtist(props.compabilityArtist);
   }, [props]);
 
   return (
@@ -35,6 +40,11 @@ function InfoBar(props) {
           <Counter title="Artists" count={artistCount} />
           <Counter title="Favourite Songs" count={songsCount} />
         </div>
+        {compability() && compability()!=-1 && (
+          <div class="hidden xl:flex flex-col justify-end ">
+            <Compability compability={compability()} artists={compabilityArtist()} />
+          </div>
+        )}
       </div>
     </div>
   );
