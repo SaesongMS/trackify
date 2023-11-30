@@ -218,19 +218,19 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id_album_internal");
 
-                    b.Property<string>("Id_User")
+                    b.Property<string>("Id_Sender")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnName("id_sender");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("SenderId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("albumsComment", (string)null);
                 });
@@ -324,19 +324,19 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id_artist_internal");
 
-                    b.Property<string>("Id_User")
+                    b.Property<string>("Id_Sender")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id_user");
+                        .HasColumnName("id_sender");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("SenderId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ArtistId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("artistsComment", (string)null);
                 });
@@ -414,6 +414,7 @@ namespace backend.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("FollowerId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Id_Followed")
@@ -429,6 +430,8 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FollowerId");
+
+                    b.HasIndex("Id_Followed");
 
                     b.ToTable("follows", (string)null);
                 });
@@ -635,6 +638,9 @@ namespace backend.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Creation_Date")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -758,22 +764,22 @@ namespace backend.Migrations
             modelBuilder.Entity("Models.AlbumComment", b =>
                 {
                     b.HasOne("Models.Album", "Album")
-                        .WithMany()
+                        .WithMany("AlbumComments")
                         .HasForeignKey("AlbumId");
 
-                    b.HasOne("Models.User", "User")
+                    b.HasOne("Models.User", "Sender")
                         .WithMany("AlbumComments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("SenderId");
 
                     b.Navigation("Album");
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Models.AlbumRating", b =>
                 {
                     b.HasOne("Models.Album", "Album")
-                        .WithMany()
+                        .WithMany("AlbumRatings")
                         .HasForeignKey("AlbumId");
 
                     b.HasOne("Models.User", "User")
@@ -788,22 +794,22 @@ namespace backend.Migrations
             modelBuilder.Entity("Models.ArtistComment", b =>
                 {
                     b.HasOne("Models.Artist", "Artist")
-                        .WithMany()
+                        .WithMany("ArtistComments")
                         .HasForeignKey("ArtistId");
 
-                    b.HasOne("Models.User", "User")
+                    b.HasOne("Models.User", "Sender")
                         .WithMany("ArtistComments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("SenderId");
 
                     b.Navigation("Artist");
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Models.ArtistRating", b =>
                 {
                     b.HasOne("Models.Artist", "Artist")
-                        .WithMany()
+                        .WithMany("ArtistRatings")
                         .HasForeignKey("ArtistId");
 
                     b.HasOne("Models.User", "User")
@@ -834,7 +840,17 @@ namespace backend.Migrations
                 {
                     b.HasOne("Models.User", "Follower")
                         .WithMany("Follows")
-                        .HasForeignKey("FollowerId");
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.User", "Followed")
+                        .WithMany("Followers")
+                        .HasForeignKey("Id_Followed")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Followed");
 
                     b.Navigation("Follower");
                 });
@@ -906,12 +922,20 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Models.Album", b =>
                 {
+                    b.Navigation("AlbumComments");
+
+                    b.Navigation("AlbumRatings");
+
                     b.Navigation("Songs");
                 });
 
             modelBuilder.Entity("Models.Artist", b =>
                 {
                     b.Navigation("Albums");
+
+                    b.Navigation("ArtistComments");
+
+                    b.Navigation("ArtistRatings");
                 });
 
             modelBuilder.Entity("Models.Song", b =>
@@ -936,6 +960,8 @@ namespace backend.Migrations
                     b.Navigation("ArtistRatings");
 
                     b.Navigation("FavouriteSongs");
+
+                    b.Navigation("Followers");
 
                     b.Navigation("Follows");
 

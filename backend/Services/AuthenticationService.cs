@@ -18,7 +18,7 @@ namespace Services
             _signInManager = signInManager;
         }
 
-        public async Task<bool> Register(RegisterRequest registerRequest)
+        public async Task<(bool,string)> Register(RegisterRequest registerRequest)
         {
             var user = new User
             {
@@ -27,11 +27,13 @@ namespace Services
             };
 
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
+            Console.WriteLine(result);
+            var errors = result.Errors.ToList();
 
             if (result.Succeeded)
-                return true;
+                return (true, "");
 
-            return false;
+            return (false,errors[0].Description);
         }
 
         public async Task<bool> AddRole(string username, string role)

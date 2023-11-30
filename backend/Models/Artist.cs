@@ -13,6 +13,8 @@ namespace Models
         public string Description { get; set; } = string.Empty;
 
         public ICollection<Album> Albums { get; set; } = new List<Album>();
+        public ICollection<ArtistComment> ArtistComments { get; set; } = new List<ArtistComment>();
+        public ICollection<ArtistRating> ArtistRatings { get; set; } = new List<ArtistRating>();
     }
 
     [Table("artistsRating")]
@@ -20,10 +22,10 @@ namespace Models
     {
         public string Id { get; set; } = string.Empty;
         public int Rating { get; set; } = 0;
-        
+
         public string Id_User { get; set; } = string.Empty;
         public User User { get; set; } = null!;
-        
+
         public string Id_Artist_Internal { get; set; } = string.Empty;
         public Artist Artist { get; set; } = null!;
     }
@@ -34,10 +36,10 @@ namespace Models
         public string Id { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public DateTime Creation_Date { get; set; } = DateTime.Now;
-        
-        public string Id_User { get; set; } = string.Empty;
-        public User User { get; set; } = null!;
-        
+
+        public string Id_Sender { get; set; } = string.Empty;
+        public User Sender { get; set; } = null!;
+
         public string Id_Artist_Internal { get; set; } = string.Empty;
         public Artist Artist { get; set; } = null!;
     }

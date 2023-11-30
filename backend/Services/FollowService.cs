@@ -10,19 +10,22 @@ public class FollowService
 
     public FollowService(DatabaseContext context)
     {
-        _context = context;    
+        _context = context;
     }
 
     public async Task<bool> FollowUser(string userId, User user)
     {
+        //user to follow doesn't exist || user to follow the same as logged in || already following -> return false
         var userToFollow = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        if (userToFollow == null || userId == user.Id) return false;
+        if (userToFollow == null || userId == user.Id || await _context.Follows.FirstOrDefaultAsync(u => u.Id_Follower == user.Id && u.Id_Followed == userToFollow.Id) != null) return false;
+
         var follow = new Follow
         {
             Id = Guid.NewGuid().ToString(),
             Follower = user,
             Id_Follower = user.Id,
-            Id_Followed = userToFollow.Id
+            Id_Followed = userToFollow.Id,
+            Followed = userToFollow
         };
         await _context.Follows.AddAsync(follow);
         await _context.SaveChangesAsync();

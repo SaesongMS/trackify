@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace Controllers;
 [ApiController]
 [Route("api/scrobbles")]
-public class ScrobblesController: ControllerBase
+public class ScrobblesController : ControllerBase
 {
     private readonly AuthenticationService _authenticationService;
     private readonly ScrobbleService _scrobbleService;
@@ -39,19 +39,17 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("interval")]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("interval")]
     public async Task<IActionResult> GetScrobblesInInterval([FromBody] IntervalScrobblesRequest request)
     {
-        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            var scrobbles = await _scrobbleService.GetScrobblesInInterval(user.Id, request.Start, request.End);
+            var scrobbles = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End);
             return Ok(new IntervalScrobblesResponse
             {
                 Success = true,
@@ -60,7 +58,7 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -81,10 +79,10 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     // [Authorize(Roles = "Admin")]
     [HttpPost("create")]
@@ -92,21 +90,21 @@ public class ScrobblesController: ControllerBase
     {
         try
         {
-            if(await _scrobbleService.CreateScrobble(request.User_Id, request.Id_Song_Spotify_Api, request.Id_Album_Spotify_Api, request.Id_Artist_Spotify_Api))
+            if (await _scrobbleService.CreateScrobble(request.User_Id, request.Id_Song_Spotify_Api, request.Id_Album_Spotify_Api, request.Id_Artist_Spotify_Api))
                 return Ok(new CreateScrobbleResponse
                 {
                     Success = true,
                     Message = "Scrobble created successfully"
                 });
             return BadRequest(new CreateScrobbleResponse
-                {
-                    Success = false,
-                    Message = "Scrobble creation failed"
-                });
+            {
+                Success = false,
+                Message = "Scrobble creation failed"
+            });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -119,7 +117,7 @@ public class ScrobblesController: ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            if(await _scrobbleService.DeleteScrobble(request.Id, user.Id, roles))
+            if (await _scrobbleService.DeleteScrobble(request.Id, user.Id, roles))
                 return Ok(new DeleteScrobbleResponse
                 {
                     Success = true,
@@ -133,69 +131,69 @@ public class ScrobblesController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
     //top for one user
-    //uses N and interval
-    [HttpGet("top-songs")]
+    //uses interval
+    [HttpPost("top-songs")]
     public async Task<IActionResult> GetTopUsersSongs([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [HttpGet("top-albums")]
+    [HttpPost("top-albums")]
     public async Task<IActionResult> GetTopUsersAlbums([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [HttpGet("top-artists")]
+    [HttpPost("top-artists")]
     public async Task<IActionResult> GetTopUsersArtists([FromBody] NIntervalTopUserScrobblesRequest request)
     {
         try
         {
-            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.N, request.Start, request.End);
+            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.Start, request.End);
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
     //top for one user
     //uses only N
-    [HttpGet("top-n-songs")]
+    [HttpPost("top-n-songs")]
     public async Task<IActionResult> GetTopNUsersSongs([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -204,16 +202,16 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [HttpGet("top-n-albums")]
+    [HttpPost("top-n-albums")]
     public async Task<IActionResult> GetTopNUsersAlbums([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -222,16 +220,16 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
-   
-   [HttpGet("top-n-artists")]
+
+    [HttpPost("top-n-artists")]
     public async Task<IActionResult> GetTopNUsersArtists([FromBody] NTopUserScrobblesRequest request)
     {
         try
@@ -240,18 +238,18 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
     //top for all users
     //uses N and interval
-    [HttpGet("top-songs-all")]
+    [HttpPost("top-songs-all")]
     public async Task<IActionResult> GetTopSongs([FromBody] NIntervalTopScrobblesRequest request)
     {
         try
@@ -260,16 +258,16 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [HttpGet("top-albums-all")]
+    [HttpPost("top-albums-all")]
     public async Task<IActionResult> GetTopAlbums([FromBody] NIntervalTopScrobblesRequest request)
     {
         try
@@ -278,16 +276,16 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
-    [HttpGet("top-artists-all")]
+    [HttpPost("top-artists-all")]
     public async Task<IActionResult> GetTopArtists([FromBody] NIntervalTopScrobblesRequest request)
     {
         try
@@ -296,12 +294,12 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -316,12 +314,12 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNSongsScrobblesResponse
             {
                 Success = true,
-                TopSongs = topSongs
+                Songs = topSongs
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -334,12 +332,12 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNAlbumsScrobblesResponse
             {
                 Success = true,
-                TopAlbums = topAlbums
+                Albums = topAlbums
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
         }
     }
 
@@ -352,12 +350,114 @@ public class ScrobblesController: ControllerBase
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,
-                TopArtists = topArtists
+                Artists = topArtists
             });
         }
         catch (Exception e)
         {
-            return BadRequest(new {message = e.Message});
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("song/{name}")]
+    public async Task<IActionResult> GetSongByName(string name)
+    {
+        try
+        {
+            var data = await _scrobbleService.GetSongByName(name);
+            return Ok(new SongResponse
+            {
+                Success = true,
+                Song = data.Song,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("album/{name}")]
+    public async Task<IActionResult> GetAlbumByName(string name)
+    {
+        try
+        {
+            var data = await _scrobbleService.GetAlbumByName(name);
+            return Ok(new AlbumResponse
+            {
+                Success = true,
+                Album = data.Album,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpGet("artist/{name}")]
+    public async Task<IActionResult> GetArtistByName(string name)
+    {
+        try
+        {
+            var data = await _scrobbleService.GetArtistByName(name);
+            return Ok(new ArtistResponse
+            {
+                Success = true,
+                Artist = data.Artist,
+                ScrobbleCount = data.ScrobbleCount,
+                ListenersCount = data.ListenersCount,
+                AvgRating = data.AvgRating
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("top-n-songs-by-artist")]
+    public async Task<IActionResult> GetTopSongsByArtistName([FromBody] NIntervalTopSongsByArtistRequest request)
+    {
+        try
+        {
+            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobblesForArtist(request.N, request.Start, request.End, request.ArtistId);
+            return Ok(new TopNSongsScrobblesResponse
+            {
+                Success = true,
+                Songs = topSongs
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("collage")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> GetCollage([FromBody] CollageRequest request)
+    {
+        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        try
+        {
+            var user = await _authenticationService.GetUser(nameIdentifier);
+            var collage = await _scrobbleService.GetCollage(user.Id, request.Start, request.End, request.Size);
+            return Ok(new ArtistCollageResponse
+            {
+                Success = true,
+                Collage = collage
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
         }
     }
 }

@@ -11,6 +11,8 @@ public class ProfileResponse
     public string UserName { get; set; } = string.Empty;
     public byte[] ProfilePicture { get; set; } = new byte[0];
     public string Description { get; set; } = string.Empty;
+    public int ArtistCount { get; set; } = 0;
+    public DateTime Creation_Date { get; set; } = DateTime.Now;
     public List<Follows> Followers { get; set; } = new List<Follows>();
     public List<Follows> Following { get; set; } = new List<Follows>();
     public List<ProfileComments> ProfileComments { get; set; } = new List<ProfileComments>();
@@ -19,6 +21,8 @@ public class ProfileResponse
     public List<RatedAlbums> RatedAlbums { get; set; } = new List<RatedAlbums>();
     public List<RatedArtists> RatedArtists { get; set; } = new List<RatedArtists>();
     public List<FavouriteSongs> FavouriteSongs { get; set; } = new List<FavouriteSongs>();
+    public byte[] TopArtistImage { get; set; } = new byte[0];
+    public string RefreshToken { get; set; } = string.Empty;
 }
 
 public class Follows
@@ -26,7 +30,8 @@ public class Follows
     public string Id { get; set; } = string.Empty;
     public string Id_Follower { get; set; } = string.Empty;
     public string Id_Followed { get; set; } = string.Empty;
-
+    public FollowerData Follower { get; set; } = null!;
+    public FollowerData Followed { get; set; } = null!;
 }
 
 public class ProfileComments
@@ -49,6 +54,7 @@ public class Scrobbles
     public string Id_User { get; set; } = string.Empty;
     public string Id_Song_Internal { get; set; } = string.Empty;
     public Song Song { get; set; } = null!;
+    public double AvgRating { get; set; } = 0;
 }
 
 public class RatedSongs
@@ -93,4 +99,26 @@ public class Sender
     public string Id { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public byte[] ProfilePicture { get; set; } = new byte[0];
+}
+
+public class FollowerData
+{
+    public string Id { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string Bio { get; set; } = string.Empty;
+    public byte[] ProfilePicture { get; set; } = new byte[0];
+}
+
+public class ConnectSpotifyRequest
+{
+    public string RefreshToken { get; set; } = string.Empty;
+    public string Id_User_Spotify_API { get; set; } = string.Empty;
+}
+
+public class MostActiveUsers
+{
+    public string Id { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public byte[] ProfilePicture { get; set; } = new byte[0];
+    public int ScrobbleCount { get; set; } = 0;
 }

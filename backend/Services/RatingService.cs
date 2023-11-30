@@ -13,7 +13,7 @@ public class RatingService
     public RatingService(DatabaseContext context)
     {
         _context = context;
-     
+
     }
 
     public async Task<List<RatedSong>> FetchNRatedUsersSongs(string userId, int n)
@@ -66,7 +66,7 @@ public class RatingService
             .GroupBy(s => s.Song)
             .Select(group => new AverageRatedSong
             {
-                Song = group.Key, 
+                Song = group.Key,
                 Rating = group.Average(sr => sr.Rating)
             })
             .Take(n)
@@ -80,7 +80,7 @@ public class RatingService
             .GroupBy(s => s.Album)
             .Select(group => new AverageRatedAlbum
             {
-                Album = group.Key, 
+                Album = group.Key,
                 Rating = group.Average(sr => sr.Rating)
             })
             .Take(n)
@@ -94,7 +94,7 @@ public class RatingService
             .GroupBy(s => s.Artist)
             .Select(group => new AverageRatedArtist
             {
-                Artist = group.Key, 
+                Artist = group.Key,
                 Rating = group.Average(sr => sr.Rating)
             })
             .Take(n)
@@ -102,17 +102,18 @@ public class RatingService
         return data;
     }
 
-    public async Task<bool> CreateRatingForSong(string songId, int rating, string userId)
+    public async Task<SongRating?> CreateRatingForSong(string songId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return null;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
         var checkIfExists = await _context.SongRatings.FirstOrDefaultAsync(s => s.User == user && s.Song == song);
 
-        if(song != null && checkIfExists == null)
+        if (song != null && checkIfExists == null)
         {
-            var songRating = new SongRating{
+            var songRating = new SongRating
+            {
                 Id = Guid.NewGuid().ToString(),
                 Rating = rating,
                 Id_User = userId,
@@ -123,23 +124,24 @@ public class RatingService
 
             await _context.SongRatings.AddAsync(songRating);
             await _context.SaveChangesAsync();
-            return true;
+            return songRating;
         }
 
-        return false;
+        return null;
     }
 
     public async Task<bool> CreateRatingForAlbum(string albumId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return false;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var album = await _context.Albums.FirstOrDefaultAsync(s => s.Id == albumId);
         var checkIfExists = await _context.AlbumRatings.FirstOrDefaultAsync(s => s.User == user && s.Album == album);
-        
-        if(album != null && checkIfExists == null)
+
+        if (album != null && checkIfExists == null)
         {
-            var albumRating = new AlbumRating{
+            var albumRating = new AlbumRating
+            {
                 Id = Guid.NewGuid().ToString(),
                 Rating = rating,
                 Id_User = userId,
@@ -158,15 +160,16 @@ public class RatingService
 
     public async Task<bool> CreateRatingForArtist(string artistId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return false;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var artist = await _context.Artists.FirstOrDefaultAsync(s => s.Id == artistId);
         var checkIfExists = await _context.ArtistRatings.FirstOrDefaultAsync(s => s.User == user && s.Artist == artist);
-        
-        if(artist != null && checkIfExists == null)
+
+        if (artist != null && checkIfExists == null)
         {
-            var artistRating = new ArtistRating{
+            var artistRating = new ArtistRating
+            {
                 Id = Guid.NewGuid().ToString(),
                 Rating = rating,
                 Id_User = userId,
@@ -183,32 +186,32 @@ public class RatingService
         return false;
     }
 
-    public async Task<bool> ModifyRatingForSong(string songId, int rating, string userId)
+    public async Task<SongRating?> ModifyRatingForSong(string songId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return null;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var song = await _context.Songs.FirstOrDefaultAsync(s => s.Id == songId);
-        
-        if(song != null)
+
+        if (song != null)
         {
             var songRating = await _context.SongRatings.FirstOrDefaultAsync(s => s.User == user && s.Song == song);
             songRating.Rating = rating;
             await _context.SaveChangesAsync();
-            return true;
+            return songRating;
         }
 
-        return false;
+        return null;
     }
 
     public async Task<bool> ModifyRatingForAlbum(string albumId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return false;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var album = await _context.Albums.FirstOrDefaultAsync(s => s.Id == albumId);
-        
-        if(album != null)
+
+        if (album != null)
         {
             var AlbumRating = await _context.AlbumRatings.FirstOrDefaultAsync(s => s.User == user && s.Album == album);
             AlbumRating.Rating = rating;
@@ -221,12 +224,12 @@ public class RatingService
 
     public async Task<bool> ModifyRatingForArtist(string artistId, int rating, string userId)
     {
-        if(rating <= 0) return false;
+        if (rating <= 0) return false;
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         var artist = await _context.Artists.FirstOrDefaultAsync(s => s.Id == artistId);
-        
-        if(artist != null)
+
+        if (artist != null)
         {
             var ArtistRating = await _context.ArtistRatings.FirstOrDefaultAsync(s => s.User == user && s.Artist == artist);
             ArtistRating.Rating = rating;
@@ -236,4 +239,59 @@ public class RatingService
 
         return false;
     }
+
+    public async Task<List<AverageRatedSong>> FetchHighestRatedSongs(int n)
+    {
+        var groupings = await _context.SongRatings
+            .Include(s => s.Song.Album.Artist)
+            .GroupBy(s => s.Song)
+            .ToListAsync();
+
+        var data = groupings
+            .Select(group => new AverageRatedSong
+            {
+                Song = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToList();
+        return data;
+    }
+
+    public async Task<List<AverageRatedAlbum>> FetchHighestRatedAlbums(int n)
+    {
+        var groupings = await _context.AlbumRatings
+            .Include(s => s.Album.Artist)
+            .GroupBy(s => s.Album)
+            .ToListAsync();
+        
+        var data = groupings
+            .Select(group => new AverageRatedAlbum
+            {
+                Album = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToList();
+            
+        return data;
+    }
+
+    public async Task<List<AverageRatedArtist>> FetchHighestRatedArtists(int n)
+    {
+        var data = await _context.ArtistRatings
+            .GroupBy(s => s.Artist)
+            .Select(group => new AverageRatedArtist
+            {
+                Artist = group.Key,
+                Rating = group.Average(sr => sr.Rating)
+            })
+            .OrderByDescending(s => s.Rating)
+            .Take(n)
+            .ToListAsync();
+        return data;
+    }
+
 }

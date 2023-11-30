@@ -29,7 +29,7 @@ namespace Data
     {
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder )
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       base.OnConfiguring(optionsBuilder);
     }
@@ -37,6 +37,11 @@ namespace Data
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);
+
+      modelBuilder.Entity<Follow>()
+        .HasOne(f => f.Followed)
+        .WithMany(u => u.Followers)
+        .HasForeignKey(f => f.Id_Followed);
 
       new ScrobbleMap(modelBuilder.Entity<Scrobble>());
 
@@ -51,12 +56,12 @@ namespace Data
       new AlbumMap(modelBuilder.Entity<Album>());
       new AlbumCommentMap(modelBuilder.Entity<AlbumComment>());
       new AlbumRatingMap(modelBuilder.Entity<AlbumRating>());
-      
+
       new ArtistMap(modelBuilder.Entity<Artist>());
       new ArtistCommentMap(modelBuilder.Entity<ArtistComment>());
       new ArtistRatingMap(modelBuilder.Entity<ArtistRating>());
     }
 
-    
+
   }
 }

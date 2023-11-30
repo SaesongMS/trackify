@@ -11,7 +11,7 @@ public class CommentService
     public CommentService(DatabaseContext context)
     {
         _context = context;
-     
+
     }
 
     public async Task<ProfileComment> GetProfileCommentById(string id)
@@ -20,7 +20,7 @@ public class CommentService
         return comment;
     }
 
-    public async Task<bool> CreateProfileComment(string comment, string recipientId, User sender)
+    public async Task<ProfileComment> CreateProfileComment(string comment, string recipientId, User sender)
     {
         var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Id == recipientId) ?? throw new Exception("Recipient not found");
         var profileComment = new ProfileComment
@@ -35,7 +35,7 @@ public class CommentService
         };
         await _context.ProfileComments.AddAsync(profileComment);
         await _context.SaveChangesAsync();
-        return true;
+        return profileComment;
     }
 
     public async Task<bool> DeleteProfileComment(string id, List<string> roles, string userId)
@@ -48,7 +48,7 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<SongComment> GetSongCommentById(string id)
@@ -57,7 +57,7 @@ public class CommentService
         return comment;
     }
 
-    public async Task<bool> CreateSongComment(string comment, string songId, User sender)
+    public async Task<SongComment> CreateSongComment(string comment, string songId, User sender)
     {
         var song = await _context.Songs.FirstOrDefaultAsync(u => u.Id == songId) ?? throw new Exception("Song not found");
         var songComment = new SongComment
@@ -73,7 +73,7 @@ public class CommentService
         };
         await _context.SongComments.AddAsync(songComment);
         await _context.SaveChangesAsync();
-        return true;
+        return songComment;
     }
 
     public async Task<bool> DeleteSongComment(string id, List<string> roles, string userId)
@@ -86,7 +86,7 @@ public class CommentService
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<AlbumComment> GetAlbumCommentById(string id)
@@ -95,7 +95,7 @@ public class CommentService
         return comment;
     }
 
-    public async Task<bool> CreateAlbumComment(string comment, string albumId, User sender)
+    public async Task<AlbumComment> CreateAlbumComment(string comment, string albumId, User sender)
     {
         var album = await _context.Albums.FirstOrDefaultAsync(u => u.Id == albumId) ?? throw new Exception("Album not found");
         var albumComment = new AlbumComment
@@ -104,27 +104,27 @@ public class CommentService
             Content = comment,
             Creation_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
                 DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc),
-            Id_User = sender.Id,
-            User = sender,
+            Id_Sender = sender.Id,
+            Sender = sender,
             Id_Album_Internal = albumId,
             Album = album
         };
         await _context.AlbumComments.AddAsync(albumComment);
         await _context.SaveChangesAsync();
-        return true;
+        return albumComment;
     }
 
     public async Task<bool> DeleteAlbumComment(string id, List<string> roles, string userId)
     {
         var comment = await _context.AlbumComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found");
-        if (roles.Contains("Admin") || comment.Id_User == userId)
+        if (roles.Contains("Admin") || comment.Id_Sender == userId)
         {
             _context.AlbumComments.Remove(comment);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        return false;     
+        return false;
     }
 
     public async Task<ArtistComment> GetArtistCommentById(string id)
@@ -133,7 +133,7 @@ public class CommentService
         return comment;
     }
 
-    public async Task<bool> CreateArtistComment(string comment, string artistId, User sender)
+    public async Task<ArtistComment> CreateArtistComment(string comment, string artistId, User sender)
     {
         var artist = await _context.Artists.FirstOrDefaultAsync(u => u.Id == artistId) ?? throw new Exception("Artist not found");
         var artistComment = new ArtistComment
@@ -142,26 +142,26 @@ public class CommentService
             Content = comment,
             Creation_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
                 DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc),
-            Id_User = sender.Id,
-            User = sender,
+            Id_Sender = sender.Id,
+            Sender = sender,
             Id_Artist_Internal = artistId,
             Artist = artist
         };
         await _context.ArtistComments.AddAsync(artistComment);
         await _context.SaveChangesAsync();
-        return true;
+        return artistComment;
     }
 
     public async Task<bool> DeleteArtistComment(string id, List<string> roles, string userId)
     {
         var comment = await _context.ArtistComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found");
-        if (roles.Contains("Admin") || comment.Id_User == userId)
+        if (roles.Contains("Admin") || comment.Id_Sender == userId)
         {
             _context.ArtistComments.Remove(comment);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        return false;     
+        return false;
     }
 }

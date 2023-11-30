@@ -41,15 +41,15 @@ public class UsersController : ControllerBase
     {
       var result = await _authenticationService.Register(registerRequest);
 
-      if (result)
+      if (result.Item1)
       {
-        result = await _authenticationService.AddRole(registerRequest.Username, "User");
-        if (!result)
+        var result2 = await _authenticationService.AddRole(registerRequest.Username, "User");
+        if (!result2)
           return BadRequest(new RegisterResponse { Success = false, Message = "Could not add role to user" });
         return Ok(new RegisterResponse { Success = true, Message = "Registration successful" });
       }
 
-      return BadRequest(new RegisterResponse { Success = false, Message = "Registration failed" });
+      return BadRequest(new RegisterResponse { Success = false, Message = result.Item2.ToString() });
     }
     catch (Exception ex)
     {
@@ -76,15 +76,31 @@ public class UsersController : ControllerBase
           SameSite = SameSiteMode.Strict,
           Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
-
-        return Ok(new LoginResponse { Success = true, Message = "Login successful" });
+        var id = _userService.GetIdByUserName(loginRequest.Username).Result;
+        return Ok(new LoginResponse { Success = true, Message = "Login successful", Id = id });
       }
 
-      return BadRequest(new LoginResponse { Success = false, Message = "Login failed" });
+      return BadRequest(new LoginResponse { Success = false, Message = "Bad credentials" });
     }
     catch (Exception ex)
     {
       return BadRequest(new LoginResponse { Success = false, Message = ex.Message });
+    }
+  }
+
+  [HttpPost("logout")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> Logout()
+  {
+    try
+    {
+      Response.Cookies.Delete("X-Access-Token");
+      Response.Cookies.Delete(".AspNetCore.Identity.Application");
+      return Ok(new { Success = true, Message = "Logout successful" });
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Success = false, Message = ex.Message });
     }
   }
 
@@ -106,7 +122,9 @@ public class UsersController : ControllerBase
   [Authorize(Roles = "User")]
   public IActionResult user()
   {
-    return Ok(new { Success = true, Message = "User" });
+    var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var id = _userService.GetIdByUserName(username!).Result;
+    return Ok(new { Success = true, Message = "User", User = username, Id = id });
   }
 
   [HttpGet("{username}")]
@@ -161,5 +179,75 @@ public class UsersController : ControllerBase
       return BadRequest(new { Success = false, Message = e });
     }
   }
+
+  [HttpPost("connectSpotify")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> ConnectSpotify([FromBody] ConnectSpotifyRequest request)
+  {
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+    try
+    {
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.ConnectSpotify(request.RefreshToken, request.Id_User_Spotify_API, user.Id);
+
+      if(response)
+        return Ok(new { Success = true, Message = "Spotify account was successfully connected" });
+      else
+        return BadRequest(new { Success = false, Message = "Error connecting Spotify account" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error connecting Spotify account: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
+  [HttpPatch("disconnectSpotify")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> DisconnectSpotify()
+  {
+    var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+    
+    try
+    {
+      var user = await _authenticationService.GetUser(nameIdentifier);
+      var response = await _userService.DisconnectSpotify(user.Id);
+
+      if(response)
+        return Ok(new { Success = true, Message = "Spotify account was successfully disconnected" });
+      else
+        return BadRequest(new { Success = false, Message = "Error disconnecting Spotify account" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error disconnecting Spotify account: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
+  [HttpGet("most-active")]
+  public async Task<IActionResult> MostActiveUsers()
+  {
+    try
+    {
+      var data = await _userService.FetchMostActiveUsers();
+
+      if (data != null)
+        return Ok(data);
+      else
+        return BadRequest(new { Success = false, Message = "No users found" });
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error fetching most active users: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
 
 }

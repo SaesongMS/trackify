@@ -13,4 +13,12 @@ public class FavouriteSongResponse
 {
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
+    public FavouriteSong? FavouriteSong { get; set; }
+}
+
+public class FavouriteSongListResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public List<FavouriteSong>? FavouriteSongs { get; set; }
 }

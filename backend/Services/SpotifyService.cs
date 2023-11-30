@@ -2,6 +2,8 @@ using System.Text;
 using Models;
 using Newtonsoft.Json.Linq;
 using Helpers;
+using Data;
+using DTOs;
 
 namespace Services;
 
@@ -9,10 +11,12 @@ public class SpotifyService
 {
     private readonly SpotifySettings _spotifySettings;
     private string _accessToken;
+    private readonly DatabaseContext _context;
 
-    public SpotifyService(SpotifySettings spotifySettings)
+    public SpotifyService(SpotifySettings spotifySettings, DatabaseContext context)
     {
         _spotifySettings = spotifySettings;
+        _context = context;
         _accessToken = GetAccesToken().Result;
     }
 
@@ -69,7 +73,10 @@ public class SpotifyService
                 Description = ""
             };
         }
-        
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
         return null;
     }
 
@@ -95,7 +102,10 @@ public class SpotifyService
             };
             return album;
         }
-        
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
         return null;
     }
 
@@ -119,9 +129,115 @@ public class SpotifyService
                 Album = album
             };
         }
-        
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
         return null;
     }
 
+    public async Task<String> GetUserAccessToken(User user, string refresh_token)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
+        var urlSearchParams = new Dictionary<string, string>
+        {
+            {"grant_type", "refresh_token"},
+            {"refresh_token", refresh_token},
+            {"client_id", _spotifySettings.ClientId}
+        };
+        request.Content = new FormUrlEncodedContent(urlSearchParams);
+        request.Headers.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            user.RefreshToken = json["refresh_token"].ToString();
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return json["access_token"].ToString();
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return null;
+    }
     
+    public async Task<JObject> GetRecentlyPlayed(string access_token, long after )
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player/recently-played?limit=20&after=" + after);
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {access_token}");
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            return json;
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return JObject.Parse("{error: true}");
+    }
+
+    public async Task<SongRecommendations> GetSongRecommendations(string artistId, string songId)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/recommendations?limit=5&seed_artists={artistId}&seed_tracks={songId}");
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            return new SongRecommendations{
+                Songs = json["tracks"].Select(song => new ReccomendedSong{
+                    Title = song["name"].ToString(),
+                    Id = song["id"].ToString(),
+                    Artist = song["artists"][0]["name"].ToString(),
+                    Cover = song["album"]["images"][0]["url"].ToString()
+                }).ToList()
+            };
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return new SongRecommendations{
+            Songs = new List<ReccomendedSong>()
+        };
+    }
+
+    public async Task<ArtistRecommendations> GetArtistRecommendations(string artistId)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/artists/{artistId}/related-artists");
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {_accessToken}");
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseContent);
+            return new ArtistRecommendations{
+                Artists = json["artists"].Select(artist => new ReccomendedArtist{
+                    Name = artist["name"].ToString(),
+                    Id = artist["id"].ToString(),
+                    Photo = artist["images"][0]["url"].ToString()
+                }).Take(5).ToList()
+            };
+        }
+
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+        return new ArtistRecommendations{
+            Artists = new List<ReccomendedArtist>()
+        };
+    }
+
 }
