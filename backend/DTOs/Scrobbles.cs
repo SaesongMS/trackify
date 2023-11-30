@@ -203,9 +203,11 @@ public class CollageRequest
     public DateTime End { get; set; } = DateTime.Now;
     [Required]
     public int Size { get; set; } = 1;
+    [Required]
+    public string Subject { get; set; } = "artist";
 }
 
-public class ArtistCollageResponse
+public class CollageResponse
 {
     public byte[] Collage { get; set; }
     public bool Success { get; set; }

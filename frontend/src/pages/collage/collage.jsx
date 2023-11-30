@@ -8,6 +8,8 @@ function Collage() {
   const [popularInterval, setPopularInterval] = createSignal("week");
   const [isOpen, setIsOpen] = createSignal(false);
   const [size, setSize] = createSignal(4);
+  const [subject, setSubject] = createSignal("artists");
+  const subjects = ["artists", "albums", "tracks"];
   const { user } = useContext(UserContext);
 
   createEffect(async () => {
@@ -19,12 +21,17 @@ function Collage() {
     setSize(e.target.value);
   };
 
+  const handleSubjectChange = (e) => {
+    setSubject(e.target.value);
+  };
+
   const handleClick = async (e) => {
     e.preventDefault();
     console.log("The button was clicked.");
     const response = await postData("scrobbles/collage", {
       start: getInterval(popularInterval()),
       size: size(),
+      subject: subject(),
     });
     setCollage(response.collage);
     console.log(response);
@@ -71,6 +78,17 @@ function Collage() {
         <option value="4">2x2</option>
         <option value="9">3x3</option>
         <option value="16">4x4</option>
+      </select>
+      <br />
+      Subject:
+      <select
+        class="border px-2 ml-2 mt-2 hover:bg-slate-600 mb-5 text-black"
+        onInput={handleSubjectChange}
+        value={subject()}
+      >
+        <option value="artists">Artists</option>
+        <option value="albums">Albums</option>
+        <option value="songs">Tracks</option>
       </select>
       <div class="relative">
         <button

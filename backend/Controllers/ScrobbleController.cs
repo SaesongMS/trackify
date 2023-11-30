@@ -448,8 +448,8 @@ public class ScrobblesController : ControllerBase
         try
         {
             var user = await _authenticationService.GetUser(nameIdentifier);
-            var collage = await _scrobbleService.GetCollage(user.Id, request.Start, request.End, request.Size);
-            return Ok(new ArtistCollageResponse
+            var collage = await _scrobbleService.GetCollage(user.Id, request.Start, request.End, request.Size, request.Subject);
+            return Ok(new CollageResponse
             {
                 Success = true,
                 Collage = collage
