@@ -1,7 +1,9 @@
 import Cookies from "js-cookie";
 
+const baseUrl = "http://localhost:5217/api";
+
 export const getData = async (uri) => {
-  const response = await fetch(`http://localhost:5217/api/${uri}`, {
+  const response = await fetch(`${baseUrl}/${uri}`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -12,7 +14,7 @@ export const getData = async (uri) => {
 };
 
 export const postData = async (uri, body) => {
-  const response = await fetch(`http://localhost:5217/api/${uri}`, {
+  const response = await fetch(`${baseUrl}/${uri}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +27,7 @@ export const postData = async (uri, body) => {
 };
 
 export const deleteData = async (uri, body) => {
-  const response = await fetch(`http://localhost:5217/api/${uri}`, {
+  const response = await fetch(`${baseUrl}/${uri}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -38,7 +40,7 @@ export const deleteData = async (uri, body) => {
 };
 
 export const patchData = async (uri, body) => {
-  const response = await fetch(`http://localhost:5217/api/${uri}`, {
+  const response = await fetch(`${baseUrl}/${uri}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

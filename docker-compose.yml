@@ -5,11 +5,11 @@ services:
     build: ./backend
     container_name: backend
     ports:
-      - "8080:80"
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=db;Database=postgres;Username=postgres;Password=postgres"
+      - "5217:80"
     depends_on:
       - db
+    networks:
+      - app-network
   
   db:
     image: postgres:12
@@ -23,6 +23,27 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    stdin_open: true
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
+    restart: on-failure
+    networks:
+      - app-network
 
 volumes:
   pgdata: {}
+
+networks:
+  app-network:
+    driver: bridge
