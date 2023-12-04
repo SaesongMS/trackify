@@ -460,4 +460,22 @@ public class ScrobblesController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpGet("count")]
+    public async Task<IActionResult> GetScrobbleCount()
+    {
+        try
+        {
+            var count = await _scrobbleService.GetScrobbleCount();
+            return Ok(new 
+            {
+                Success = true,
+                Count = count
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }
