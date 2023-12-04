@@ -75,48 +75,51 @@ function SubjectLibrary() {
     switch (subject()) {
       case "artists":
         return (
-          <div class="flex flex-row text-[#f2f3ea]">
+          <table>
             <ScrobbleRow
               albumCover={s.artist.photo}
               heart="heart"
               title={s.artist.name}
               artist={""}
               rating={s.avgRating}
+              date={"Count: " + s.count}
             />
-            <p>Count: {s.count}</p>
-          </div>
+            {/* <p>Count: {s.count}</p> */}
+          </table>
         );
       case "albums":
         return (
-          <div class="flex flex-row">
+          <table>
             <ScrobbleRow
               albumCover={s.album.cover}
               heart="heart"
               title={s.album.name}
               artist={s.album.artist.name}
               rating={s.avgRating}
+              date={"Count: " + s.count}
             />
-            <p>Count: {s.count}</p>
-          </div>
+            {/* <p>Count: {s.count}</p> */}
+          </table>
         );
       case "songs":
         return (
-          <div class="flex flex-row">
+          <table>
             <ScrobbleRow
               albumCover={s.song.album.cover}
               heart="heart"
               title={s.song.title}
               artist={s.song.album.artist.name}
               rating={s.avgRating}
+              date={"Count: " + s.count}
             />
-            <p>Count: {s.count}</p>
-          </div>
+            {/* <p>Count: {s.count}</p> */}
+          </table>
         );
     }
   };
 
   return (
-    <div class="w-[100%] h-[100%] overflow-y-auto">
+    <div class="w-[100%] h-[100%] overflow-y-auto text-[#f2f3ea] ">
       {profile() && (
         <>
           <UserBanner
@@ -135,7 +138,7 @@ function SubjectLibrary() {
             <a href={`/user/${params.username}/library/albums`}>Albums</a>
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
-          <div class="w-[37%] p-6">
+          <div class="w-[80%] p-6 mx-auto flex justify-center">
             <div class="flex flex-col space-y-2 mt-2">
               {slicedSubjects() != null &&
                 slicedSubjects().map((subject) => renderSubject(subject))}

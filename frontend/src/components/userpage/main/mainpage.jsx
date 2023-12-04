@@ -108,7 +108,7 @@ function MainPage(props) {
       )}
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
-        <div class="flex flex-col space-y-2 mt-2">
+        <table>
           {scrobbles()
             .slice(0, 10)
             .map((scrobble) => (
@@ -124,7 +124,7 @@ function MainPage(props) {
                 handleEditFavouriteSong={handleEditFavouriteSong}
               />
             ))}
-        </div>
+        </table>
       </div>
       <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
         <div id="bio-xl" class="hidden xl:block pb-6">
