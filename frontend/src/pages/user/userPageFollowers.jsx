@@ -27,7 +27,7 @@ function UserPageFollowers() {
             avatar={profile().profilePicture}
             username={profile().userName}
             topArtistImage={`data:image/png;base64,${profile().topArtistImage}`}
-            scrobbleCount={profile().scrobbles.length}
+            scrobbleCount={profile().scrobblesCount}
             favourites={profile().favouriteSongs.length}
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
