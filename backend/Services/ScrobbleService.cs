@@ -30,17 +30,11 @@ public class ScrobbleService
         return scrobbles;
     }
 
-    public async Task<List<ScrobbleWithRating>> GetScrobblesInInterval(string userId, DateTime start, DateTime end)
+    public async Task<Tuple<List<ScrobbleWithRating>, int>> GetScrobblesInInterval(string userId, DateTime start, DateTime end, int pageNumber = 1, int pageSize = 10)
     {
-        // //create a new start with utc timezone
-        // start = new DateTime(start.Year, start.Month, start.Day, start.Hour, start.Minute, start.Second, DateTimeKind.Utc);
-        // //create a new end with utc timezone
-        // end = new DateTime(end.Year, end.Month, end.Day, end.Hour, end.Minute, end.Second, DateTimeKind.Utc);
-
-        //u can either use above code or set the timezone in the request, for example: 1999-01-08T04:05:06Z
         var new_end = end.ToUniversalTime();
 
-        var scrobbles = await _context.Scrobbles
+        var query = _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
             .OrderByDescending(s => s.Scrobble_Date)
             .Include(s => s.Song)
@@ -51,79 +45,141 @@ public class ScrobbleService
             {
                 Scrobble = s,
                 AvgRating = s.Song.SongRatings.Count() > 0 ? s.Song.SongRatings.Average(r => r.Rating) : 0
-            })
-            .ToListAsync();
-        //return scrobbles with avgRating for each song:
+            });
 
-        return scrobbles;
+        var totalCount = await query.CountAsync();
+        var scrobbles = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new Tuple<List<ScrobbleWithRating>, int>(scrobbles, totalCount);
     }
 
-    public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, DateTime start, DateTime end)
+    public async Task<(List<SongScrobbleCount>, int)> FetchTopNSongsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
 
-        var groupings = await _context.Scrobbles
+        var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
-            .Include(s => s.Song.Album.Artist)
-            .Include(s => s.Song.SongRatings)
-            .GroupBy(s => s.Song)
             .ToListAsync();
+
+        var songIds = scrobbles.Select(s => s.Id_Song_Internal).Distinct();
+
+        var songs = await _context.Songs
+            .Where(s => songIds.Contains(s.Id))
+            .Include(s => s.Album.Artist)
+            .Include(s => s.SongRatings)
+            .ToListAsync();
+
+        foreach (var scrobble in scrobbles)
+        {
+            scrobble.Song = songs.First(s => s.Id == scrobble.Id_Song_Internal);
+        }
+
+        var groupings = scrobbles.GroupBy(s => s.Song);
+
+        var totalCount = groupings.ToList().Count;
 
         var data = groupings
             .Select(s => new SongScrobbleCount
             {
                 Song = s.Key,
                 Count = s.Count(),
-                AvgRating = s.Average(s => s.Song.SongRatings.Count() > 0 ? s.Song.SongRatings.Average(r => r.Rating) : 0)
+                AvgRating = s.Average(s => s.Song.SongRatings.Count > 0 ? s.Song.SongRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
-        return data;
+
+        return (data, totalCount);
     }
 
-    public async Task<List<AlbumScrobbleCount>> FetchTopNAlbumsScrobbles(string userId, DateTime start, DateTime end)
+    public async Task<(List<AlbumScrobbleCount>, int)> FetchTopNAlbumsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
 
-        var groupings = await _context.Scrobbles
+        // Fetch Scrobbles
+        var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
-            .Include(s => s.Song.Album.Artist)
-            .Include(s => s.Song.Album.AlbumRatings)
-            .GroupBy(s => s.Song.Album)
             .ToListAsync();
+
+        // Extract Song IDs
+        var songIds = scrobbles.Select(s => s.Id_Song_Internal).Distinct();
+
+        // Fetch Songs with their Album and Artist data
+        var songs = await _context.Songs
+            .Where(s => songIds.Contains(s.Id))
+            .Include(s => s.Album.Artist)
+            .Include(s => s.Album.AlbumRatings)
+            .ToListAsync();
+
+        // Replace the Song objects in the Scrobbles with the fetched Songs
+        foreach (var scrobble in scrobbles)
+        {
+            scrobble.Song = songs.First(s => s.Id == scrobble.Id_Song_Internal);
+        }
+
+        // Group the Scrobbles by Album
+        var groupings = scrobbles.GroupBy(s => s.Song.Album);
+
+        var totalCount = groupings.ToList().Count;
 
         var data = groupings
             .Select(s => new AlbumScrobbleCount
             {
                 Album = s.Key,
                 Count = s.Count(),
-                AvgRating = s.Average(s => s.Song.Album.AlbumRatings.Count() > 0 ? s.Song.Album.AlbumRatings.Average(r => r.Rating) : 0)
+                AvgRating = s.Average(s => s.Song.Album.AlbumRatings.Count > 0 ? s.Song.Album.AlbumRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
-        return data;
+        stopwatch.Stop();
+        Console.WriteLine($"data took {stopwatch.ElapsedMilliseconds}ms");
+        return (data, totalCount);
     }
 
-    public async Task<List<ArtistScrobbleCount>> FetchTopNArtistsScrobbles(string userId, DateTime start, DateTime end)
+    public async Task<(List<ArtistScrobbleCount>,int)> FetchTopNArtistsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
 
-        var data = await _context.Scrobbles
+        var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= start_date && s.Scrobble_Date <= end_date)
-            .Include(s => s.Song.Album.Artist.ArtistRatings)
-            .GroupBy(s => s.Song.Album.Artist)
+            .ToListAsync();
+
+        var songIds = scrobbles.Select(s => s.Id_Song_Internal).Distinct();
+
+        var songs = await _context.Songs
+            .Where(s => songIds.Contains(s.Id))
+            .Include(s => s.Album.Artist)
+            .ToListAsync();
+
+        foreach (var scrobble in scrobbles)
+        {
+            scrobble.Song = songs.First(s => s.Id == scrobble.Id_Song_Internal);
+        }
+
+        var groupings = scrobbles.GroupBy(s => s.Song.Album.Artist);
+
+        var totalCount = groupings.ToList().Count;
+
+        var data = groupings
             .Select(s => new ArtistScrobbleCount
             {
                 Artist = s.Key,
-                Count = s.Count(),
-                AvgRating = s.Average(s => s.Song.Album.Artist.ArtistRatings.Count() > 0 ? s.Song.Album.Artist.ArtistRatings.Average(r => r.Rating) : 0)
+                Count = s.Count()
             })
             .OrderByDescending(s => s.Count)
-            .ToListAsync();
-        return data;
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return (data, totalCount);
     }
 
     public async Task<List<SongScrobbleCount>> FetchTopNSongsScrobbles(string userId, int n)

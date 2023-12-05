@@ -1,10 +1,11 @@
-import { createEffect, createSignal, useContext } from "solid-js";
+import { createComputed, createEffect, createSignal, useContext } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { UserContext } from "../../../contexts/UserContext";
 import { getData, postData } from "../../../getUserData";
 import Belmondo from "../../../assets/icons/belmondo.png";
 import UserBanner from "../../../components/userpage/userbanner/userbanner";
 import ScrobbleRow from "../../../components/userpage/main/scrobbleRow";
+import arrowUp from "../../../assets/icons/arrow-up.svg";
 
 function SubjectLibrary() {
   const params = useParams();
@@ -32,44 +33,21 @@ function SubjectLibrary() {
     setProfile(userData);
   });
 
-  createEffect(async () => {
+  const getSubjects = async (pageNum) => {
     if (profile() !== null) {
       const data = await postData(`scrobbles/top-${subject()}`, {
         id: profile().id,
         Start: profile().creation_Date,
+        PageNumber: page(),
       });
+      console.log(data);
       setSubjects(data[subject()]);
-      sliceSubjects();
-      setNumberOfPages(Math.ceil(data[subject()].length / numberOfRecords));
-    }
-  }, [profile()]);
-
-  const sliceSubjects = () => {
-    if (subjects() !== null) {
-      const start = (page() - 1) * numberOfRecords;
-      const end = start + numberOfRecords;
-      setSlicedSubjects(subjects().slice(start, end));
     }
   };
 
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-
-    for (let i = 1; i <= numberOfPages(); i++) {
-      pageNumbers.push(i);
-    }
-
-    return pageNumbers.map((number) => {
-      return (
-        <a
-          class="mx-1"
-          href={`/user/${params.username}/library/${subject()}?page=${number}`}
-        >
-          {number}
-        </a>
-      );
-    });
-  };
+  createComputed(async () => {
+    getSubjects(page());
+  });
 
   const renderSubject = (s) => {
     switch (subject()) {
@@ -140,13 +118,34 @@ function SubjectLibrary() {
           </div>
           <div class="w-[80%] p-6 mx-auto flex justify-center">
             <div class="flex flex-col space-y-2 mt-2">
-              {slicedSubjects() != null &&
-                slicedSubjects().map((subject) => renderSubject(subject))}
+              {subjects() != null &&
+                subjects().map((subject) => renderSubject(subject))}
             </div>
           </div>
+          {subjects() != null && (
           <div class="flex flex-row justify-center items-center mb-3">
-            {numberOfPages() > 1 && renderPageNumbers()}
-          </div>
+          <button
+              class={`text-[#f2f3ea] rounded-md -rotate-90 transform hover:scale-110 transition-all duration-300 ease-in-out ${page() === 1 ? "hidden" : "block"}}`}
+              onClick={() => {
+                if (page() > 1) setPage(page() - 1);
+              }}
+            >
+              <img
+              class="w-6" 
+              src={arrowUp} />
+            </button>
+            <p class="text-[#f2f3ea] text-2xl mx-3 text-center flex items-center justify-center">{page()}</p>
+            <button
+              class="text-[#f2f3ea] rounded-md rotate-90 transform hover:scale-110 transition-all duration-300 ease-in-out"
+              onClick={() => {
+                setPage(page() + 1);
+              }}
+            >
+              <img
+              class="w-6"  
+              src={arrowUp} />
+            </button>
+          </div>)}
         </>
       )}
     </div>

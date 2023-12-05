@@ -18,12 +18,11 @@ public class RecentScrobblesResponse
 
 public class IntervalScrobblesRequest
 {
-    [Required]
     public string Id { get; set; } = string.Empty;
-    [Required]
     public DateTime Start { get; set; } = DateTime.Now.ToUniversalTime();
     public DateTime End { get; set; } = DateTime.Now.ToUniversalTime();
-
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
 }
 
 public class IntervalScrobblesResponse
@@ -31,6 +30,9 @@ public class IntervalScrobblesResponse
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
     public List<ScrobbleWithRating> Scrobbles { get; set; } = new List<ScrobbleWithRating>();
+    public int TotalCount = 0;
+    public int PageNumber = 0;
+    public int PageSize = 0;
 }
 
 public class NIntervalScrobblesRequest
@@ -49,7 +51,9 @@ public class NIntervalTopUserScrobblesRequest
     public DateTime Start { get; set; } = DateTime.Now;
     public DateTime End { get; set; } = DateTime.Now;
     [Required]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
 }
 
 public class NTopUserScrobblesRequest
@@ -115,6 +119,28 @@ public class TopNSongsScrobblesResponse
 {
     public List<SongScrobbleCount> Songs { get; set; }
     public bool Success { get; set; }
+}
+
+public class TopNSongsScrobblesPaginateResponse
+{
+    public List<SongScrobbleCount> Songs { get; set; }
+    public bool Success { get; set; }
+    public int TotalCount { get; set; }
+    public int TotalPages { get; set; }
+}
+public class TopNAlbumsScrobblesPaginateResponse
+{
+    public List<AlbumScrobbleCount> Albums { get; set; }
+    public bool Success { get; set; }
+    public int TotalCount { get; set; }
+    public int TotalPages { get; set; }
+}
+public class TopNArtistsScrobblesPaginateResponse
+{
+    public List<ArtistScrobbleCount> Artists { get; set; }
+    public bool Success { get; set; }
+    public int TotalCount { get; set; }
+    public int TotalPages { get; set; }
 }
 public class SongScrobbleCount
 {
