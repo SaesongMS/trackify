@@ -5,7 +5,7 @@ import { createEffect, createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
 import ArrowUp from "../../../assets/icons/arrow-up.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
-import Compability from "../compability"
+import Compability from "../compability";
 
 function MainPage(props) {
   const { loggedUser } = props;
@@ -93,37 +93,39 @@ function MainPage(props) {
 
   return (
     <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-[#f2f3ea] w-full">
-      {props.bio &&
+      {props.bio && (
         <div id="bio" class="xl:hidden p-6">
-              <div>
-              <h1 class="text-2xl font-bold">About me</h1>
-              <p class="mt-2 text-sm">{props.bio}</p>
-            </div>
+          <div>
+            <h1 class="text-2xl font-bold">About me</h1>
+            <p class="mt-2 text-sm">{props.bio}</p>
+          </div>
         </div>
-        } 
-      {props.compability && props.compability!=-1 && (
+      )}
+      {props.compability && props.compability != -1 && (
         <div id="compability" class="xl:hidden pl-6 pb-6">
-        <Compability compability={props.compability} artists={props.compabilityArtist} />
+          <Compability
+            compability={props.compability}
+            artists={props.compabilityArtist}
+          />
         </div>
       )}
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
         <table class="h-[95%]">
-          {scrobbles()
-            .slice(0, 10)
-            .map((scrobble) => (
-              <ScrobbleRow
-                albumCover={scrobble.song.album.cover}
-                heart={isFavouriteSong(scrobble)}
-                title={scrobble.song.title}
-                artist={scrobble.song.album.artist.name}
-                album={scrobble.song.album.name}
-                rating={scrobble.avgRating}
-                songId={scrobble.song.id}
-                date={scrobble.scrobble_Date}
-                handleEditFavouriteSong={handleEditFavouriteSong}
-              />
-            ))}
+          {scrobbles().map((scrobble) => (
+            <ScrobbleRow
+              albumCover={scrobble.song.album.cover}
+              heart={isFavouriteSong(scrobble)}
+              title={scrobble.song.title}
+              artist={scrobble.song.album.artist.name}
+              album={scrobble.song.album.name}
+              rating={scrobble.avgRating}
+              songId={scrobble.song.id}
+              date={scrobble.scrobble_Date}
+              handleEditFavouriteSong={handleEditFavouriteSong}
+              subject="songs"
+            />
+          ))}
         </table>
       </div>
       <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
