@@ -100,43 +100,43 @@ function ScrobbleRow(props) {
   if (title === "Your scrobbles")
     return (
       <tr class="border border-black">
-        <td class="w-1/12 border border-black">
+        <td class="w-1/12">
           <img
             class="mr-4 cursor-pointer max-w-[10%] hover:opacity-80 transition-all duration-150"
             src={albumCover()}
           />
         </td>
-        <td class="w-1/24 border border-black text-center">
+        <td class="w-1/24 text-center">
           <img src={heartIcon} class="w-4" />
         </td>
-        <td class="w-4/12 lg:max-w-[200px] md:max-w-[100px] sm:max-w-[60px] truncate border border-black">
+        <td class="w-4/12 lg:max-w-[200px] md:max-w-[100px] sm:max-w-[60px] truncate">
           {title}
         </td>
-        <td class="w-4/12 lg:max-w-[200px] md:max-w-[100px] sm:max-w-[60px] truncate border border-black">
+        <td class="w-4/12 lg:max-w-[200px] md:max-w-[100px] sm:max-w-[60px] truncate">
           {artist}
         </td>
-        <td class="w-1/24 border border-black text-center">{`5/5 \u2605`}</td>
-        <td class="w-1/8 border border-black text-center">
+        <td class="w-1/24 text-center text-yellow-400">{`5/5 \u2605`}</td>
+        <td class="w-1/8 text-center">
           {date ? formatTimeDifference(date) : ""}
         </td>
-        <td class="w-1/24 border border-black text-center">X</td>
+        <td class="w-1/24 text-center text-red-500 font-bold">X</td>
       </tr>
     );
   return (
     <tr class="border border-black">
       <td class="w-1/12">
         <img
-          class="mr-4 cursor-pointer hover:opacity-80 transition-all duration-150 aspect-square"
+          class="mr-4 cursor-pointer hover:opacity-80 transition-all duration-150 object-cover aspect-square"
           src={albumCover()}
           onClick={(e) => redirectToSubjectPage(e)}
         />
       </td>
 
-      <td class="text-center ml-1">
+      <td class="ml-1">
         {subject == "songs" && (
           <img
             src={heart() === "heart" ? heartIcon : filledHeart}
-            class="w-5 cursor-pointer hover:opacity-80 transition-all duration-150"
+            class="w-5 cursor-pointer hover:opacity-80 transition-all duration-150 mx-auto"
             onClick={handleEditFavouriteSong}
           />
         )}
@@ -153,14 +153,16 @@ function ScrobbleRow(props) {
           {artist}
         </A>
       </td>
-      <td class="w-1/24  text-center text-xs">
+      <td class="w-1/24 text-center text-xs text-yellow-400">
         {rating ? `${rating}/5 \u2605` : `0/5 \u2605`}
       </td>
       <td class="w-1/8 text-center sm:text-xs text-[6px]">
         {date.includes("Count") ? date : date ? formatTimeDifference(date) : ""}
       </td>
-      <td class="w-1/24  text-center text-red-500">
-        {date.includes("Count") ? "" : "x"}
+      <td class="w-1/24  text-center text-red-500 font-bold">
+        <span class="cursor-pointer hover:text-red-400">
+          {date.includes("Count") ? "" : "x"}
+        </span>
       </td>
     </tr>
   );

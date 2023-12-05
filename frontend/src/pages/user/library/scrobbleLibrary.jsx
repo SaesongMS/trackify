@@ -108,7 +108,7 @@ function ScrobbleLibrary() {
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
           <div class="w-[80%] p-6 flex justify-center mx-auto">
-            <table>
+            <table class="w-[100%]">
               {scrobbles() != null &&
                 scrobbles().map((data) => (
                   <ScrobbleRow

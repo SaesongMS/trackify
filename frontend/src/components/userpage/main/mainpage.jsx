@@ -111,7 +111,7 @@ function MainPage(props) {
       )}
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
-        <table class="h-[95%]">
+        <table class={`${scrobbles().length == 10 ? "h-[95%]" : ""}`}>
           {scrobbles().map((scrobble) => (
             <ScrobbleRow
               albumCover={scrobble.song.album.cover}

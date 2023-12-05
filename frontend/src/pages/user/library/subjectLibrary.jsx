@@ -60,44 +60,38 @@ function SubjectLibrary() {
     switch (subject()) {
       case "artists":
         return (
-          <table>
-            <ScrobbleRow
-              albumCover={s.artist.photo}
-              title={s.artist.name}
-              artist={""}
-              rating={s.avgRating}
-              date={"Count: " + s.count}
-              subject={subject()}
-            />
-          </table>
+          <ScrobbleRow
+            albumCover={s.artist.photo}
+            title={s.artist.name}
+            artist={""}
+            rating={s.avgRating}
+            date={"Count: " + s.count}
+            subject={subject()}
+          />
         );
       case "albums":
         return (
-          <table>
-            <ScrobbleRow
-              albumCover={s.album.cover}
-              title={s.album.name}
-              artist={s.album.artist.name}
-              rating={s.avgRating}
-              date={"Count: " + s.count}
-              subject={subject()}
-            />
-          </table>
+          <ScrobbleRow
+            albumCover={s.album.cover}
+            title={s.album.name}
+            artist={s.album.artist.name}
+            rating={s.avgRating}
+            date={"Count: " + s.count}
+            subject={subject()}
+          />
         );
       case "songs":
         return (
-          <table>
-            <ScrobbleRow
-              albumCover={s.song.album.cover}
-              heart={isFavouriteSong(s.song)}
-              title={s.song.title}
-              artist={s.song.album.artist.name}
-              rating={s.avgRating}
-              date={"Count: " + s.count}
-              subject={subject()}
-              songId={s.song.id}
-            />
-          </table>
+          <ScrobbleRow
+            albumCover={s.song.album.cover}
+            heart={isFavouriteSong(s.song)}
+            title={s.song.title}
+            artist={s.song.album.artist.name}
+            rating={s.avgRating}
+            date={"Count: " + s.count}
+            subject={subject()}
+            songId={s.song.id}
+          />
         );
     }
   };
@@ -123,9 +117,11 @@ function SubjectLibrary() {
             <a href={`/user/${params.username}/library/songs`}>Songs</a>
           </div>
           <div class="w-[80%] p-6 mx-auto flex justify-center">
-            <div class="flex flex-col space-y-2 mt-2">
-              {subjects() != null &&
-                subjects().map((subject) => renderSubject(subject))}
+            <div class="flex flex-col space-y-2 mt-2 w-[100%]">
+              <table>
+                {subjects() != null &&
+                  subjects().map((subject) => renderSubject(subject))}
+              </table>
             </div>
           </div>
           {subjects() != null && (
