@@ -49,12 +49,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            var scrobbles = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
+            (List<ScrobbleWithRating> scrobbles, int totalCount) = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
             return Ok(new IntervalScrobblesResponse
             {
                 Success = true,
-                Scrobbles = scrobbles.Item1,
-                TotalCount = scrobbles.Item2,
+                Scrobbles = scrobbles,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize),
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             });
@@ -186,10 +187,12 @@ public class ScrobblesController : ControllerBase
         try
         {
             (List<ArtistScrobbleCount> topArtists, int totalCount) = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
-            return Ok(new TopNArtistsScrobblesResponse
+            return Ok(new TopNArtistsScrobblesPaginateResponse
             {
                 Success = true,
-                Artists = topArtists
+                Artists = topArtists,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize)
             });
         }
         catch (Exception e)
@@ -474,7 +477,7 @@ public class ScrobblesController : ControllerBase
         try
         {
             var count = await _scrobbleService.GetScrobbleCount();
-            return Ok(new 
+            return Ok(new
             {
                 Success = true,
                 Count = count

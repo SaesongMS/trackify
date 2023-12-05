@@ -41,6 +41,7 @@ public class ScrobbleService
             .ThenInclude(s => s.Album)
             .ThenInclude(a => a.Artist)
             .Include(s => s.Song.SongRatings)
+            .Include(s => s.Song.FavouriteSongs)
             .Select(s => new ScrobbleWithRating
             {
                 Scrobble = s,
@@ -68,6 +69,7 @@ public class ScrobbleService
             .Where(s => songIds.Contains(s.Id))
             .Include(s => s.Album.Artist)
             .Include(s => s.SongRatings)
+            .Include(s => s.FavouriteSongs)
             .ToListAsync();
 
         foreach (var scrobble in scrobbles)
@@ -143,7 +145,7 @@ public class ScrobbleService
         return (data, totalCount);
     }
 
-    public async Task<(List<ArtistScrobbleCount>,int)> FetchTopNArtistsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
+    public async Task<(List<ArtistScrobbleCount>, int)> FetchTopNArtistsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
     {
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
@@ -157,6 +159,7 @@ public class ScrobbleService
         var songs = await _context.Songs
             .Where(s => songIds.Contains(s.Id))
             .Include(s => s.Album.Artist)
+                .ThenInclude(a => a.ArtistRatings)
             .ToListAsync();
 
         foreach (var scrobble in scrobbles)
@@ -172,7 +175,8 @@ public class ScrobbleService
             .Select(s => new ArtistScrobbleCount
             {
                 Artist = s.Key,
-                Count = s.Count()
+                Count = s.Count(),
+                AvgRating = s.Average(s => s.Song.Album.Artist.ArtistRatings.Count > 0 ? s.Song.Album.Artist.ArtistRatings.Average(r => r.Rating) : 0)
             })
             .OrderByDescending(s => s.Count)
             .Skip((pageNumber - 1) * pageSize)
@@ -224,7 +228,7 @@ public class ScrobbleService
         //     .ToList();
         // stopwatch.Stop();
         // Console.WriteLine($"data took {stopwatch.ElapsedMilliseconds}ms");
-        
+
         var scrobbles = await _context.Scrobbles
             .Where(s => s.Id_User == userId)
             .Include(s => s.Song)
@@ -236,10 +240,10 @@ public class ScrobbleService
             .GroupBy(s => new { s.Song.Album.Id, s.Song.Album.Name, Artist = s.Song.Album.Artist })
             .Select(g => new AlbumScrobbleCount
             {
-                Album = new Album 
-                { 
-                    Id = g.Key.Id, 
-                    Name = g.Key.Name, 
+                Album = new Album
+                {
+                    Id = g.Key.Id,
+                    Name = g.Key.Name,
                     Artist = g.Key.Artist,
                     Cover = g.First().Song.Album.Cover
                 },

@@ -30,9 +30,10 @@ public class IntervalScrobblesResponse
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
     public List<ScrobbleWithRating> Scrobbles { get; set; } = new List<ScrobbleWithRating>();
-    public int TotalCount = 0;
-    public int PageNumber = 0;
-    public int PageSize = 0;
+    public int TotalCount { get; set; } = 0;
+    public int TotalPages { get; set; } = 0;
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
 }
 
 public class NIntervalScrobblesRequest
