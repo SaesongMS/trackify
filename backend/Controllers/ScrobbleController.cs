@@ -49,11 +49,14 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            var scrobbles = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End);
+            var scrobbles = await _scrobbleService.GetScrobblesInInterval(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
             return Ok(new IntervalScrobblesResponse
             {
                 Success = true,
-                Scrobbles = scrobbles
+                Scrobbles = scrobbles.Item1,
+                TotalCount = scrobbles.Item2,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
             });
         }
         catch (Exception e)
@@ -62,26 +65,26 @@ public class ScrobblesController : ControllerBase
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("n_interval")]
-    public async Task<IActionResult> GetNScrobblesInInterval([FromBody] NIntervalScrobblesRequest request)
-    {
-        var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        try
-        {
-            var user = await _authenticationService.GetUser(nameIdentifier);
-            var scrobbles = await _scrobbleService.GetScrobblesInInterval(user.Id, request.Start, request.End);
-            return Ok(new NIntervalScrobblesResponse
-            {
-                Success = true,
-                Scrobbles = scrobbles.Take(request.N).ToList()
-            });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-    }
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [HttpGet("n_interval")]
+    // public async Task<IActionResult> GetNScrobblesInInterval([FromBody] NIntervalScrobblesRequest request)
+    // {
+    //     var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //     try
+    //     {
+    //         var user = await _authenticationService.GetUser(nameIdentifier);
+    //         var scrobbles = await _scrobbleService.GetScrobblesInInterval(user.Id, request.Start, request.End);
+    //         return Ok(new NIntervalScrobblesResponse
+    //         {
+    //             Success = true,
+    //             Scrobbles = scrobbles.Take(request.N).ToList()
+    //         });
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(new { message = e.Message });
+    //     }
+    // }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     // [Authorize(Roles = "Admin")]
@@ -142,11 +145,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            List<SongScrobbleCount> topSongs = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.Start, request.End);
-            return Ok(new TopNSongsScrobblesResponse
+            (List<SongScrobbleCount> topSongs, int totalCount) = await _scrobbleService.FetchTopNSongsScrobbles(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
+            return Ok(new TopNSongsScrobblesPaginateResponse
             {
                 Success = true,
-                Songs = topSongs
+                Songs = topSongs,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize)
             });
         }
         catch (Exception e)
@@ -160,11 +165,13 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            List<AlbumScrobbleCount> topAlbums = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.Start, request.End);
-            return Ok(new TopNAlbumsScrobblesResponse
+            (List<AlbumScrobbleCount> topAlbums, int totalCount) = await _scrobbleService.FetchTopNAlbumsScrobbles(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
+            return Ok(new TopNAlbumsScrobblesPaginateResponse
             {
                 Success = true,
-                Albums = topAlbums
+                Albums = topAlbums,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize)
             });
         }
         catch (Exception e)
@@ -178,7 +185,7 @@ public class ScrobblesController : ControllerBase
     {
         try
         {
-            List<ArtistScrobbleCount> topArtists = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.Start, request.End);
+            (List<ArtistScrobbleCount> topArtists, int totalCount) = await _scrobbleService.FetchTopNArtistsScrobbles(request.Id, request.Start, request.End, request.PageNumber, request.PageSize);
             return Ok(new TopNArtistsScrobblesResponse
             {
                 Success = true,

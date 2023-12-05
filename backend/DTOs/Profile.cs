@@ -17,6 +17,7 @@ public class ProfileResponse
     public List<Follows> Following { get; set; } = new List<Follows>();
     public List<ProfileComments> ProfileComments { get; set; } = new List<ProfileComments>();
     public List<Scrobbles> Scrobbles { get; set; } = new List<Scrobbles>();
+    public int ScrobblesCount { get; set; } = 0;
     public List<RatedSongs> RatedSongs { get; set; } = new List<RatedSongs>();
     public List<RatedAlbums> RatedAlbums { get; set; } = new List<RatedAlbums>();
     public List<RatedArtists> RatedArtists { get; set; } = new List<RatedArtists>();

@@ -64,23 +64,26 @@ public class UserService
                 },
                 Id_Recipient = pc.Id_Recipient,
             }).ToListAsync();
-            var scrobbles = await _context.Scrobbles
-            .Where(s => s.Id_User == user.Id).
-            OrderByDescending(s => s.Scrobble_Date)
-            .Include(a => a.Song)
+            var last10scrobbles = await _context.Scrobbles
+                .Where(s => s.Id_User == user.Id).
+                OrderByDescending(s => s.Scrobble_Date)
+                .Include(a => a.Song)
                 .ThenInclude(a => a.Album)
-                    .ThenInclude(a => a.Artist)
-            .Include(s => s.Song.FavouriteSongs)
-            .Include(s => s.Song.SongRatings)
-            .Select(s => new Scrobbles
-            {
-                Id = s.Id,
-                Scrobble_Date = s.Scrobble_Date,
-                Id_User = s.Id_User,
-                Id_Song_Internal = s.Id_Song_Internal,
-                Song = s.Song,
-                AvgRating = s.Song.SongRatings.Count > 0 ? s.Song.SongRatings.Average(sr => sr.Rating) : 0
-            }).ToListAsync();
+                .ThenInclude(a => a.Artist)
+                .Include(s => s.Song.FavouriteSongs)
+                .Include(s => s.Song.SongRatings)
+                .Select(s => new Scrobbles
+                {
+                    Id = s.Id,
+                    Scrobble_Date = s.Scrobble_Date,
+                    Id_User = s.Id_User,
+                    Id_Song_Internal = s.Id_Song_Internal,
+                    Song = s.Song,
+                    AvgRating = s.Song.SongRatings.Count > 0 ? s.Song.SongRatings.Average(sr => sr.Rating) : 0
+                })
+                .Take(10)
+                .ToListAsync();
+            var scrobblesCount = await _context.Scrobbles.Where(s => s.Id_User == user.Id).CountAsync();
             var ratedSongs = await _context.SongRatings.Where(sr => sr.Id_User == user.Id).OrderByDescending(sr => sr.Rating).Select(sr => new RatedSongs
             {
                 Id_Song = sr.Song.Id,
@@ -120,7 +123,8 @@ public class UserService
                 Followers = followers,
                 Following = following,
                 ProfileComments = profileComments,
-                Scrobbles = scrobbles,
+                Scrobbles = last10scrobbles,
+                ScrobblesCount = scrobblesCount,
                 RatedSongs = ratedSongs,
                 RatedAlbums = ratedAlbums,
                 RatedArtists = ratedArtist,
