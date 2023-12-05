@@ -67,9 +67,7 @@ public class UserService
             var last10scrobbles = await _context.Scrobbles
                 .Where(s => s.Id_User == user.Id).
                 OrderByDescending(s => s.Scrobble_Date)
-                .Include(a => a.Song)
-                .ThenInclude(a => a.Album)
-                .ThenInclude(a => a.Artist)
+                .Include(a => a.Song.Album.Artist)
                 .Include(s => s.Song.FavouriteSongs)
                 .Include(s => s.Song.SongRatings)
                 .Select(s => new Scrobbles

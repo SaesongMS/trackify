@@ -15,32 +15,48 @@ function UserPageMain() {
   const { user, setUser } = useContext(UserContext);
   const [compability, setCompability] = createSignal(null);
 
-  createEffect(async () => {
-    if (profile() !== null) {
-      const albumsData = await postData("scrobbles/top-n-albums", {
-        n: 8,
-        id: profile().id,
-      });
-      setAlbums(albumsData.albums);
-
-      const songsData = await postData("scrobbles/top-n-songs", {
-        n: 8,
-        id: profile().id,
-      });
-      setSongs(songsData.songs);
-
-      const artistsData = await postData("scrobbles/top-n-artists", {
-        n: 8,
-        id: profile().id,
-      });
-      setArtists(artistsData.artists);
-    }
-  }, [profile()]);
-
-  createEffect(async () => {
+  const getProfile = async () => {
     const userData = await getData(`users/${params.username}`);
     setProfile(userData);
     console.log(userData);
+  };
+
+  createEffect(() => {
+    getProfile();
+  });
+
+  const getAlbums = async () => {
+    if(!profile()) return;
+    const albumsData = await postData("scrobbles/top-n-albums", {
+      n: 8,
+      id: profile().id,
+    });
+    setAlbums(albumsData.albums);
+  };
+
+  const getArtists = async () => {
+    if(!profile()) return;
+    const artistsData = await postData("scrobbles/top-n-artists", {
+      n: 8,
+      id: profile().id,
+    });
+    setArtists(artistsData.artists);
+  };
+
+  const getSongs = async () => {
+    if(!profile()) return;
+    const songsData = await postData("scrobbles/top-n-songs", {
+      n: 8,
+      id: profile().id,
+    });
+    setSongs(songsData.songs);
+  }
+
+  createEffect(() => {
+      getAlbums();
+      getArtists();
+      getSongs();
+      console.log("got subject");
   });
 
   createComputed(async () => {
@@ -75,7 +91,7 @@ function UserPageMain() {
 
   return (
     <div class="h-[100%] flex flex-col">
-      {profile() && songs() && artists() && albums() && compability() && (
+      {profile() && songs() && artists() && albums() && compability() &&  (
         <>
           <UserBanner
             avatar={profile().profilePicture}
@@ -86,7 +102,7 @@ function UserPageMain() {
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
             profileId={profile().id}
-            followers={profile().followers}
+            userId={user().id}
             compability={compability().compability}
             compabilityArtist={compability().artists}
           />

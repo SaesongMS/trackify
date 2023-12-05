@@ -48,7 +48,7 @@ function Card(props) {
             >
               <span
                 class="text-xs w-[100%] hover:text-slate-300"
-                // onClick={(e) => redirectToArtistPage(e)}
+                onClick={(e) => redirectToArtistPage(e)}
               >
                 {secText}
               </span>

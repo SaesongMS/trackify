@@ -43,4 +43,13 @@ public class FollowService
         return true;
     }
 
+    public async Task<List<string>> GetFollowed(string userId)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null) return null;
+        var following = await _context.Follows.Where(f => f.Id_Follower == user.Id).ToListAsync();
+        return following.Select(f => f.Id_Followed).ToList();
+
+    }
+
 }

@@ -72,4 +72,25 @@ public class FollowController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpGet("get-followed")]
+    public async Task<ActionResult> GetFollowing([FromQuery] string userId)
+    {
+        try
+        {
+            var followed = await _followService.GetFollowed(userId);
+            return Ok(new FollowedResponse
+            {
+                Success = true,
+                Message = "Followed retrieved successfully",
+                FollowedId = followed
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+
 }
