@@ -3,28 +3,44 @@ import { UserContext } from "../../../contexts/UserContext";
 import { postData, deleteData } from "../../../getUserData";
 import tickIcon from "../../../assets/icons/tick.svg";
 import plusIcon from "../../../assets/icons/plus.svg";
+import { getData } from "../../../getUserData";
 
 function Avatar(props) {
   const { user } = useContext(UserContext);
   const [image, setImage] = createSignal(props.image);
-  const [followers, setFollowers] = createSignal(props.followers);
+  const [followers, setFollowers] = createSignal(null);
   const [text, setText] = createSignal("Follow");
 
-  const userIsFollowing = () => {
-    if (!followers()) return;
+  const getFollowers = async () => {
+    const followersData = await getData(`follows/get-followed?userId=${props.userId}`);
+    console.log(followersData);
+    console.log(followersData.followedId);
+    setFollowers(followersData.followedId);
+    console.log(followers());
+  }
 
-    followers().map((follower) => {
-      if (follower.id_Follower == user().id) {
-        setText("Unfollow");
-        return;
-      }
-    });
+  const userIsFollowing = () => {
+    if(!followers()) return;
+
+    if (followers().includes(props.profileId)) {
+      setText("Unfollow");
+      console.log("user is following");
+    }else{
+      console.log("user is not following");
+    }
+
   };
 
   createEffect(() => {
+    getFollowers();
+  });
+
+  createEffect(() => {
     setImage(props.image);
-    setFollowers(props.followers);
-    if (user()) userIsFollowing();
+    if (user()){
+      userIsFollowing();
+      console.log(user())
+    } 
   });
 
   const handleClick = async (e) => {

@@ -50,22 +50,25 @@ function UserPageFollowers() {
             profileId={profile().id}
             followers={profile().followers}
           />
-          <div class="grid grid-rows-4 max-h-[80%]">
-            {favouriteSongs() != null &&
-              favouriteSongs().map((favouriteSong) => (
-                <div class="w-[20%]">
-                  <Card
-                    cover={`data:image/png;base64,${favouriteSong.song.album.cover}`}
-                    mainText={favouriteSong.song.title}
-                    secText={favouriteSong.song.album.artist.name}
-                    loggedUserId={user() ? user().id : null}
-                    profileId={profile().id}
-                    handleDelete={handleDeleteFavouriteSong}
-                    songId={favouriteSong.song.id}
-                    subject="song"
-                  />
-                </div>
-              ))}
+          <div class="mx-auto p-2 text-[#f2f3ea] max-w-[80%]">
+            <h1 class="text-2xl font-bold mb-2">Favourite Songs</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+              {favouriteSongs() != null &&
+                favouriteSongs().map((favouriteSong) => (
+                  <div class="">
+                    <Card
+                      cover={`data:image/png;base64,${favouriteSong.song.album.cover}`}
+                      mainText={favouriteSong.song.title}
+                      secText={favouriteSong.song.album.artist.name}
+                      loggedUserId={user() ? user().id : null}
+                      profileId={profile().id}
+                      handleDelete={handleDeleteFavouriteSong}
+                      songId={favouriteSong.song.id}
+                      subject="song"
+                    />
+                  </div>
+                ))}
+            </div>
           </div>
         </>
       )}

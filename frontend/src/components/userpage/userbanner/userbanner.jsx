@@ -11,7 +11,7 @@ function UserBanner(props) {
       <Avatar
         image={props.avatar}
         profileId={props.profileId}
-        followers={props.followers}
+        userId={props.userId}
       />
       <div class="flex flex-col flex-grow">
         <InfoBar
