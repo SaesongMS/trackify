@@ -767,4 +767,9 @@ public class ScrobbleService
         return stream.ToArray();
     }
 
+    public async Task<int> GetScrobbleCount()
+    {
+        return await _context.Scrobbles.CountAsync();
+    }
+
 }

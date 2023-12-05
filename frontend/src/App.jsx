@@ -13,13 +13,14 @@ import SubjectLibrary from "./pages/user/library/subjectLibrary";
 import SubjectPage from "./pages/subject/subject";
 import Charts from "./pages/charts/charts";
 import Collage from "./pages/collage/collage";
+import MainPage from "./pages/mainpage/mainpage";
 
 function App() {
   return (
     <div class="flex w-screen h-screen bg-[#313338]">
       <Navbar />
       <Routes>
-        <Route path="/" element={<div></div>} />
+        <Route path="/" element={<MainPage/>} />
         <Route path="/search" element={<Search />} />
         <Route path="/search/:query" element={<Search />} />
         <Route path="/charts" element={Charts} />
