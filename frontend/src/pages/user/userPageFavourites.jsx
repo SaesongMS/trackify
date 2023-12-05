@@ -1,15 +1,14 @@
 import { useParams } from "@solidjs/router";
-import { getData, postData } from "../../getUserData";
+import { getData } from "../../getUserData";
 import { createEffect, createSignal, useContext } from "solid-js";
 import UserBanner from "../../components/userpage/userbanner/userbanner";
 import { UserContext } from "../../contexts/UserContext";
-import Belmondo from "../../assets/icons/belmondo.png";
-import Card from "../../components/userpage/main/card";
+import FavouriteCard from "../../components/userpage/favourites/favourite-card";
 
 function UserPageFollowers() {
   const params = useParams();
   const [profile, setProfile] = createSignal(null);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [favouriteSongs, setFavouriteSongs] = createSignal(null);
 
   const handleDeleteFavouriteSong = (songId) => {
@@ -43,7 +42,7 @@ function UserPageFollowers() {
             avatar={profile().profilePicture}
             username={profile().userName}
             topArtistImage={`data:image/png;base64,${profile().topArtistImage}`}
-            scrobbleCount={profile().scrobbles.length}
+            scrobbleCount={profile().scrobblesCount}
             favourites={favouriteSongs() ? favouriteSongs().length : 0}
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
@@ -56,11 +55,10 @@ function UserPageFollowers() {
               {favouriteSongs() != null &&
                 favouriteSongs().map((favouriteSong) => (
                   <div class="">
-                    <Card
+                    <FavouriteCard
                       cover={`data:image/png;base64,${favouriteSong.song.album.cover}`}
                       mainText={favouriteSong.song.title}
                       secText={favouriteSong.song.album.artist.name}
-                      loggedUserId={user() ? user().id : null}
                       profileId={profile().id}
                       handleDelete={handleDeleteFavouriteSong}
                       songId={favouriteSong.song.id}
