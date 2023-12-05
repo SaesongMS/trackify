@@ -108,7 +108,7 @@ function MainPage(props) {
       )}
       <div class="xl:border-l-2 border-[#3f4147] w-full xl:w-[40%] p-6 xl:overflow-y-auto">
         Scrobbles
-        <table>
+        <table class="h-[95%]">
           {scrobbles()
             .slice(0, 10)
             .map((scrobble) => (

@@ -130,13 +130,15 @@ function ScrobbleRow(props) {
     //   </div>
     // </div>
     <tr class="border border-black">
-        <td class="w-1/12 "><img
-        class="mr-4 cursor-pointer hover:opacity-80 transition-all duration-150"
-        src={albumCover()}
-        onClick={() =>
-          (window.location.href = `/song/${encodeSubjectName(title)}`)
-        }
-      /></td>
+        <td class="w-1/12 ">
+          <img
+            class="mr-4 cursor-pointer hover:opacity-80 transition-all duration-150 aspect-square"
+            src={albumCover()}
+            onClick={() =>
+              (window.location.href = `/song/${encodeSubjectName(title)}`)
+            }
+          />
+      </td>
         <td class="text-center"><img
             src={heart() === "heart" ? heartIcon : filledHeart}
             class="w-5"
