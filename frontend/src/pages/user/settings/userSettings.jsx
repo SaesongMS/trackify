@@ -1,6 +1,6 @@
 import { createEffect, createSignal, useContext } from "solid-js";
-import { UserContext } from "../../contexts/UserContext";
-import { getData, patchData, postData } from "../../getUserData";
+import { UserContext } from "../../../contexts/UserContext";
+import { getData, patchData, postData } from "../../../getUserData";
 
 function UserSettings() {
   const { user } = useContext(UserContext);
@@ -8,6 +8,7 @@ function UserSettings() {
   const [oldBio, setOldBio] = createSignal("");
   const [avatar, setAvatar] = createSignal(null);
   const [connectedSpotify, setConnectedSpotify] = createSignal(false);
+  const [loading, setLoading] = createSignal(true);
 
   const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI + "/user/settings";
@@ -152,6 +153,7 @@ function UserSettings() {
       const data = await getData(`users/${user().userName}`);
       setOldBio(data.description ? data.description : "");
       if (data.refreshToken.length > 0) setConnectedSpotify(true);
+      setLoading(false);
     }
   });
 
@@ -171,51 +173,65 @@ function UserSettings() {
     } else alert("No changes made!");
   };
 
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    window.location.href = "/user/settings/change-password";
+  };
+
   return (
     <div class="mt-2 ml-2 text-white">
-      <form onsubmit={handleEditProfile}>
-        <h1 class="text-2xl">User Settings</h1>
-        <h2 class="text-xl">Description:</h2>
-        <input
-          type="text"
-          value={oldBio()}
-          onInput={(e) => setBio(e.target.value)}
-          class="text-slate-950"
-        />
-        <br />
-        <h2 class="text-xl">Avatar:</h2>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {avatar() && (
-          <div>
-            <span>Preview:</span>
-            <div class="border-2 border-[#1e1f22] w-[25%] max-w- hover:border-slate-500 hover:rounded-sm transition-all duration-150 aspect-square">
-              <img src={avatar()} alt="Preview" />
-            </div>
-          </div>
-        )}
-        <br />
-        <input
-          type="submit"
-          value="Edit"
-          class="p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100"
-        />
-      </form>
-      <button
-        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${
-          connectedSpotify() ? "hidden" : ""
-        }`}
-        onClick={handleSpotifyConnect}
-      >
-        Connect Spotify
-      </button>
-      <button
-        class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 ${
-          connectedSpotify() ? "" : "hidden"
-        }`}
-        onClick={handleSpotifyDisconnect}
-      >
-        Disconnect Spotify
-      </button>
+      <span class="text-2xl">User Settings</span>
+      {loading() && <div class="text-xl">Loading...</div>}
+      {!loading() && (
+        <div class="flex flex-col">
+          <form onsubmit={handleEditProfile} class="flex flex-col">
+            <span class="text-xl">Description:</span>
+            <input
+              type="text"
+              value={oldBio()}
+              onInput={(e) => setBio(e.target.value)}
+              class="text-slate-950 max-w-[200px]"
+            />
+            <span class="text-xl">Avatar:</span>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            {avatar() && (
+              <div>
+                <span>Preview:</span>
+                <div class="border-2 border-[#1e1f22] w-[25%] max-w- hover:border-slate-500 hover:rounded-sm transition-all duration-150 aspect-square">
+                  <img src={avatar()} alt="Preview" />
+                </div>
+              </div>
+            )}
+            <input
+              type="submit"
+              value="Edit"
+              class="p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 max-w-[200px]"
+            />
+          </form>
+          <button
+            class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 max-w-[200px] ${
+              connectedSpotify() ? "hidden" : ""
+            }`}
+            onClick={handleSpotifyConnect}
+          >
+            Connect Spotify
+          </button>
+          <button
+            class={`p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 max-w-[200px] ${
+              connectedSpotify() ? "" : "hidden"
+            }`}
+            onClick={handleSpotifyDisconnect}
+          >
+            Disconnect Spotify
+          </button>
+          <button
+            class="p-1 border mt-1 ml-1 px-4 hover:cursor-pointer hover:bg-slate-700 hover:text-slate-100 max-w-[200px]"
+            onClick={handleChangePassword}
+          >
+            Change password
+          </button>
+        </div>
+      )}
     </div>
   );
 }

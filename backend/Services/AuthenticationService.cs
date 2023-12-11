@@ -18,7 +18,7 @@ namespace Services
             _signInManager = signInManager;
         }
 
-        public async Task<(bool,string)> Register(RegisterRequest registerRequest)
+        public async Task<(bool, string)> Register(RegisterRequest registerRequest)
         {
             var user = new User
             {
@@ -33,7 +33,7 @@ namespace Services
             if (result.Succeeded)
                 return (true, "");
 
-            return (false,errors[0].Description);
+            return (false, errors[0].Description);
         }
 
         public async Task<bool> AddRole(string username, string role)
@@ -97,6 +97,18 @@ namespace Services
         {
             byte[] imageByte = System.IO.File.ReadAllBytes("avatar.jpg");
             return imageByte;
+        }
+
+        public async Task<(bool, string)> ChangePassword(string username, string oldPassword, string newPassword)
+        {
+            User? user = await _userManager.FindByNameAsync(username);
+            var result = await _userManager.ChangePasswordAsync(user!, oldPassword, newPassword);
+            var errors = result.Errors.ToList();
+
+            if (result.Succeeded)
+                return (true, "");
+
+            return (false, errors[0].Description.ToString());
         }
     }
 }

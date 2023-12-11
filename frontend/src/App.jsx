@@ -1,4 +1,4 @@
-import UserSettings from "./pages/user/user-settings";
+import UserSettings from "./pages/user/settings/userSettings";
 import UserPageMain from "./pages/user/userpagemain";
 import UserPageFollowers from "./pages/user/userPageFollowers";
 import UserPageFollowing from "./pages/user/userPageFollowing";
@@ -14,17 +14,22 @@ import SubjectPage from "./pages/subject/subject";
 import Charts from "./pages/charts/charts";
 import Collage from "./pages/collage/collage";
 import MainPage from "./pages/mainpage/mainpage";
+import UserSettingsPassword from "./pages/user/settings/changePassword";
 
 function App() {
   return (
     <div class="flex w-screen h-screen bg-[#313338]">
       <Navbar />
       <Routes>
-        <Route path="/" element={<MainPage/>} />
+        <Route path="/" element={<MainPage />} />
         <Route path="/search" element={<Search />} />
         <Route path="/search/:query" element={<Search />} />
         <Route path="/charts" element={Charts} />
         <Route path="/user/settings" element={<UserSettings />} />
+        <Route
+          path="/user/settings/change-password"
+          element={<UserSettingsPassword />}
+        />
         <Route path="/user/:username/main" element={<UserPageMain />} />
         <Route path="/user/:username/library" element={<ScrobbleLibrary />} />
         <Route

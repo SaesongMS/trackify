@@ -123,3 +123,11 @@ public class MostActiveUsers
     public byte[] ProfilePicture { get; set; } = new byte[0];
     public int ScrobbleCount { get; set; } = 0;
 }
+
+public class ChangePasswordRequest
+{
+    [Required]
+    public string NewPassword { get; set; } = string.Empty;
+    [Required]
+    public string OldPassword { get; set; } = string.Empty;
+}

@@ -192,7 +192,7 @@ public class UsersController : ControllerBase
       var user = await _authenticationService.GetUser(nameIdentifier);
       var response = await _userService.ConnectSpotify(request.RefreshToken, request.Id_User_Spotify_API, user.Id);
 
-      if(response)
+      if (response)
         return Ok(new { Success = true, Message = "Spotify account was successfully connected" });
       else
         return BadRequest(new { Success = false, Message = "Error connecting Spotify account" });
@@ -211,13 +211,13 @@ public class UsersController : ControllerBase
   {
     var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-    
+
     try
     {
       var user = await _authenticationService.GetUser(nameIdentifier);
       var response = await _userService.DisconnectSpotify(user.Id);
 
-      if(response)
+      if (response)
         return Ok(new { Success = true, Message = "Spotify account was successfully disconnected" });
       else
         return BadRequest(new { Success = false, Message = "Error disconnecting Spotify account" });
@@ -251,7 +251,7 @@ public class UsersController : ControllerBase
 
   [HttpGet("compability")]
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-  public async Task<IActionResult> Compability([FromQuery] string user_id )
+  public async Task<IActionResult> Compability([FromQuery] string user_id)
   {
     var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
@@ -261,7 +261,7 @@ public class UsersController : ControllerBase
       var user = await _authenticationService.GetUser(nameIdentifier);
       var response = await _userService.Compability(user_id, user.Id);
 
-      if(response.Item1 != -1)
+      if (response.Item1 != -1)
         return Ok(new { Success = true, Message = "Compability was successfully calculated", Compability = response.Item1, Artists = response.Item2 });
       else
         return BadRequest(new { Success = false, Message = "Error calculating compability" });
@@ -274,6 +274,25 @@ public class UsersController : ControllerBase
     }
   }
 
+  [HttpPost("change-password")]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+  {
+    string? nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    try
+    {
+      (bool success, string errors) = await _authenticationService.ChangePassword(nameIdentifier!, request.OldPassword, request.NewPassword);
 
+      if (success)
+        return Ok(new { Success = true, Message = "Password was successfully reset" });
+      else
+        return BadRequest(new { Success = false, Message = errors });
 
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error resetting password: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
 }
