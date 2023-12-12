@@ -99,7 +99,9 @@ function MainPage(props) {
         <div id="bio" class="xl:hidden p-6">
           <div>
             <h1 class="text-2xl font-bold">About me</h1>
-            <p class="mt-2 text-sm">{props.bio}</p>
+            <p class="mt-2 text-sm truncate max-w-[350px] sm:max-w-[500px] lg:max-w-[750px]">
+              {props.bio}
+            </p>
           </div>
         </div>
       )}
@@ -131,12 +133,16 @@ function MainPage(props) {
         </table>
       </div>
       <div id="page" class="xl:w-[60%] p-6 xl:overflow-y-auto">
-        <div id="bio-xl" class="hidden xl:block pb-6">
-          <div>
-            <h1 class="text-2xl font-bold">About me</h1>
-            <p class="mt-2 text-sm">{props.bio}</p>
+        {props.bio && (
+          <div id="bio-xl" class="hidden xl:block pb-6 max-w-[850px] h-auto">
+            <div>
+              <h1 class="text-2xl font-bold">About me</h1>
+              <p class="mt-2 text-sm line-clamp-1 hover:line-clamp-none">
+                {props.bio}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
         <h1 class="text-2xl font-bold pb-2">Top subjects</h1>
         Artist
         <br />
