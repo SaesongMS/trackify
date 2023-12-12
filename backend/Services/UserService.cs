@@ -258,7 +258,7 @@ public class UserService
             var commonArtists = userArtists.Intersect(senderArtists).ToList();
 
             var compability = (float)commonArtists.Count / (float)Math.Max(userArtists.Count, senderArtists.Count);
-
+            if (compability is float.NaN) compability = 0f;
             //get top 3 common artists names
             var topArtists = commonArtists.Take(3).ToList();
             var topArtistsNames = topArtists.Select(a => a.Name).ToList();
