@@ -1,7 +1,6 @@
 import {
   createComputed,
   createEffect,
-  createRenderEffect,
   createSignal,
   useContext,
 } from "solid-js";
@@ -16,9 +15,11 @@ import StarRating from "../../components/subjectpage/star-rating";
 import SubjectBanner from "../../components/subjectpage/subjectbanner";
 import calendar from "../../assets/icons/calendar.svg";
 import { encodeSubjectName } from "../../encodeSubjectName";
+import { AdminContext } from "../../contexts/AdminContext";
 
 function Subject() {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const { admin } = useContext(AdminContext);
   const [userRating, setUserRating] = createSignal(0);
   const params = useParams();
   const [subject, setSubject] = createSignal(params.subject);
@@ -435,7 +436,7 @@ function Subject() {
           updateAvgRating={updateAvgRating}
         />
       )}
-      <div class="pt-2 pl-2">
+      <div class="pt-2 pl-2 pb-2 mr-2">
         <h1 class="text-2xl font-bold mt-5 mb-2 pl-5">Comments</h1>
         {user() && (
           <form onsubmit={handleSendComment} class="flex mb-4 mx-5">
@@ -460,6 +461,7 @@ function Subject() {
               onDelete={handleDeleteComment}
               commentId={comment.id}
               subject={subject()}
+              isAdmin={admin() ? true : false}
             />
           ))}
       </div>

@@ -271,4 +271,19 @@ public class CommentController : ControllerBase
             return BadRequest(new { message = e.Message });
         }
     }
+
+    [HttpPatch("{subject}/{id}")]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> EditComment(string subject, string id, [FromBody] string newContent)
+    {
+        try
+        {
+            var success = await _commentService.EditComment(subject, id, newContent);
+            return Ok(new { Success = success });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
 }

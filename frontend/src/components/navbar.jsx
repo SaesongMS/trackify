@@ -12,8 +12,11 @@ import { useNavigate } from "@solidjs/router";
 import SettingsLogo from "../assets/icons/settings.svg";
 import LogoutLogo from "../assets/icons/logout.svg";
 import CollageLogo from "../assets/icons/collage.svg";
+import { AdminContext } from "../contexts/AdminContext";
+
 function Navbar() {
   const { user, setUser } = useContext(UserContext);
+  const { setAdmin } = useContext(AdminContext);
   const navigate = useNavigate();
 
   const authorize = async () => {
@@ -24,8 +27,16 @@ function Navbar() {
         userName: localStorage.getItem("user"),
         id: response.id,
       });
+      const response2 = await getData("users/admin");
+      if (response2.success) {
+        setAdmin({
+          userName: localStorage.getItem("user"),
+          id: response2.id,
+        });
+      }
       return true;
     }
+
     window.location.reload();
     localStorage.removeItem("user");
   };
@@ -33,10 +44,10 @@ function Navbar() {
   const handleLogout = async (e) => {
     e.preventDefault();
     localStorage.removeItem("user");
-    localStorage.removeItem("userId");
     const response = await postData("users/logout");
     navigate("/");
     setUser(null);
+    setAdmin(null);
   };
 
   createEffect(() => {

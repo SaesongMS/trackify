@@ -2,9 +2,11 @@ import { A, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, useContext } from "solid-js";
 import { postData } from "../../../getUserData";
 import { UserContext } from "../../../contexts/UserContext";
+import { AdminContext } from "../../../contexts/AdminContext";
 
 function Register() {
   const { user, setUser } = useContext(UserContext);
+  const { setAdmin } = useContext(AdminContext);
   const navigate = useNavigate();
   const [username, setUsername] = createSignal("");
   const [password, setPassword] = createSignal("");
@@ -31,12 +33,14 @@ function Register() {
         });
         localStorage.setItem("user", username());
         setUser({ userName: username(), id: res2.id });
+        const res3 = await getData("users/admin");
+        if (res3.success) setAdmin({ userName: username(), id: res3.id });
         navigate(`/user/${username()}/main`);
-      }else{
+      } else {
         setError(res.message);
         document.getElementById("error").classList.remove("hidden");
       }
-    }else{
+    } else {
       setError("Passwords do not match");
       document.getElementById("error").classList.remove("hidden");
     }
@@ -88,7 +92,9 @@ function Register() {
             onInput={(e) => setPasswordConfirm(e.target.value)}
             required
           />
-          <span id="error" class="text-red-500 my-0 p-0 hidden">{error()}</span>
+          <span id="error" class="text-red-500 my-0 p-0 hidden">
+            {error()}
+          </span>
           <A class="text-white" href="/login">
             Already have an account? Login here!
           </A>

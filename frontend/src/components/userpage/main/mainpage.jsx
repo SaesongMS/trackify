@@ -1,14 +1,16 @@
 import ScrobbleRow from "./scrobbleRow";
 import Card from "./card";
 import Comment from "./comment";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, useContext } from "solid-js";
 import { postData } from "../../../getUserData";
 import ArrowUp from "../../../assets/icons/arrow-up.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
 import Compability from "../compability";
+import { AdminContext } from "../../../contexts/AdminContext";
 
 function MainPage(props) {
   const { loggedUser } = props;
+  const { admin } = useContext(AdminContext);
   const [comments, setComments] = createSignal(props.comments);
   const [comment, setComment] = createSignal("");
   const [scrobbles, setScrobbles] = createSignal(props.scrobbles);
@@ -261,6 +263,7 @@ function MainPage(props) {
               recipientId={comment.id_Recipient}
               onDelete={handleDeleteComment}
               subject="profile"
+              isAdmin={admin() ? true : false}
             />
           ))}
         </div>

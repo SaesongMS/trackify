@@ -1,8 +1,10 @@
-import { deleteData } from "../../../getUserData";
-import { A } from "@solidjs/router";
+import { createEffect, createSignal } from "solid-js";
+import { deleteData, patchData } from "../../../getUserData";
 import { useNavigate } from "@solidjs/router";
 
 function Comment(props) {
+  const [isEditing, setIsEditing] = createSignal(false);
+  const [editedComment, setEditedComment] = createSignal("");
   const {
     avatar,
     username,
@@ -13,8 +15,13 @@ function Comment(props) {
     commentId,
     onDelete,
     subject,
+    isAdmin,
     ...others
   } = props;
+
+  createEffect(() => {
+    setEditedComment(comment);
+  }, [comment]);
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -27,6 +34,24 @@ function Comment(props) {
   const handleUserClick = (e) => {
     e.preventDefault();
     navigate(`/user/${username}/main`);
+  };
+
+  const handleCommentClick = (e) => {
+    e.preventDefault();
+    if (isAdmin) setIsEditing(true);
+  };
+
+  const handleCommentChange = (event) => {
+    setEditedComment(event.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    setIsEditing(false);
+    const res = await patchData(
+      `comments/${subject}/${commentId}`,
+      editedComment()
+    );
+    console.log(res);
   };
 
   return (
@@ -42,14 +67,26 @@ function Comment(props) {
           <span class="mr-4 cursor-pointer text-md">
             <a href={`/user/${username}/main`}>{username}</a>
           </span>
-          <span class="mr-4 text-sm">{comment}</span>
+          <div onClick={handleCommentClick}>
+            {isEditing() ? (
+              <input
+                class="mr-4 text-black"
+                value={editedComment()}
+                onChange={handleCommentChange}
+                onBlur={handleCommentSubmit}
+              />
+            ) : (
+              <span class="mr-4 text-sm">{editedComment()}</span>
+            )}
+          </div>
         </div>
       </div>
       <div class="flex items-start pb-1 text-xs">
         <span class="mr-4 cursor-default">{date}</span>
         {loggedUser &&
           (loggedUser.userName == username ||
-            loggedUser.id === recipientId) && (
+            loggedUser.id === recipientId ||
+            isAdmin) && (
             <button class="mr-4 cursor-pointer" onClick={handleDelete}>
               X
             </button>

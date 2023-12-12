@@ -1,20 +1,10 @@
-using Data;
 using Helpers;
-using Models;
 using DTOs;
 using Services;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace Controllers;
@@ -115,11 +105,12 @@ public class UsersController : ControllerBase
   [Authorize(Roles = "Admin")]
   public IActionResult Admin()
   {
-    return Ok(new { Success = true, Message = "Admin" });
+    var id = _userService.GetIdByUserName(ClaimTypes.NameIdentifier).Result;
+    return Ok(new { Success = true, Message = "Admin", User = ClaimTypes.NameIdentifier, Id = id });
   }
 
   [HttpGet("user")]
-  [Authorize(Roles = "User")]
+  [Authorize(Roles = "User,Admin")]
   public IActionResult user()
   {
     var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

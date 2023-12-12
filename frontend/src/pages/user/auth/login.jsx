@@ -1,7 +1,8 @@
 import { createEffect, createSignal, useContext } from "solid-js";
-import { postData } from "../../../getUserData";
+import { getData, postData } from "../../../getUserData";
 import { A, useNavigate } from "@solidjs/router";
 import { UserContext } from "../../../contexts/UserContext";
+import { AdminContext } from "../../../contexts/AdminContext";
 
 function Login() {
   const [username, setUsername] = createSignal("");
@@ -9,6 +10,7 @@ function Login() {
   const [error, setError] = createSignal("");
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
+  const { setAdmin } = useContext(AdminContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -20,8 +22,10 @@ function Login() {
     if (res.success) {
       localStorage.setItem("user", username());
       setUser({ userName: username(), id: res.id });
+      const res2 = await getData("users/admin");
+      if (res2.success) setAdmin({ userName: username(), id: res.id });
       navigate(`/user/${username()}/main`);
-    }else{
+    } else {
       setError(res.message);
       document.getElementById("error").classList.remove("hidden");
     }
@@ -56,7 +60,9 @@ function Login() {
             value={password()}
             onInput={(e) => setPassword(e.target.value)}
           />
-          <span id="error" class="text-red-500 my-0 p-0 hidden">{error()}</span>
+          <span id="error" class="text-red-500 my-0 p-0 hidden">
+            {error()}
+          </span>
           <A class="text-white" href="/register">
             Don't have an account? Register here!
           </A>

@@ -1,4 +1,5 @@
 using Data;
+using DTOs;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
@@ -163,5 +164,39 @@ public class CommentService
         }
 
         return false;
+    }
+
+    public async Task<bool> EditComment(string subject, string id, string newContent)
+    {
+        object comment = subject switch
+        {
+            "profile" => await _context.ProfileComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found"),
+            "song" => await _context.SongComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found"),
+            "album" => await _context.AlbumComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found"),
+            "artist" => await _context.ArtistComments.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception("Comment not found"),
+            _ => throw new Exception("Subject not found"),
+        };
+
+        switch (subject)
+        {
+            case "profile":
+                if (comment is not ProfileComment profileComment) throw new Exception("Comment not found");
+                profileComment.Comment = newContent;
+                break;
+            case "song":
+                if (comment is not SongComment songComment) throw new Exception("Comment not found");
+                songComment.Content = newContent;
+                break;
+            case "album":
+                if (comment is not AlbumComment albumComment) throw new Exception("Comment not found");
+                albumComment.Content = newContent;
+                break;
+            case "artist":
+                if (comment is not ArtistComment artistComment) throw new Exception("Comment not found");
+                artistComment.Content = newContent;
+                break;
+        }
+        await _context.SaveChangesAsync();
+        return true;
     }
 }
