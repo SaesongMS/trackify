@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Helpers;
 using Data;
 using DTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Services;
 
@@ -45,11 +46,14 @@ public class SpotifyService
 
     private async Task<byte[]> GetImage(string url)
     {
+        Console.WriteLine(url);
         using var client = new HttpClient();
         using var response = await client.GetAsync(url);
         byte[] imageBytes = await response.Content
             .ReadAsByteArrayAsync()
             .ConfigureAwait(false);
+
+        Console.WriteLine(imageBytes.Length);
 
         return imageBytes;
     }
@@ -69,7 +73,7 @@ public class SpotifyService
                 Id = Guid.NewGuid().ToString(),
                 Name = json["name"].ToString(),
                 Id_Artist_Spotify_API = json["id"].ToString(),
-                Photo = await GetImage(json["images"][0]["url"].ToString()),
+                Photo = await GetImage(json["images"].ToArray().Length == 0 ? "https://i.scdn.co/image/ab67616d00001e0299760923cfbfe739fb870817" : json["images"][0]["url"].ToString()),
                 Description = ""
             };
         }
