@@ -33,6 +33,10 @@ function UserSettingsPassword() {
   };
 
   const passwordMatch = () => {
+    if (oldPassword() === newPassword()) {
+      setError("New password cannot be the same as old password");
+      return false;
+    }
     if (newPassword() !== confirmNewPassword()) {
       setError("Passwords do not match");
       return false;
