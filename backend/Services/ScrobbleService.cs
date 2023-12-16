@@ -98,8 +98,6 @@ public class ScrobbleService
 
     public async Task<(List<AlbumScrobbleCount>, int)> FetchTopNAlbumsScrobbles(string userId, DateTime start, DateTime end, int pageNumber, int pageSize)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
         var start_date = start.ToUniversalTime();
         var end_date = end.ToUniversalTime();
 
@@ -140,8 +138,6 @@ public class ScrobbleService
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
-        stopwatch.Stop();
-        Console.WriteLine($"data took {stopwatch.ElapsedMilliseconds}ms");
         return (data, totalCount);
     }
 

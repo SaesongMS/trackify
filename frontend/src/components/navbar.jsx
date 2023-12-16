@@ -72,6 +72,7 @@ function Navbar() {
             </button>
 
             <NavbarButton destination="collage" image={CollageLogo} />
+            <NavbarButton destination="reports/week" image={"Reports"} />
 
             <NavbarButton destination={"/user/settings"} image={SettingsLogo} />
             <NavbarButton
