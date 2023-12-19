@@ -69,6 +69,21 @@ function UserPageMain() {
     }
   });
 
+  const mockScrobbles = [
+    {
+      scrobble_Date: new Date(),
+      song: {
+        title: "Your scrobbles",
+        album: {
+          cover: "",
+          artist: {
+            name: "will appear here",
+          },
+        },
+      },
+    },
+  ];
+
   return (
     <div class="h-[100%] flex flex-col">
       {profile() && songs() && artists() && albums() && compability() &&  (
