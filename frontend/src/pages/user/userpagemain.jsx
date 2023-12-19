@@ -13,7 +13,7 @@ function UserPageMain() {
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
   const { user, setUser } = useContext(UserContext);
-  const [compability, setCompability] = createSignal(null);
+  const [compability, setCompability] = createSignal({compability: -1, artists: ["", "", ""]});
 
   const getProfile = async () => {
     const userData = await getData(`users/${params.username}`);
@@ -56,7 +56,6 @@ function UserPageMain() {
       getAlbums();
       getArtists();
       getSongs();
-      console.log("got subject");
   });
 
   createComputed(async () => {
@@ -66,28 +65,9 @@ function UserPageMain() {
         console.log(compabilityData);
         setCompability(compabilityData);
         console.log(compability());
-      }else{
-        setCompability({compability: -1, artists: ["", "", ""]});
       }
     }
   });
-
-
-
-  const mockScrobbles = [
-    {
-      scrobble_Date: new Date(),
-      song: {
-        title: "Your scrobbles",
-        album: {
-          cover: "",
-          artist: {
-            name: "will appear here",
-          },
-        },
-      },
-    },
-  ];
 
   return (
     <div class="h-[100%] flex flex-col">
@@ -102,7 +82,7 @@ function UserPageMain() {
             date={new Date(profile().creation_Date).toLocaleDateString()}
             artistCount={profile().artistCount}
             profileId={profile().id}
-            userId={user().id}
+            userId={user() ? user().id : null}
             compability={compability().compability}
             compabilityArtist={compability().artists}
           />
