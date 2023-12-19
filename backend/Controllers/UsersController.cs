@@ -142,12 +142,11 @@ public class UsersController : ControllerBase
   public async Task<IActionResult> UserBioAvatarEdit(string username, [FromBody] EditUsersProfileRequest request)
   {
     var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
     try
     {
       var user = await _authenticationService.GetUser(nameIdentifier);
-      var response = await _userService.EditProfileData(username, request.Bio, request.Avatar, user.Id, roles);
+      var response = await _userService.EditProfileData(username, request.Bio, request.Avatar, user.Id);
 
       switch (response)
       {
@@ -286,4 +285,46 @@ public class UsersController : ControllerBase
       return BadRequest(new { Success = false, Message = e });
     }
   }
+
+  [HttpPatch("bio")]
+  [Authorize(Roles = "Admin")]
+  public async Task<IActionResult> ChangeBio([FromBody] ChangeBioRequest request)
+  {
+    try
+    {
+      var response = await _userService.ChangeBio(request.UserId, request.EditedBio);
+
+      if (response)
+        return Ok(new { Success = true, Message = "Bio was successfully changed" });
+      else
+        return BadRequest(new { Success = false, Message = "Error changing bio" });
+
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error changing bio: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
+  [HttpPatch("avatar")]
+  [Authorize(Roles = "Admin")]
+  public async Task<IActionResult> ChangeAvatar([FromBody] ChangeAvatarRequest request)
+  {
+    try
+    {
+      (bool success, byte[] avatar) = await _userService.ChangeAvatar(request.UserId, request.Avatar);
+
+      if (success)
+        return Ok(new { Success = true, Message = "Avatar was successfully changed", Avatar = avatar });
+      else
+        return BadRequest(new { Success = false, Message = "Error changing avatar" });
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine($"Error changing avatar: {e}");
+      return BadRequest(new { Success = false, Message = e });
+    }
+  }
+
 }

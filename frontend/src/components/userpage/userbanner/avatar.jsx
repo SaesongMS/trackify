@@ -1,34 +1,35 @@
 import { createEffect, createSignal, useContext } from "solid-js";
 import { UserContext } from "../../../contexts/UserContext";
-import { postData, deleteData } from "../../../getUserData";
+import { getData, postData, deleteData, patchData } from "../../../getUserData";
 import tickIcon from "../../../assets/icons/tick.svg";
 import plusIcon from "../../../assets/icons/plus.svg";
-import { getData } from "../../../getUserData";
+import editIcon from "../../../assets/icons/edit.svg";
+import { AdminContext } from "../../../contexts/AdminContext";
 
 function Avatar(props) {
   const { user } = useContext(UserContext);
+  const { admin } = useContext(AdminContext);
   const [image, setImage] = createSignal(props.image);
   const [followers, setFollowers] = createSignal(null);
   const [text, setText] = createSignal("Follow");
+  const [newImage, setNewImage] = createSignal(null);
 
   const getFollowers = async () => {
-    const followersData = await getData(`follows/get-followed?userId=${props.userId}`);
-    console.log(followersData);
-    console.log(followersData.followedId);
+    const followersData = await getData(
+      `follows/get-followed?userId=${props.userId}`
+    );
     setFollowers(followersData.followedId);
-    console.log(followers());
-  }
+  };
 
   const userIsFollowing = () => {
-    if(!followers()) return;
+    if (!followers()) return;
 
     if (followers().includes(props.profileId)) {
       setText("Unfollow");
       console.log("user is following");
-    }else{
+    } else {
       console.log("user is not following");
     }
-
   };
 
   createEffect(() => {
@@ -37,10 +38,7 @@ function Avatar(props) {
 
   createEffect(() => {
     setImage(props.image);
-    if (user()){
-      userIsFollowing();
-      console.log(user())
-    } 
+    if (user()) userIsFollowing();
   });
 
   const handleClick = async (e) => {
@@ -57,16 +55,59 @@ function Avatar(props) {
       setText("Follow");
     }
   };
+
+  createEffect(() => {
+    if (newImage()) handleEditAvatar();
+  });
+
+  const onUpload = (e) => {
+    e.preventDefault();
+    let file = e.target.files[0];
+    if (file) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        setNewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditAvatar = async () => {
+    const res = await patchData("users/avatar", {
+      avatar: newImage(),
+      userId: props.profileId,
+    });
+    if (res.success) setImage(res.avatar);
+    else console.log("error:", res);
+    setNewImage(null);
+  };
+
   return (
     <div
       class="h-[100%] aspect-square border border-[#3f4147] relative bg-no-repeat bg-cover"
       style={`background-image: url(data:image/png;base64,${image()})`}
     >
-      {/* <img class="h-[100%] w-[100%]" src={`data:image/png;base64,${props.image}`}/> */}
-      {/* classes before (div) 
-       h-[100%] aspect-square border border-[#3f4147] */}
       {user() && user().id != props.profileId && (
         <div>
+          {admin() && (
+            <>
+              <button
+                class="absolute top-0 right-0 rounded-lg cursor-pointer hover:opacity-90 transition-all duration-150 bg-slate-400 opacity-60"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("newAvatar").click();
+                }}
+              >
+                <img src={editIcon} class="w-6 h-6" />
+              </button>
+              <input
+                type="file"
+                id="newAvatar"
+                class="hidden"
+                onChange={onUpload}
+              />
+            </>
+          )}
           <button
             class="absolute bottom-0 right-0 rounded-lg cursor-pointer hover:opacity-90 transition-all duration-150 bg-slate-400 opacity-60"
             onClick={(e) => handleClick(e)}

@@ -131,3 +131,19 @@ public class ChangePasswordRequest
     [Required]
     public string OldPassword { get; set; } = string.Empty;
 }
+
+public class ChangeBioRequest
+{
+    [Required]
+    public string EditedBio { get; set; } = string.Empty;
+    [Required]
+    public string UserId { get; set; } = string.Empty;
+}
+
+public class ChangeAvatarRequest
+{
+    [Required]
+    public string Avatar { get; set; } = string.Empty;
+    [Required]
+    public string UserId { get; set; } = string.Empty;
+}

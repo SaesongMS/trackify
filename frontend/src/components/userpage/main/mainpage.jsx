@@ -2,7 +2,7 @@ import ScrobbleRow from "./scrobbleRow";
 import Card from "./card";
 import Comment from "./comment";
 import { createEffect, createSignal, useContext } from "solid-js";
-import { postData } from "../../../getUserData";
+import { patchData, postData } from "../../../getUserData";
 import ArrowUp from "../../../assets/icons/arrow-up.svg";
 import Belmondo from "../../../assets/icons/belmondoblur.png";
 import Compability from "../compability";
@@ -15,6 +15,8 @@ function MainPage(props) {
   const [comment, setComment] = createSignal("");
   const [scrobbles, setScrobbles] = createSignal(props.scrobbles);
   const [compability, setCompability] = createSignal(null);
+  const [bio, setBio] = createSignal(props.bio);
+  const [isEditingBio, setIsEditingBio] = createSignal(false);
 
   createEffect(() => {
     setComments(props.comments);
@@ -93,15 +95,41 @@ function MainPage(props) {
     },
   ];
 
+  const handleBioClick = (e) => {
+    e.preventDefault();
+    if (admin()) setIsEditingBio(true);
+  };
+
+  const handleBioEdit = async (e) => {
+    e.preventDefault();
+    setIsEditingBio(false);
+    const res = await patchData(`users/bio`, {
+      editedBio: bio(),
+      userId: props.profileId,
+    });
+  };
+
   return (
     <div class="flex flex-col xl:flex-row-reverse overflow-y-auto 2xl:h-[80%] text-[#f2f3ea] w-full">
       {props.bio && (
         <div id="bio" class="xl:hidden p-6">
           <div>
             <h1 class="text-2xl font-bold">About me</h1>
-            <p class="mt-2 text-sm truncate max-w-[350px] sm:max-w-[500px] lg:max-w-[750px]">
-              {props.bio}
-            </p>
+            <div class="mt-2 text-sm truncate max-w-[350px] sm:max-w-[500px] lg:max-w-[750px]">
+              {isEditingBio() ? (
+                <input
+                  type="text"
+                  value={bio()}
+                  onInput={(e) => setBio(e.target.value)}
+                  onBlur={handleBioEdit}
+                  class="text-slate-900"
+                />
+              ) : (
+                <p class="w-fit" onClick={handleBioClick}>
+                  {bio()}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -137,9 +165,22 @@ function MainPage(props) {
           <div id="bio-xl" class="hidden xl:block pb-6 max-w-[850px] h-auto">
             <div>
               <h1 class="text-2xl font-bold">About me</h1>
-              <p class="mt-2 text-sm line-clamp-1 hover:line-clamp-none">
-                {props.bio}
-              </p>
+              <div
+                class="mt-2 text-sm line-clamp-1 hover:line-clamp-none w-fit"
+                onClick={handleBioClick}
+              >
+                {isEditingBio() ? (
+                  <input
+                    type="text"
+                    value={bio()}
+                    onInput={(e) => setBio(e.target.value)}
+                    onBlur={handleBioEdit}
+                    class="text-slate-900"
+                  />
+                ) : (
+                  bio()
+                )}
+              </div>
             </div>
           </div>
         )}

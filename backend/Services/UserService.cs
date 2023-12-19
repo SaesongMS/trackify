@@ -137,12 +137,12 @@ public class UserService
     }
 
 
-    public async Task<int> EditProfileData(string username, string Bio, string Avatar, string userId, List<string> roles)
+    public async Task<int> EditProfileData(string username, string Bio, string Avatar, string userId)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
         if (user == null) return 404;
-        else if (roles.Contains("Admin") || user.Id == userId)
+        else if (user.Id == userId)
         {
             user.Bio = Bio;
 
@@ -269,4 +269,28 @@ public class UserService
         return (-1f,new List<string>());
     }
 
+    public async Task<bool> ChangeBio(string userId, string bio)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user != null && user.Bio != bio)
+        {
+            user.Bio = bio;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<(bool, byte[])> ChangeAvatar(string userId, string avatar)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user != null)
+        {
+            avatar = CleanBase64String(avatar);
+            user.Avatar = Convert.FromBase64String(avatar);
+            await _context.SaveChangesAsync();
+            return (true, user.Avatar);
+        }
+        return (false, null!);
+    }
 }
