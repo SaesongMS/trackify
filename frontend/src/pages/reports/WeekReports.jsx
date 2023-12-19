@@ -5,17 +5,23 @@ import { postData } from "../../getUserData";
 import SongCol from "../../components/reportspage/subjectcol/songcol";
 import ArtistCol from "../../components/reportspage/subjectcol/artistcol";
 import AlbumCol from "../../components/reportspage/subjectcol/albumcol";
+import SubjectCount from "../../components/reportspage/subjectscount";
+import Info from "../../components/reportspage/info";
+import TopUsers from "../../components/reportspage/topusers";
 
 function WeekReports() {
     const [songs, setSongs] = createSignal(null);
     const [artists, setArtists] = createSignal(null);
     const [albums, setAlbums] = createSignal(null);
     const { user } = useContext(UserContext);
+    const start = new Date(new Date().setDate(new Date().getDate() - 7));
+    const end = new Date();
+    const interval = "week"
 
     const getSongs = async (id) => {
         const songsData = await postData("scrobbles/top-songs", {
-            start: new Date(new Date().setDate(new Date().getDate() - 7)),
-            end: new Date(),
+            start: start,
+            end: end,
             id: id,
             pageNumber: 1,
             pageSize: 5
@@ -25,8 +31,8 @@ function WeekReports() {
 
     const getArtists = async (id) => {
         const artistsData = await postData("scrobbles/top-artists", {
-            start: new Date(new Date().setDate(new Date().getDate() - 7)),
-            end: new Date(),
+            start: start,
+            end: end,
             id: id,
             pageNumber: 1,
             pageSize: 5
@@ -36,8 +42,8 @@ function WeekReports() {
 
     const getAlbums = async (id) => {
         const albumsData = await postData("scrobbles/top-albums", {
-            start: new Date(new Date().setDate(new Date().getDate() - 7)),
-            end: new Date(),
+            start: start,
+            end: end,
             id: id,
             pageNumber: 1,
             pageSize: 5
@@ -57,12 +63,21 @@ function WeekReports() {
     return (
         <div class="w-full overflow-y-auto">
             <div class="flex flex-col mx-auto w-[90%] bg-[#2b2d31] shadow-xl mt-5 rounded-md text-[#f2f3ea]">
-                <h1 class="text-3xl font-bold">Reports</h1>
-                <ReportsNavbar active="week" />
-                <div class="grid grid-cols-1 xl:grid-cols-3">
-                    {songs() && <SongCol songs={songs()} />}
-                    {artists() && <ArtistCol artists={artists()} />}
-                    {albums() && <AlbumCol albums={albums()} />}
+                <div class="flex flex-col mx-2">
+                    <h1 class="text-3xl font-bold">Reports</h1>
+                    <ReportsNavbar active={interval} />
+                    <div class="grid grid-cols-1 xl:grid-cols-3 lg:w-[85%] lg:mx-auto ">
+                        {songs() && <SongCol songs={songs()} />}
+                        {artists() && <ArtistCol artists={artists()} />}
+                        {albums() && <AlbumCol albums={albums()} />}
+                    </div>
+                    {user() &&
+                        <>
+                            <SubjectCount start={start} end={end} userId={user().id} />
+                            <Info start={start} end={end} userId={user().id} interval={interval} />
+                            <TopUsers start={start} end={end} userId={user().id} />
+                        </>
+                    }
                 </div>
             </div>
         </div>
