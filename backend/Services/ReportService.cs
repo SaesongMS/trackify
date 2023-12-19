@@ -5,6 +5,7 @@ using Models;
 using DTOs;
 using System.Drawing;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Services;
 
@@ -99,5 +100,79 @@ public class ReportService
             TopUsers = topUsers
         };
     }
+
+    public async Task<CountByDayResponse> GetCountByDay(DateTime start, DateTime end, string userId)
+    {
+        var scrobbles = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .ToListAsync();
+
+        var countByDay = scrobbles
+            .GroupBy(s => s.Scrobble_Date.Date)
+            .Select(g => new CountByDay
+            {
+                Date = new DateOnly(g.Key.Year, g.Key.Month, g.Key.Day),
+                DayOfWeek = g.Key.DayOfWeek.ToString(),
+                Count = g.Count()
+            })
+            .ToList();   
+
+        return new CountByDayResponse
+        {
+            Success = true,
+            Message = "Successfully retrieved count by day",
+            CountByDay = countByDay
+        };
+    }
+
+    public async Task<CountByWeekResponse> GetCountByWeek(DateTime start, DateTime end, string userId)
+    {
+        var scrobbles = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .ToListAsync();
+
+        //get count by week, starting from monday, to the end of the week of the {end} date
+        var countByWeek = scrobbles
+            .GroupBy(s => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(s.Scrobble_Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+            .Select(g => new CountByWeek
+            {
+                StartDate = new DateOnly(g.First().Scrobble_Date.Year, g.First().Scrobble_Date.Month, g.First().Scrobble_Date.Day),
+                EndDate = new DateOnly(g.First().Scrobble_Date.Year, g.First().Scrobble_Date.Month, g.First().Scrobble_Date.Day).AddDays(6),
+                Count = g.Count()
+            })
+            .ToList();
+
+        return new CountByWeekResponse
+        {
+            Success = true,
+            Message = "Successfully retrieved count by week",
+            CountByWeek = countByWeek
+        };
+    }
+
+    public async Task<CountByMonthResponse> GetCountByMonth(DateTime start, DateTime end, string userId)
+    {
+        var scrobbles = await _context.Scrobbles
+            .Where(s => s.Id_User == userId && s.Scrobble_Date >= start && s.Scrobble_Date <= end)
+            .ToListAsync();
+
+        var countByMonth = scrobbles
+            .GroupBy(s => new { s.Scrobble_Date.Month, s.Scrobble_Date.Year })
+            .Select(g => new CountByMonth
+            {
+                Month = g.Key.Month,
+                Year = g.Key.Year,
+                Count = g.Count()
+            })
+            .ToList();
+
+        return new CountByMonthResponse
+        {
+            Success = true,
+            Message = "Successfully retrieved count by month",
+            CountByMonth = countByMonth
+        };
+    }
+
 
 }

@@ -8,6 +8,7 @@ import AlbumCol from "../../components/reportspage/subjectcol/albumcol";
 import SubjectCount from "../../components/reportspage/subjectscount";
 import Info from "../../components/reportspage/info";
 import TopUsers from "../../components/reportspage/topusers";
+import WeekGraph from "../../components/reportspage/graphs/weekgraph";
 
 function WeekReports() {
     const [songs, setSongs] = createSignal(null);
@@ -76,6 +77,7 @@ function WeekReports() {
                             <SubjectCount start={start} end={end} userId={user().id} />
                             <Info start={start} end={end} userId={user().id} interval={interval} />
                             <TopUsers start={start} end={end} userId={user().id} />
+                            <WeekGraph start={start} end={end} userId={user().id} />
                         </>
                     }
                 </div>

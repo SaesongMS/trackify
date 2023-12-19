@@ -8,6 +8,7 @@ import AlbumCol from "../../components/reportspage/subjectcol/albumcol";
 import SubjectCount from "../../components/reportspage/subjectscount";
 import Info from "../../components/reportspage/info";
 import TopUsers from "../../components/reportspage/topusers";
+import YearGraph from "../../components/reportspage/graphs/yeargraph";
 
 function YearReports() {
     const [songs, setSongs] = createSignal(null);
@@ -76,6 +77,7 @@ function YearReports() {
                             <SubjectCount start={start} end={end} userId={user().id} />
                             <Info start={start} end={end} userId={user().id} interval={interval} />
                             <TopUsers start={start} end={end} userId={user().id} />
+                            <YearGraph start={start} end={end} userId={user().id} />
                         </>
                     }
                 </div>
