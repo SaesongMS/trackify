@@ -27,6 +27,7 @@ public class ReportController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> GetSubjectsCount(ReportRequest subjectCountRequest)
     {
+        Console.WriteLine(subjectCountRequest.UserId);
         var result = await _reportService.GetSubjectsCount(subjectCountRequest.StartDate, subjectCountRequest.EndDate, subjectCountRequest.UserId);
         return Ok(result);
     }

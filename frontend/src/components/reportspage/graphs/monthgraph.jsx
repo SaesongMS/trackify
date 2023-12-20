@@ -31,7 +31,6 @@ function MonthGraph(props){
             enddate: end,
             userid: userId
         });
-        console.log(data);
         setData(data.countByWeek);
     }
     createEffect(() => {
@@ -55,7 +54,6 @@ function MonthGraph(props){
     const [isSmallScreen, setIsSmallScreen] = createSignal(window.matchMedia("(max-width: 700px)").matches);
     window.addEventListener("resize", () => {
         setIsSmallScreen(window.matchMedia("(max-width: 768px)").matches);
-        console.log(isSmallScreen());
     });
 
     const options = {

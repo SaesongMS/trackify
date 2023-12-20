@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from "solid-js";
-import { postData } from "../../getUserData";
+import { postData } from "../../../getUserData";
 
 
 function Info(props){

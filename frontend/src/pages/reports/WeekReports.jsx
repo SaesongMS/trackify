@@ -5,8 +5,8 @@ import { postData } from "../../getUserData";
 import SongCol from "../../components/reportspage/subjectcol/songcol";
 import ArtistCol from "../../components/reportspage/subjectcol/artistcol";
 import AlbumCol from "../../components/reportspage/subjectcol/albumcol";
-import SubjectCount from "../../components/reportspage/subjectscount";
-import Info from "../../components/reportspage/info";
+import SubjectCount from "../../components/reportspage/subjectcount/subjectscount";
+import Info from "../../components/reportspage/info/info";
 import TopUsers from "../../components/reportspage/topusers";
 import WeekGraph from "../../components/reportspage/graphs/weekgraph";
 
@@ -17,6 +17,8 @@ function WeekReports() {
     const { user } = useContext(UserContext);
     const start = new Date(new Date().setDate(new Date().getDate() - 7));
     const end = new Date();
+    const previousStart = new Date(new Date(start).setDate(new Date(start).getDate() - 7));
+    const previousEnd = new Date(new Date(end).setDate(new Date(end).getDate() - 7));
     const interval = "week"
 
     const getSongs = async (id) => {
@@ -73,9 +75,9 @@ function WeekReports() {
                     </div>
                     {user() &&
                         <>
-                            <SubjectCount start={start} end={end} userId={user().id} />
-                            <Info start={start} end={end} userId={user().id} interval={interval} />
-                            <TopUsers start={start} end={end} userId={user().id} />
+                            <SubjectCount start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} interval={interval} userId={user().id} />
+                            <Info start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} userId={user().id} interval={interval} />
+                            <TopUsers start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} userId={user().id} />
                             <WeekGraph start={start} end={end} userId={user().id} />
                         </>
                     }

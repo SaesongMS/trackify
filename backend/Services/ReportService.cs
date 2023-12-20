@@ -20,6 +20,8 @@ public class ReportService
 
     public async Task<SubjectCountResponse> GetSubjectsCount(DateTime startDate, DateTime endDate, string userId)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
         var songCount = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= startDate && s.Scrobble_Date <= endDate)
             .Select(s => s.Id_Song_Internal)
@@ -37,6 +39,9 @@ public class ReportService
             .Select(s => s.Song.Album.Id_Artist_Internal)
             .Distinct()
             .CountAsync();
+
+        stopwatch.Stop();
+        Console.WriteLine($"GetSubjectsCount took {stopwatch.ElapsedMilliseconds} ms");
 
         return new SubjectCountResponse
         {
