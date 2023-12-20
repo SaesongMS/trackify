@@ -14,7 +14,6 @@ function SubjectCount(props){
             enddate: end,
             userid: id,
         });
-        console.log(subjectCountData);
         setSongCount(subjectCountData.songCount);
         setArtistCount(subjectCountData.artistCount);
         setAlbumCount(subjectCountData.albumCount);

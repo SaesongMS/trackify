@@ -1,9 +1,29 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount, createComputed } from "solid-js";
 import { postData } from "../../../getUserData";
+import { Chart, Title, Tooltip, Legend, Colors } from "chart.js";
+import { Bar } from "solid-chartjs";
 
 function MonthGraph(props){
     const { start, end, userId } = props;
     const [data, setData] = createSignal(null);
+    const [chartData, setChartData] = createSignal(null);
+
+    onMount(() => {
+        Chart.register(Title, Tooltip, Legend, Colors);
+    });
+
+    const getShortLabel = (start, end) => {
+        const startMonth = start.getMonth();
+        const endMonth = end.getMonth();
+        const startDay = start.getDate();
+        const endDay = end.getDate();
+
+        if(startMonth === endMonth){
+            return `${startDay} - ${endDay}/${startMonth}`;
+        } else {
+            return `${startDay}/${startMonth} - ${endDay}/${endMonth}`;
+        }
+    }
 
     const getData = async () => {
         const data = await postData("reports/countByWeek", {
@@ -11,27 +31,77 @@ function MonthGraph(props){
             enddate: end,
             userid: userId
         });
+        console.log(data);
         setData(data.countByWeek);
     }
-
     createEffect(() => {
         getData();
     });
 
+    createComputed(() => {
+        if(!data()) return;
+        setChartData({
+            labels:  data().map((week) => getShortLabel(new Date(week.startDate), new Date(week.endDate))),
+            datasets: [
+                {
+                    label: "Current Month",
+                    data: data().map((week) => week.count),
+                    id: "currentMonth"
+                },
+            ]
+        });
+    });
+
+    const [isSmallScreen, setIsSmallScreen] = createSignal(window.matchMedia("(max-width: 700px)").matches);
+    window.addEventListener("resize", () => {
+        setIsSmallScreen(window.matchMedia("(max-width: 768px)").matches);
+        console.log(isSmallScreen());
+    });
+
+    const options = {
+        plugins: {
+            title: {
+                display: true,
+                text: "Scrobbles by Week",
+                font: {
+                    size: 24,
+                    weight: "bold",
+                },
+                color: "#f2f3ea"
+            },
+            legend: {
+                display: false,
+                position: "top",
+                align: "start",
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false, // This allows the chart to stretch vertically
+        aspectRatio: 2, // This value will make the chart twice as wide as it is tall
+        scales: {
+            y: {
+                ticks: {
+                    display: false 
+                }
+            },
+            x: {
+                ticks: {
+                    display: true,
+                    maxRotation: isSmallScreen() ? 90 : 0,
+                    minRotation: isSmallScreen() ? 90 : 0,
+                    color: "#f2f3ea"
+                }
+            }
+        },
+    };
+
     return (
-        <div class="flex flex-col w-[80%] mt-2 mx-auto">
-            <p class="text-2xl font-bold text-center">Scrobbles by Week</p>
-            <div class="flex flex-row items-center justify-evenly">
-                <div>
-                    {data() && data().map((day) => (
-                        <div class="flex flex-row">
-                            <p class="mr-2">{day.startDate} - {day.endDate}</p>
-                            <p>Count: {day.count}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+        <>
+            {data() && 
+            <div class={`w-full lg:w-[80%] lg:mx-auto ${data().length>0 ? "" : "hidden"}`}>
+                <Bar data={chartData()} options={options}/>
+            </div>}
+        </>
     );
 }
 

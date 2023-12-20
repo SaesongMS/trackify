@@ -3,7 +3,6 @@ import Row from "./row";
 
 function AlbumCol(props){
     const {albums} = props;
-    console.log(albums);
     return(
         <div class="flex flex-col mx-2">
             <h1 class="text-2xl font-bold">Top albums</h1>

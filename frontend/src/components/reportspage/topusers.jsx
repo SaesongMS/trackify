@@ -11,7 +11,6 @@ function TopUsers(props){
             enddate: end,
             userid: id,
         });
-        console.log(topUsersData.topUsers);
         setTopUsers(topUsersData.topUsers);
     }
 

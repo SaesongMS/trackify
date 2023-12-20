@@ -1,4 +1,4 @@
-import { createComputed, createEffect, createSignal, on, onMount } from "solid-js";
+import { createComputed, createEffect, createSignal, onMount } from "solid-js";
 import { postData } from "../../../getUserData";
 import { Chart, Title, Tooltip, Legend, Colors } from "chart.js";
 import { Bar } from "solid-chartjs";
@@ -10,6 +10,8 @@ function WeekGraph(props){
     const [data, setData] = createSignal(null);
     const [previousData, setPreviousData] = createSignal(null);
     const [chartData, setChartData] = createSignal(null);
+    const [labels, setLabels] = createSignal([]);
+    const [shortLabels, setShortLabels] = createSignal([]);
 
     onMount(() => {
         Chart.register(Title, Tooltip, Legend, Colors);
@@ -21,8 +23,9 @@ function WeekGraph(props){
             enddate: end,
             userid: userId
         });
-        console.log(data.countByDay);
         setData(data.countByDay);
+        setLabels(data.countByDay.map((day) => day.dayOfWeek));
+        setShortLabels(data.countByDay.map((day) => day.dayOfWeek.substring(0, 3)));
     }
 
     const getPreviousData = async () => {
@@ -39,27 +42,40 @@ function WeekGraph(props){
         getPreviousData();
     });
 
-    const updateChartData = (d, pd) => {
-        if(!d || !pd) return;
-        setChartData({
-            labels:  d.map((day) => day.dayOfWeek),
-            datasets: [
-                {
-                    label: "Current Week",
-                    data: d.map((day) => day.count),
-                },
-                {
-                    label: "Previous Week",
-                    data: pd.map((day) => day.count),
-                }
-            ]
-        });
-    }
-
+    const [dataset, setDataset] = createSignal(null);
     createComputed(() => {
-        updateChartData(data(), previousData());
+        if(!data() || !previousData()) return;
+        const d = [];
+        if(data().length > 0){
+            d.push({
+                label: "Current Week",
+                data: data().map((day) => day.count),
+            },);
+        }
+        if(previousData().length > 0){
+            d.push({
+                label: "Previous Week",
+                data: previousData().map((day) => day.count),
+            });
+        }
+        setDataset(d);
+        console.log(dataset());
     });
 
+    createComputed(() => {
+        if(!data() || !previousData()) return;
+        setChartData({
+            labels:  data().map((day) => day.dayOfWeek),
+            datasets: dataset()
+        });
+    });
+
+    const [isSmallScreen, setIsSmallScreen] = createSignal(window.matchMedia("(max-width: 700px)").matches);
+    window.addEventListener("resize", () => {
+        setIsSmallScreen(window.matchMedia("(max-width: 700px)").matches);
+        console.log(isSmallScreen());
+    });
+    
     const options = {
         plugins: {
             title: {
@@ -79,36 +95,32 @@ function WeekGraph(props){
         },
         responsive: true,
         maintainAspectRatio: false, // This allows the chart to stretch vertically
-        aspectRatio: 2 // This value will make the chart twice as wide as it is tall
+        aspectRatio: 2, // This value will make the chart twice as wide as it is tall
+        scales: {
+            y: {
+              ticks: {
+                display: !isSmallScreen() // Hide labels on small screens
+              }
+            },
+            x: {
+              ticks: {
+                display: true, // Always show x-axis labels
+                callback: function(value) {
+                  // If it's a small screen, return a shorter version of the label
+                  return isSmallScreen() ? shortLabels()[value].substring(0, 5) : labels()[value];
+                },
+                color: "#f2f3ea"
+              }
+            }
+          },
     };
 
     return (
         <>
-            <div class="flex flex-col w-[80%] mt-2 mx-auto">
-                {/* <div class="flex flex-row items-center justify-evenly">
-                    <div>
-                        <p class="text-xl font-semibold text-center">Current Week</p>
-                        {data() && data().map((day) => (
-                            <div class="flex flex-row">
-                                <p class="mr-2">Date: {day.date}, {day.dayOfWeek}</p>
-                                <p>Count: {day.count}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div>
-                        <p class="text-xl font-semibold text-center">Previous Week</p>
-                        {previousData() && previousData().map((day) => (
-                            <div class="flex flex-row">
-                                <p class="mr-2">Date: {day.date}, {day.dayOfWeek}</p>
-                                <p>Count: {day.count}</p>
-                            </div>  
-                        ))}
-                    </div>
-                </div> */}
-            </div>
-            <div class="w-[80%] mx-auto">
+            {data() && previousData() &&
+                <div class={`lg:w-[80%] lg:mx-auto ${data().length>0 || previousData().length>0 ? "" : "hidden"}`}>
                 <Bar data={chartData()} options={options}/>
-            </div>
+            </div>}
         </>
     );
 }

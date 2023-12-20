@@ -65,7 +65,6 @@ function YearReports() {
         <div class="w-full overflow-y-auto">
             <div class="flex flex-col mx-auto w-[90%] bg-[#2b2d31] shadow-xl mt-5 rounded-md text-[#f2f3ea]">
                 <div class="flex flex-col mx-2">
-                    <h1 class="text-3xl font-bold">Reports</h1>
                     <ReportsNavbar active={interval} />
                     <div class="grid grid-cols-1 xl:grid-cols-3 lg:w-[85%] lg:mx-auto ">
                         {songs() && <SongCol songs={songs()} />}
