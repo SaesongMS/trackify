@@ -27,7 +27,6 @@ public class ReportController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> GetSubjectsCount(ReportRequest subjectCountRequest)
     {
-        Console.WriteLine(subjectCountRequest.UserId);
         var result = await _reportService.GetSubjectsCount(subjectCountRequest.StartDate, subjectCountRequest.EndDate, subjectCountRequest.UserId);
         return Ok(result);
     }
@@ -45,7 +44,9 @@ public class ReportController : ControllerBase
     public async Task<ActionResult> GetTopUsers(ReportRequest topUsersRequest)
     {
         //u can change limit of users, currently it is 5
-        var result = await _reportService.GetTopUsers(topUsersRequest.StartDate, topUsersRequest.EndDate, topUsersRequest.UserId , 5);
+        var result = await _reportService.GetTopUsers(
+            topUsersRequest.StartDate, topUsersRequest.EndDate, topUsersRequest.UserId , 5, 
+            topUsersRequest.PreviousStartDate, topUsersRequest.PreviousEndDate);
         return Ok(result);
     }
 

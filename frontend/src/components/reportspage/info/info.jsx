@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { postData } from "../../../getUserData";
-
+import InfoCard from "./infocard";
 
 function Info(props){
     const {start, end, userId, interval } = props;
@@ -44,24 +44,13 @@ function Info(props){
     });
 
     return(
-        <div class="flex flex-col w-[80%] mt-2 mx-auto">
-            <div class="text-2xl font-bold text-center">Stats</div>
-            <div class="flex flex-row w-full">
-                <div class="flex flex-col w-1/3">
-                    <div class="text-xl font-semibold text-center">Scrobbles</div>
-                    <div class="text-lg text-center">{scrobleCount().current}</div>
-                    <div class="text-xl text-center">Last {interval}: {scrobleCount().previous}</div>
-                </div>
-                <div class="flex flex-col w-1/3">
-                    <div class="text-xl font-semibold text-center">Average Scrobbles</div>
-                    <div class="text-lg text-center">{averageScrobleCount().current}</div>
-                    <div class="text-xl text-center">Last {interval}: {averageScrobleCount().previous}</div>
-                </div>
-                <div class="flex flex-col w-1/3">
-                    <div class="text-xl font-semibold text-center">Most Active Hour</div>
-                    <div class="text-lg text-center">{mostActiveHour().current}</div>
-                    <div class="text-xl text-center">Last {interval}: {mostActiveHour().previous}</div>
-                </div>
+        <div class="flex flex-col mt-3">
+            <p class="text-2xl font-bold text-center">Stats</p>
+            <hr class="border-2 border-slate-300 opacity-30 w-1/2 mx-auto mb-2"/>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:w-[85%] lg:mx-auto">
+                <InfoCard subject="Scrobbles" interval={interval} count={scrobleCount().current} prevCount={scrobleCount().previous} />
+                <InfoCard subject="Average scrobbles per day" interval={interval} count={averageScrobleCount().current} prevCount={averageScrobleCount().previous} />
+                <InfoCard subject="Most Active Hour" interval={interval} count={mostActiveHour().current} prevCount={mostActiveHour().previous} hidePercentage={true} />
             </div>
         </div>
     )

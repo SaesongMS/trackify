@@ -11,6 +11,8 @@ public class ReportRequest
     public DateTime EndDate { get; set; } = DateTime.Now.ToUniversalTime();
     [Required]
     public string UserId { get; set; } = string.Empty;
+    public DateTime PreviousStartDate { get; set; } = DateTime.Now.ToUniversalTime();
+    public DateTime PreviousEndDate { get; set; } = DateTime.Now.ToUniversalTime();
 }
 
 public class SubjectCountResponse
@@ -35,6 +37,8 @@ public class TopUsers
 {
     public User User { get; set; } = new User();
     public int ScrobbleCount { get; set; } = 0;
+    public int Rank { get; set; } = 0;
+    public int PreviousRank { get; set; } = 0;
 
 }
 

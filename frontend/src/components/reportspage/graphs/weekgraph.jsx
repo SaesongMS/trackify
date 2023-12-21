@@ -119,8 +119,8 @@ function WeekGraph(props){
         <>
             {data() && previousData() &&
                 <div class={`lg:w-[80%] lg:mx-auto ${data().length>0 || previousData().length>0 ? "" : "hidden"}`}>
-                <Bar data={chartData()} options={options}/>
-            </div>}
+                    <Bar data={chartData()} options={options}/>
+                </div>}
         </>
     );
 }

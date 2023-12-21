@@ -20,8 +20,6 @@ public class ReportService
 
     public async Task<SubjectCountResponse> GetSubjectsCount(DateTime startDate, DateTime endDate, string userId)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
         var songCount = await _context.Scrobbles
             .Where(s => s.Id_User == userId && s.Scrobble_Date >= startDate && s.Scrobble_Date <= endDate)
             .Select(s => s.Id_Song_Internal)
@@ -39,9 +37,6 @@ public class ReportService
             .Select(s => s.Song.Album.Id_Artist_Internal)
             .Distinct()
             .CountAsync();
-
-        stopwatch.Stop();
-        Console.WriteLine($"GetSubjectsCount took {stopwatch.ElapsedMilliseconds} ms");
 
         return new SubjectCountResponse
         {
@@ -78,25 +73,52 @@ public class ReportService
         };
     }
 
-    public async Task<TopUsersResponse> GetTopUsers(DateTime start, DateTime end, string userId, int limit)
+    public async Task<TopUsersResponse> GetTopUsers(DateTime start, DateTime end, string userId, int limit, DateTime previousStartDate, DateTime previousEndDate)
     {
+        Console.WriteLine(previousStartDate);
+        Console.WriteLine(previousEndDate);
         var following = await _context.Follows
             .Where(f => f.Id_Follower == userId)
             .Select(f => f.Id_Followed)
             .ToListAsync();
 
-        //get top {limit} users that user and his following are most listening to
+        //get top {limit} users that user and his following are most listening to, get rank and previous rank
         var topUsers = await _context.Scrobbles
             .Where(s => s.Scrobble_Date >= start && s.Scrobble_Date <= end && (s.Id_User == userId || following.Contains(s.Id_User)))
             .GroupBy(s => s.Id_User)
-            .OrderByDescending(g => g.Count())
             .Select(g => new TopUsers
             {
                 User = g.First().User,
                 ScrobbleCount = g.Count()
             })
+            .OrderByDescending(u => u.ScrobbleCount)
             .Take(limit)
             .ToListAsync();
+
+        for (int i = 0; i < topUsers.Count; i++)
+        {
+            topUsers[i].Rank = i + 1;
+        }
+
+        //get previous rank
+        var previousTopUsers = await _context.Scrobbles
+            .Where(s => s.Scrobble_Date >= previousStartDate && s.Scrobble_Date <= previousEndDate && (s.Id_User == userId || following.Contains(s.Id_User)))
+            .GroupBy(s => s.Id_User)
+            .Select(g => new TopUsers
+            {
+                User = g.First().User,
+                ScrobbleCount = g.Count()
+            })
+            .OrderByDescending(u => u.ScrobbleCount)
+            .Take(limit)
+            .ToListAsync();
+
+        for (int i = 0; i < topUsers.Count; i++)
+        {
+            var previousRank = previousTopUsers.FindIndex(u => u.User.Id == topUsers[i].User.Id) + 1;
+            Console.WriteLine(previousRank);
+            topUsers[i].PreviousRank = previousRank;
+        }
 
         return new TopUsersResponse
         {

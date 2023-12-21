@@ -7,7 +7,7 @@ import ArtistCol from "../../components/reportspage/subjectcol/artistcol";
 import AlbumCol from "../../components/reportspage/subjectcol/albumcol";
 import SubjectCount from "../../components/reportspage/subjectcount/subjectscount";
 import Info from "../../components/reportspage/info/info";
-import TopUsers from "../../components/reportspage/topusers";
+import TopUsers from "../../components/reportspage/topusers/topusers";
 import MonthGraph from "../../components/reportspage/graphs/monthgraph";
 
 function MonthReports() {
@@ -75,7 +75,7 @@ function MonthReports() {
                         <>
                             <SubjectCount start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} interval={interval} userId={user().id} />
                             <Info start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} userId={user().id} interval={interval} />
-                            <TopUsers start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} userId={user().id} />
+                            <TopUsers start={start} end={end} previousStart={previousStart} previousEnd={previousEnd} userId={user().id} interval={interval} />
                             <MonthGraph start={start} end={end} userId={user().id} />
                         </>
                     }

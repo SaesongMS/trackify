@@ -4,8 +4,6 @@ import SubjectCountCard from "./subjectcountcard";
 
 function SubjectCount(props){
     const {start, end, userId, previousStart, previousEnd, interval } = props;
-    //log props
-    console.log(props);
     const [songCount, setSongCount] = createSignal(0);
     const [artistCount, setArtistCount] = createSignal(0);
     const [albumCount, setAlbumCount] = createSignal(0);
@@ -41,7 +39,7 @@ function SubjectCount(props){
     });
 
     return(
-        <div class="flex flex-col mt-2">
+        <div class="flex flex-col mt-3">
             <p class="text-2xl font-bold text-center">You listened to</p>
             <hr class="border-2 border-slate-300 opacity-30 w-1/2 mx-auto mb-2"/>
             <div class="grid grid-cols-1 md:grid-cols-3 lg:w-[85%] lg:mx-auto">
