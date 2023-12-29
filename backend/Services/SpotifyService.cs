@@ -46,14 +46,11 @@ public class SpotifyService
 
     private async Task<byte[]> GetImage(string url)
     {
-        Console.WriteLine(url);
         using var client = new HttpClient();
         using var response = await client.GetAsync(url);
         byte[] imageBytes = await response.Content
             .ReadAsByteArrayAsync()
             .ConfigureAwait(false);
-
-        Console.WriteLine(imageBytes.Length);
 
         return imageBytes;
     }

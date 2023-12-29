@@ -38,6 +38,7 @@ builder.Services.AddScoped<RatingService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<FavouriteSongService>();
+builder.Services.AddScoped<ReportService>();
 
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);

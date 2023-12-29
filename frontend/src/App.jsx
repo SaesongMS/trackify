@@ -15,6 +15,9 @@ import Charts from "./pages/charts/charts";
 import Collage from "./pages/collage/collage";
 import MainPage from "./pages/mainpage/mainpage";
 import UserSettingsPassword from "./pages/user/settings/changePassword";
+import WeekReports from "./pages/reports/WeekReports";
+import MonthReports from "./pages/reports/MonthReports";
+import YearReports from "./pages/reports/YearReports";
 
 function App() {
   return (
@@ -52,6 +55,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/:subject/:name" element={<SubjectPage />} />
         <Route path="/collage" element={<Collage />} />
+        <Route path="reports/week" element={<WeekReports />} />
+        <Route path="reports/month" element={<MonthReports />} />
+        <Route path="reports/year" element={<YearReports />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>
