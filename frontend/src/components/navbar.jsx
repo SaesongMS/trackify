@@ -1,17 +1,16 @@
 import NavbarButton from "./navbar-button";
-// import AppLogo from "../assets/icons/logo.png";
+import { getData, postData } from "../getUserData";
+import { createEffect, useContext } from "solid-js";
+import { UserContext } from "../contexts/UserContext";
+import { useNavigate } from "@solidjs/router";
 import AppLogo from "../assets/icons/logo-white.png";
 import SearchIcon from "../assets/icons/search.svg";
 import UserIcon from "../assets/icons/user.svg";
-// import ChartsIcon from "../assets/icons/charts.png";
 import ChartsIcon from "../assets/icons/charts.svg";
-import { getData, postData } from "../getUserData";
-import { createEffect, createSignal, useContext } from "solid-js";
-import { UserContext } from "../contexts/UserContext";
-import { useNavigate } from "@solidjs/router";
 import SettingsLogo from "../assets/icons/settings.svg";
 import LogoutLogo from "../assets/icons/logout.svg";
 import CollageLogo from "../assets/icons/collage.svg";
+import ReportLogo from "../assets/icons/report.svg";
 import { AdminContext } from "../contexts/AdminContext";
 
 function Navbar() {
@@ -72,7 +71,7 @@ function Navbar() {
             </button>
 
             <NavbarButton destination="collage" image={CollageLogo} />
-            <NavbarButton destination="reports/week" image={"Reports"} />
+            <NavbarButton destination="reports/week" image={ReportLogo} />
 
             <NavbarButton destination={"/user/settings"} image={SettingsLogo} />
             <NavbarButton
