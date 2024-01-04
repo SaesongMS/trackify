@@ -211,8 +211,18 @@ function MainPage(props) {
                   />
                 ))}
           <div class="flex flex-col justify-center items-center lg:hidden">
-            <img class="w-8 h-8 rotate-90" src={ArrowUp} />
-            <p class=" text-black">See more</p>
+            <a
+              href={`/user/${props.username}/library/albums`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <img class="w-8 h-8 rotate-90" src={ArrowUp} />
+            </a>
+            <a
+              href={`/user/${props.username}/library/albums`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <p>See more</p>
+            </a>
           </div>
         </div>
         Album
@@ -242,8 +252,18 @@ function MainPage(props) {
                   />
                 ))}
           <div class="flex flex-col justify-center items-center lg:hidden">
-            <img class="w-8 h-8 rotate-90" src={ArrowUp} />
-            <p class=" text-black">See more</p>
+            <a
+              href={`/user/${props.username}/library/albums`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <img class="w-8 h-8 rotate-90" src={ArrowUp} />
+            </a>
+            <a
+              href={`/user/${props.username}/library/albums`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <p>See more</p>
+            </a>
           </div>
         </div>
         Song
@@ -273,8 +293,18 @@ function MainPage(props) {
                   />
                 ))}
           <div class="flex flex-col justify-center items-center lg:hidden">
-            <img class="w-8 h-8 rotate-90" src={ArrowUp} />
-            <p class=" text-black">See more</p>
+            <a
+              href={`/user/${props.username}/library/songs`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <img class="w-8 h-8 rotate-90" src={ArrowUp} />
+            </a>
+            <a
+              href={`/user/${props.username}/library/songs`}
+              class="cursor-pointer hover:opacity-80"
+            >
+              <p>See more</p>
+            </a>
           </div>
         </div>
         Comments

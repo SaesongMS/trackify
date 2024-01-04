@@ -3,7 +3,6 @@ import { getData, postData } from "../../getUserData";
 import { createComputed, createEffect, createSignal, useContext } from "solid-js";
 import UserBanner from "../../components/userpage/userbanner/userbanner";
 import MainPage from "../../components/userpage/main/mainpage";
-import Belmondo from "../../assets/icons/belmondo.png";
 import { UserContext } from "../../contexts/UserContext";
 
 function UserPageMain() {
@@ -12,8 +11,11 @@ function UserPageMain() {
   const [songs, setSongs] = createSignal(null);
   const [artists, setArtists] = createSignal(null);
   const [albums, setAlbums] = createSignal(null);
-  const { user, setUser } = useContext(UserContext);
-  const [compability, setCompability] = createSignal({compability: -1, artists: ["", "", ""]});
+  const { user } = useContext(UserContext);
+  const [compability, setCompability] = createSignal({
+    compability: -1,
+    artists: ["", "", ""],
+  });
 
   const getProfile = async () => {
     const userData = await getData(`users/${params.username}`);
@@ -26,7 +28,7 @@ function UserPageMain() {
   });
 
   const getAlbums = async () => {
-    if(!profile()) return;
+    if (!profile()) return;
     const albumsData = await postData("scrobbles/top-n-albums", {
       n: 8,
       id: profile().id,
@@ -35,7 +37,7 @@ function UserPageMain() {
   };
 
   const getArtists = async () => {
-    if(!profile()) return;
+    if (!profile()) return;
     const artistsData = await postData("scrobbles/top-n-artists", {
       n: 8,
       id: profile().id,
@@ -44,24 +46,26 @@ function UserPageMain() {
   };
 
   const getSongs = async () => {
-    if(!profile()) return;
+    if (!profile()) return;
     const songsData = await postData("scrobbles/top-n-songs", {
       n: 8,
       id: profile().id,
     });
     setSongs(songsData.songs);
-  }
+  };
 
   createEffect(() => {
-      getAlbums();
-      getArtists();
-      getSongs();
+    getAlbums();
+    getArtists();
+    getSongs();
   });
 
   createComputed(async () => {
-    if(user() !== null && profile() !== null){
-      if(user().id !== profile().id){
-        const compabilityData = await getData(`users/compability/?user_id=${profile().id}`);
+    if (user() !== null && profile() !== null) {
+      if (user().id !== profile().id) {
+        const compabilityData = await getData(
+          `users/compability/?user_id=${profile().id}`
+        );
         console.log(compabilityData);
         setCompability(compabilityData);
         console.log(compability());
@@ -86,7 +90,7 @@ function UserPageMain() {
 
   return (
     <div class="h-[100%] flex flex-col">
-      {profile() && songs() && artists() && albums() && compability() &&  (
+      {profile() && songs() && artists() && albums() && compability() && (
         <>
           <UserBanner
             avatar={profile().profilePicture}
@@ -116,6 +120,7 @@ function UserPageMain() {
             bio={profile().description}
             compability={compability().compability}
             compabilityArtist={compability().artists}
+            username={profile().userName}
           />
         </>
       )}
