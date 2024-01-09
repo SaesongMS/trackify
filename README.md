@@ -35,20 +35,22 @@ docker compose up --build
 ```
 
 ### Wygląd aplikacji/ UI of application
-- **Profil / Profile:**
-![Imgur](https://imgur.com/YtZaAPO.gif)
+- **Profil strona głowna / Profile main page:**
+![Imgur](https://imgur.com/oHBTsRg.gif)
+- **Profil biblioteka oraz ulubione utwory / Profile library and favorite songs:**
+![Imgur](https://imgur.com/KYo9XPu.gif)
 - **Ustawienia / Settings:**
 ![Imgur](https://imgur.com/L81MiQQ.gif)
 - **Generowanie kolaży / Collage generation:**
 ![Imgur](https://imgur.com/TNewSU8.gif)
 - **Raporty (Statystyki) / Reports (Statistics):**
-![Imgur](https://imgur.com/u6puZRr.gif)
+![Imgur](https://imgur.com/k3J3zNp.gif)
 - **Rankingi podmiotów / Rankings of top subjects (Charts)**
-![Imgur](https://imgur.com/cy19nh8.gif)
+![Imgur](https://imgur.com/iOaP9Zf.gif)
 - **Wyszukiwanie / Search:**
 ![Imgur](https://imgur.com/oSlK370.gif)
 - **Strona podmiotu / Subject page:**
-![Imgur](https://imgur.com/5BcHGvJ.gif)
+![Imgur](https://imgur.com/jC0rvB8.gif)
 
 
 
