@@ -14,7 +14,8 @@ dotnet run
 lub
 docker compose up backend
 ```
-Treść pliku appsettings.Development.json potrzebnego do poprawnego działania backendu znajduje się [tutaj](backend/README.md)
+Treść pliku appsettings.Development.json potrzebnego do poprawnego działania backendu znajduje się [tutaj](backend/README.md)<br/>
+The contents of the appsettings.development.json file needed for the backend to work properly can be found [here](backend/README.md)
 
 ### Baza danych / Database
 ```
