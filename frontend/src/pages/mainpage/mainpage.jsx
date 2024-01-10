@@ -1,4 +1,3 @@
-import mainpagebanner from '../../assets/icons/mainpagebanner.jpg';
 import logo from '../../assets/icons/logo-animated.gif';
 import { A } from "@solidjs/router";
 import { createEffect } from 'solid-js';

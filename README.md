@@ -1,6 +1,5 @@
-# Praca dyplomowa inzynierska
-## Temat: Serwis społecznościowy do śledzenia i analizy danych z serwisu Spotify.
-### Topic: Social networking service with Spotify data tracking and analysis.
+# Serwis społecznościowy do śledzenia i analizy danych z serwisu Spotify.
+## Social networking service with Spotify data tracking and analysis.
 ## Uruchomienie / Run
 
 ### Frontend
@@ -15,7 +14,7 @@ dotnet run
 lub
 docker compose up backend
 ```
-Treść pliku appsettings.Development.json potrzebnego do poprawnego działania backendu znajduje się [tutaj](https://pastebin.com/N8xQYHQA)
+Treść pliku appsettings.Development.json potrzebnego do poprawnego działania backendu znajduje się [tutaj](backend/README.md)
 
 ### Baza danych / Database
 ```
@@ -24,7 +23,7 @@ docker compose up db
 #### Migracje / Migrations
 ```
 dotnet ef migrations add <nazwa migracji>
-(migracje sa juz gotowe)
+(migracje sa juz gotowe / migrations are already prepared)
 
 dotnet ef database update
 ```
