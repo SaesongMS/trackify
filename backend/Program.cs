@@ -40,6 +40,10 @@ builder.Services.AddScoped<FollowService>();
 builder.Services.AddScoped<FavouriteSongService>();
 builder.Services.AddScoped<ReportService>();
 
+//specify Configuration base path
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
+builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
+
 var jwtSettings = new JWTSettings();
 builder.Configuration.Bind("JWTSettings", jwtSettings);
 
@@ -157,6 +161,10 @@ app.UseHttpsRedirection();
 
 app.UseCors(options =>
 {
+    options.WithOrigins("http://frontend:3000")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
     options.WithOrigins("http://localhost:3000")
            .AllowAnyMethod()
            .AllowAnyHeader()
