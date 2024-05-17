@@ -1,5 +1,5 @@
-# Serwis społecznościowy do śledzenia i analizy danych z serwisu Spotify.
-## Social networking service with Spotify data tracking and analysis.
+# Trackify
+## Social networking service with Spotify data tracking and analysis. / Serwis społecznościowy do śledzenia i analizy danych z serwisu Spotify.
 ## Uruchomienie / Run
 
 ### Frontend
